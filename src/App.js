@@ -1,23 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import logo from "./logo.svg";
+import "./App.css";
+import "./Chat.css";
+import Chat from "./Chat";
+import ChatSecond from "./ChatSecond";
+import ChatSecondModified from "./ChatSecondModified";
+
+// const socket = new WebSocket(url);
 
 function App() {
+  const url =
+    "wss://jwt2n8ki5m.execute-api.ap-southeast-1.amazonaws.com/dev-vi";
+
+  // const updateTextMessageHistory = async (history) => {
+  //   setTextMessagesHistory(history);
+  // };
+
   return (
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
       </header>
+      <div className="chat-container">
+        {/* <Chat /> */}
+        {/* <ChatSecond /> */}
+        <ChatSecondModified />
+      </div>
     </div>
   );
 }

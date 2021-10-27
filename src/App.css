@@ -1,9 +1,14 @@
+body {
+  background-color: #d2c6b0;
+  /*background-color: #282c34;*/
+}
+
 .App {
   text-align: center;
 }
 
 .App-logo {
-  height: 40vmin;
+  height: 8vw;
   pointer-events: none;
 }
 
@@ -14,14 +19,22 @@
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+  background-color: #d2c6b0;
+  /*background-color: #282c34;*/
+  height: 10vw;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+}
+
+.chat-container {
+  background-color: #d2c6b0;
+  /*background-color: #282c34;*/
+  height: 80vh;
+  width: 100vw;
 }
 
 .App-link {
