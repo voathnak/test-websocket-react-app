@@ -1,0 +1,67 @@
+{
+  "name": "vg-backend-api",
+  "description": "hour village api description",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "aws-sdk": "^2.437.0",
+    "axios": "^0.21.1",
+    "bookshelf": "^1.2.0",
+    "fs": "^0.0.1-security",
+    "http-status-codes": "^2.1.4",
+    "jsonwebtoken": "^8.5.1",
+    "knex": "^0.21.17",
+    "moment": "^2.28.0",
+    "path": "^0.12.7",
+    "pg": "^8.5.1",
+    "pg-hstore": "^2.3.3",
+    "sequelize": "^6.5.1",
+    "uuid": "^8.3.0",
+    "validate.js": "^0.13.1"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.1.0",
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^7.18.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-config-prettier": "^7.2.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-prettier": "^3.3.1",
+    "express": "^4.17.1",
+    "husky": "^4.3.8",
+    "jest": "^26.1.0",
+    "lint-staged": ">=10",
+    "prettier": "^2.2.1",
+    "swagger-ui-express": "^4.1.5",
+    "yamljs": "^0.3.0"
+  },
+  "scripts": {
+    "test": "cp -r utils  node_modules && cp -r constants node_modules && cp -r models  node_modules && jest --env=node",
+    "layer-prep": "mkdir -p core/nodejs/node_modules && mkdir -p dependencies/nodejs && cp -r node_modules dependencies/nodejs && cp -r models core/nodejs/node_modules && cp -r utils core/nodejs/node_modules && cp -r constants core/nodejs/node_modules && cp -r email-templates core/",
+    "lint:js": "eslint .  --ext .js",
+    "lint:js:fix": "yarn lint:js --fix",
+    "api-doc": "sh scripts/upload-api-doc.sh",
+    "start": "sh scripts/run.sh",
+    "deploy": "sh scripts/deploy.sh",
+    "coverage": "jest --coverage",
+    "swagger": "node swagger",
+    "sequelize-cli": "sh scripts/sequelize-config-init.sh && sequelize",
+    "db:create": "yarn sequelize-cli db:create",
+    "db:migrate": "yarn sequelize-cli db:migrate",
+    "db:migrate:undo": "yarn sequelize-cli db:migrate:undo",
+    "db:g:migration": "yarn sequelize-cli migration:generate --name",
+    "db:g:seed": "yarn sequelize-cli seed:generate --name",
+    "db:seeds": "yarn sequelize-cli db:seed:all",
+    "db:seeds:undo": "yarn sequelize-cli db:seed:undo:all"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "husky": {
+    "hooks": {
+      "prepare-commit-msg": "exec < /dev/tty && git cz --hook || true"
+    }
+  }
+}

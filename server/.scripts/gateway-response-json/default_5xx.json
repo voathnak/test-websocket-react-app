@@ -1,0 +1,12 @@
+{
+   "restApiId":"3hikpr7k02",
+   "responseType":"DEFAULT_5XX",
+   "responseParameters":{
+      "gatewayresponse.header.Access-Control-Allow-Headers":"'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+      "gatewayresponse.header.Access-Control-Allow-Methods":"'POST,GET,PUT,PATCH,DELETE,OPTIONS'",
+      "gatewayresponse.header.Access-Control-Allow-Origin":"'*'"
+   },
+   "responseTemplates":{
+      "application/json":"{\"message\":$context.error.messageString}"
+   }
+}
