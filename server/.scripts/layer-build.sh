@@ -3,8 +3,8 @@
 set -e
 mkdir -p layer/core/python/
 cp -r utils layer/core/python/
-cp -r snail layer/core/python/
-cp -r models layer/core/python/
+#cp -r snail layer/core/python/
+#cp -r models layer/core/python/
 
 rm -rf layer/python_libs
 docker build -t requests-lambda-layer/python_libs .

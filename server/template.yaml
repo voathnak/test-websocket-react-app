@@ -153,7 +153,7 @@ Resources:
     Properties:
       CodeUri: onconnect/
       Handler: app.handler
-      MemorySize: 256
+      MemorySize: 128
       Runtime: nodejs12.x
       Environment:
         Variables:
@@ -174,7 +174,7 @@ Resources:
     Properties:
       CodeUri: ondisconnect/
       Handler: app.handler
-      MemorySize: 256
+      MemorySize: 128
       Runtime: nodejs12.x
       Environment:
         Variables:
@@ -193,10 +193,13 @@ Resources:
   SendMessageFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: sendmessage/
+      CodeUri: pysendmessage/
       Handler: app.handler
-      MemorySize: 256
-      Runtime: nodejs12.x
+      MemorySize: 128
+      Runtime: python3.8
+      Layers:
+        - !Ref PythonLibs
+        - !Ref CoreLibs
       Environment:
         Variables:
           TABLE_NAME: !Ref TableName
@@ -250,7 +253,7 @@ Resources:
       FunctionName: !Sub ${AppName}-${StageName}-ConfigFunction
       CodeUri: configuration/
       Handler: app.handler
-      MemorySize: 256
+      MemorySize: 128
       Runtime: nodejs12.x
       Environment:
         Variables:
@@ -265,7 +268,7 @@ Resources:
               Resource:
                 - !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${SimpleChatWebSocket}/*'
       Layers:
-        - !Ref CoreLibs
+        - !Ref NodeCoreLibs
         - !Ref NodeDependencies
 
 
@@ -285,7 +288,7 @@ Resources:
     Properties:
       CodeUri: ondefault/
       Handler: app.handler
-      MemorySize: 256
+      MemorySize: 128
       Runtime: nodejs12.x
       Environment:
         Variables:
@@ -332,7 +335,7 @@ Resources:
 
 
 
-  CoreLibs:
+  NodeCoreLibs:
     Type: "AWS::Serverless::LayerVersion"
     Properties:
       ContentUri: core/
@@ -345,6 +348,20 @@ Resources:
       ContentUri: dependencies/
       CompatibleRuntimes: # optional
         - nodejs12.x
+
+  CoreLibs:
+    Type: 'AWS::Serverless::LayerVersion'
+    Properties:
+      ContentUri: layer/core
+      CompatibleRuntimes: # optional
+        - python3.8
+
+  PythonLibs:
+    Type: 'AWS::Serverless::LayerVersion'
+    Properties:
+      ContentUri: layer/python_libs
+      CompatibleRuntimes: # optional
+        - python3.8
 
 
 Outputs:

@@ -1,7 +1,7 @@
 # Python
 rm -rf layer/core/
 mkdir -p layer/core/python
-cp -r snail layer/core/python
+#cp -r snail layer/core/python
 cp -r utils layer/core/python
 [[ ! -d layer/python_libs ]] && sh .scripts/layer-build.sh
 
@@ -24,5 +24,5 @@ mkdir -p dependencies/nodejs
 
 yarn install --production  --modules-folder dependencies/nodejs/node_modules
 #cp -r models core/nodejs/node_modules
-cp -r utils core/nodejs/node_modules
+cp -r nodeUtils core/nodejs/node_modules
 #cp -r constants core/nodejs/node_modules
