@@ -119,6 +119,7 @@ Resources:
     DependsOn:
     - ConnectRoute
     - SendRoute
+    - ConfigRoute
     - DisconnectRoute
     - DefaultRoute
     Properties:
@@ -254,7 +255,7 @@ Resources:
       CodeUri: configuration/
       Handler: app.handler
       MemorySize: 128
-      Runtime: nodejs12.x
+      Runtime: python3.8
       Environment:
         Variables:
           TABLE_NAME: !Ref TableName
@@ -268,8 +269,8 @@ Resources:
               Resource:
                 - !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${SimpleChatWebSocket}/*'
       Layers:
-        - !Ref NodeCoreLibs
-        - !Ref NodeDependencies
+        - !Ref PythonLibs
+        - !Ref CoreLibs
 
 
   ConfigPermission:

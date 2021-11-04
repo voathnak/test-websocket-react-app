@@ -1,4 +1,5 @@
 import json
+import os
 
 from utils.utils import log_event, httpResponse
 import boto3
@@ -6,12 +7,17 @@ import boto3
 dynamodb = boto3.resource('dynamodb')
 
 
-def send_message(client, message, connection_id):
-    client.post_to_connection(Data=message, ConnectionId=connection_id)
+def send_message(client, message, from_conn_id, to_conn_id):
+    message_data = {
+        "data": message,
+        "from": from_conn_id,
+        "to": to_conn_id
+    }
+    client.post_to_connection(Data=json.dumps(message_data), ConnectionId=to_conn_id)
 
 
 def handler(event, context):
-    table = dynamodb.Table('vlim_ws_chat_pydev_conns_table')
+    table = dynamodb.Table(os.environ['TABLE_NAME'])
     log_event(event)
     http_method = event.get('httpMethod')
     path = event.get('path')
@@ -46,7 +52,7 @@ def handler(event, context):
     try:
         for connection_id in other_connection_ids:
             # send_message(socket_api, "Hello dear!", connection_id)
-            send_message(socket_api, body_data.get("data"), connection_id)
+            send_message(socket_api, body_data.get("data"), reqctx.get("connectionId"), connection_id)
     except Exception as e:
         print("An exception occurred", e)
 

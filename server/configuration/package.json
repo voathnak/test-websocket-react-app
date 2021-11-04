@@ -1,7 +1,0 @@
-{
-  "name": "game-play",
-  "version": "1.0.0",
-  "description": "Game Play WebSocket",
-  "main": "app.js",
-  "license": "MIT"
-}

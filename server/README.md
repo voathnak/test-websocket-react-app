@@ -54,6 +54,16 @@ connected (press CTRL+C to quit)
 < hello world
 ```
 
+## Socket Sending Payload
+### to get all connection_ids
+```json
+{"action":"configuration","data":{"type":"rpc","name":"get-connections", "test":"2"}}
+```
+### to send text
+```json
+{"action":"sendmessage", "data":{"text": "yay!!!"}}
+```
+
 ## License Summary
 
 This sample code is made available under a modified MIT license. See the LICENSE file.
