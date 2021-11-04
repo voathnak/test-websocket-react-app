@@ -8,7 +8,8 @@ import { websocket } from "./utils";
 
 function Chat() {
   const url =
-    "wss://jwt2n8ki5m.execute-api.ap-southeast-1.amazonaws.com/dev-vi";
+    // "wss://jwt2n8ki5m.execute-api.ap-southeast-1.amazonaws.com/dev-vi";
+    "wss://cy7hzvh3n2.execute-api.ap-southeast-1.amazonaws.com/pydev-vi";
   const openConnection = () => {
     console.info(url);
     // return new W3CWebSocket(url, "echo-protocol");

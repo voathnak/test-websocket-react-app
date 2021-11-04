@@ -6,7 +6,8 @@ import Chat from "./Chat";
 
 const ChatSecondModified = () => {
   const url =
-    "wss://jwt2n8ki5m.execute-api.ap-southeast-1.amazonaws.com/dev-vi";
+    "wss://cy7hzvh3n2.execute-api.ap-southeast-1.amazonaws.com/pydev-vi";
+  // "wss://jwt2n8ki5m.execute-api.ap-southeast-1.amazonaws.com/dev-vi";
   // Public API that will echo messages sent to it back to the client
   const [socketUrl, setSocketUrl] = useState(url);
   const [messageHistory, setMessageHistory] = useState([]);
