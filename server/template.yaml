@@ -149,19 +149,24 @@ Resources:
       SSESpecification:
         SSEEnabled: True
       TableName: !Ref TableName
+
   OnConnectFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: onconnect/
       Handler: app.handler
       MemorySize: 128
-      Runtime: nodejs12.x
+      Runtime: python3.8
+      Layers:
+        - !Ref PythonLibs
+        - !Ref CoreLibs
       Environment:
         Variables:
           TABLE_NAME: !Ref TableName
       Policies:
       - DynamoDBCrudPolicy:
           TableName: !Ref TableName
+
   OnConnectPermission:
     Type: AWS::Lambda::Permission
     DependsOn:
