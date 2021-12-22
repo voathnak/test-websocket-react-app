@@ -4,38 +4,57 @@ import useWebSocket, { ReadyState } from "react-use-websocket";
 
 import Chat from "./Chat";
 
+const { REACT_APP_WEB_SOCKET_URL: webSocketUrl } = process.env;
+
 const ChatSecondModified = () => {
-  const url =
-    "wss://cy7hzvh3n2.execute-api.ap-southeast-1.amazonaws.com/pydev-vi";
-  // "wss://jwt2n8ki5m.execute-api.ap-southeast-1.amazonaws.com/dev-vi";
   // Public API that will echo messages sent to it back to the client
-  const [socketUrl, setSocketUrl] = useState(url);
+  const [socketUrl, setSocketUrl] = useState(webSocketUrl);
   const [messageHistory, setMessageHistory] = useState([]);
-  const [sentMessageHistory, setSentMessageHistory] = useState([]);
+  const [onlineUsers, setOnlineUsers] = useState([]);
   const [textMessage, setTextMessage] = useState("");
 
-  const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
+  const {
+    sendMessage,
+    lastMessage,
+    readyState,
+    sendJsonMessage,
+    lastJsonMessage,
+  } = useWebSocket(socketUrl);
 
   useEffect(() => {
     if (lastMessage !== null) {
       // setMessageHistory((prev) => prev.concat(lastMessage));
-      const data = JSON.parse(lastMessage.data);
-      setMessageHistory([
-        ...messageHistory,
-        {
-          type: lastMessage.type,
-          data: {
-            text: data.text,
-            id: data.id,
-            type: "received",
+      // const data = JSON.parse(lastMessage.data);
+      console.info({ lastJsonMessage });
+      console.info({ lastMessage });
+      const { data, type } = lastJsonMessage;
+      console.info({ data, type });
+      // const {type} = lastMessage;
+      // if(type = )
+      if (type === "message") {
+        const { text, id } = JSON.parse(data);
+        setMessageHistory([
+          ...messageHistory,
+          {
+            type,
+            data: {
+              text,
+              id,
+              type: "received",
+            },
+            time: lastMessage.timeStamp,
           },
-          time: lastMessage.timeStamp,
-        },
-      ]);
+        ]);
+      } else if (type === "online-user") {
+        setOnlineUsers(data);
+      }
     }
   }, [lastMessage, setMessageHistory]);
 
-  const handleClickChangeSocketUrl = useCallback(() => setSocketUrl(url), []);
+  const handleClickChangeSocketUrl = useCallback(
+    () => setSocketUrl(webSocketUrl),
+    []
+  );
 
   const connectionStatus = {
     [ReadyState.CONNECTING]: "Connecting",
@@ -49,6 +68,19 @@ const ChatSecondModified = () => {
     console.info(value);
     setTextMessage(value);
   };
+
+  const getConnection = () => {
+    const m = JSON.stringify({
+      action: "configuration",
+      data: JSON.stringify({ type: "rpc", name: "get-connections" }),
+    });
+    console.info({ m });
+    sendMessage(m);
+  };
+
+  useEffect(() => {
+    getConnection();
+  }, []);
 
   const onSubmit = useCallback(() => {
     console.info("sending text:", textMessage);
@@ -91,15 +123,35 @@ const ChatSecondModified = () => {
     return <ul>{messages}</ul>;
   };
 
+  const listOnlineUser = () => {
+    console.info("onlineUsers:", onlineUsers);
+    const users = onlineUsers.map((x) => {
+      return (
+        <li key={x}>
+          <div>
+            <p>{`${x}`}</p>
+          </div>
+        </li>
+      );
+    });
+    return <ul>{users}</ul>;
+  };
+
   return (
-    <div className="chat-box">
-      <span>The WebSocket is currently {connectionStatus}</span>
-      {listMessageHistory()}
-      <div className="input">
-        <input onChange={onTextChanged} />
-        <button type="submit" onClick={onSubmit}>
-          Send
-        </button>
+    <div className="chat-window">
+      <div className="chat-users">{listOnlineUser()}</div>
+      <div className="chat-box">
+        <span>The WebSocket is currently {connectionStatus}</span>
+        {listMessageHistory()}
+        <div className="input">
+          <input onChange={onTextChanged} />
+          <button type="submit" onClick={onSubmit}>
+            Send
+          </button>
+          <button type="submit" onClick={getConnection}>
+            getConnection
+          </button>
+        </div>
       </div>
     </div>
   );

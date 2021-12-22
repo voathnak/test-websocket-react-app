@@ -2,6 +2,7 @@ import firebase from "firebase/compat";
 import { useSelector } from "react-redux";
 
 import ChatSecondModified from "./ChatSecondModified";
+import Login from "./Login";
 import logo from "./logo.svg";
 import "./App.css";
 import "./Chat.css";
@@ -40,14 +41,14 @@ function App() {
   // const updateTextMessageHistory = async (history) => {
   //   setTextMessagesHistory(history);
   // };
-
+  console.info("user.isLoggedIn", user.isLoggedIn);
   return (
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
       </header>
-      {user.isLoggedIn ? (
-        <SignIn />
+      {!user.isLoggedIn ? (
+        <Login />
       ) : (
         <div className="chat-container">
           {/* <Chat /> */}

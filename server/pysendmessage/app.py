@@ -1,6 +1,7 @@
 import json
 import os
 
+from utils.constant import MessageType
 from utils.utils import log_event, httpResponse
 import boto3
 
@@ -9,6 +10,7 @@ dynamodb = boto3.resource('dynamodb')
 
 def send_message(client, message, from_conn_id, to_conn_id):
     message_data = {
+        "type": MessageType.message,
         "data": message,
         "from": from_conn_id,
         "to": to_conn_id
