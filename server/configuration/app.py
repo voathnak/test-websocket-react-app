@@ -19,7 +19,7 @@ def send_health_check(client, connection_ids):
             client.post_to_connection(Data=message_data, ConnectionId=connection_id)
         except client.exceptions.GoneException:
             print("Deleting gone connection:", connection_id)
-            table.delete_item(Key=connection_id)
+            table.delete_item(Key={'connectionId': connection_id})
         except Exception as e:
             print("Error sending health check to connection")
             print("Error detail:", e)
