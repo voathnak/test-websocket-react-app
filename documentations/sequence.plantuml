@@ -1,0 +1,29 @@
+@startuml
+'!theme spacelab
+actor       User
+Entity     Browser
+control     AuthLambda #yellow
+control     SocketLambda #green
+database    UserDynamo
+database    ConnectionDynamo
+database    messageDynamo
+
+User -> Browser : A. To login
+Browser -> AuthLambda : 1. send username and password
+AuthLambda -> UserDynamo: 2. check login credential
+'UserDynamo --> AuthLambda: respond failed
+UserDynamo -> AuthLambda: 3. respond success
+'AuthLambda --> Browser: respond 401
+AuthLambda -> Browser: 4. respond token
+Browser -> SocketLambda: 5. send token
+SocketLambda -> ConnectionDynamo : 6. add more connection info from user
+SocketLambda -> Browser: 7. allow messaging
+User -> Browser: B. user typing message
+Browser -> SocketLambda: 1. user sending message
+SocketLambda -> messageDynamo: 2. storing message
+SocketLambda -> Browser: 3. reply message
+User -> Browser: C. user read message
+Browser -> SocketLambda: 1. send message have been read
+SocketLambda -> messageDynamo: 2. update message read status
+SocketLambda -> Browser: 3. send read status to other user
+@enduml
