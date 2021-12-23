@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 
@@ -8,8 +8,21 @@ const Login = () => {
   const { user, status, test } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
   const onSubmit = () => {
-    dispatch(loginUser());
+    dispatch(loginUser({ username, password }));
+  };
+
+  const onUsernameChange = (e) => {
+    console.info({ username: e.target.value });
+    setUsername(e.target.value);
+  };
+
+  const onPasswordChange = (e) => {
+    console.info({ password: e.target.value });
+    setPassword(e.target.value);
   };
 
   return (
@@ -24,10 +37,10 @@ const Login = () => {
         <p>test: {test}</p>
       </div>
       <div>
-        <input name="username" />
+        <input name="username" onChange={onUsernameChange} />
       </div>
       <div>
-        <input name="password" />
+        <input name="password" onChange={onPasswordChange} />
       </div>
       <div>
         <button type="button" onClick={onSubmit}>

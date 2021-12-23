@@ -32,17 +32,25 @@ Parameters:
     Default: 1425139424:AAGS4IP3fvntbuiR3Mrjf4o3ZV3nK2Pvhrg
   IsUsingLocalDynamodb:
     Type: String
-    Default: '1'
+    Default: '0'
     Description: A flag to turn the service to use local dynamodb or on cloud
     AllowedPattern: \d+$
-  TableName:
+  ConnectionTableName:
     Type: String
-    Default: 'vlim_ws_chat_dev_conns_table'
+#    Default: 'vlim_ws_chat_dev_conns_table'
     Description: (Required) The name of the new DynamoDB to store connection identifiers for each connected clients. Minimum 3 characters
     MinLength: 3
     MaxLength: 50
     AllowedPattern: ^[A-Za-z_]+$
     ConstraintDescription: 'Required. Can be characters and underscore only. No numbers or special characters allowed.'
+
+Globals:
+  Function:
+    Timeout: 60
+    Environment:
+      Variables:
+        SECRET_KEY: !Sub "${SecretKey}"
+        IS_USING_LOCAL_DYNAMODB: !Sub "${IsUsingLocalDynamodb}"
 
 Resources:
   SimpleChatWebSocket:
@@ -148,7 +156,7 @@ Resources:
         WriteCapacityUnits: 5
       SSESpecification:
         SSEEnabled: True
-      TableName: !Ref TableName
+      TableName: !Ref ConnectionTableName
 
   OnConnectFunction:
     Type: AWS::Serverless::Function
@@ -162,10 +170,10 @@ Resources:
         - !Ref CoreLibs
       Environment:
         Variables:
-          TABLE_NAME: !Ref TableName
+          TABLE_NAME: !Ref ConnectionTableName
       Policies:
         - DynamoDBCrudPolicy:
-            TableName: !Ref TableName
+            TableName: !Ref ConnectionTableName
         - Statement:
           - Effect: Allow
             Action:
@@ -190,10 +198,10 @@ Resources:
       Runtime: nodejs12.x
       Environment:
         Variables:
-          TABLE_NAME: !Ref TableName
+          TABLE_NAME: !Ref ConnectionTableName
       Policies:
         - DynamoDBCrudPolicy:
-            TableName: !Ref TableName
+            TableName: !Ref ConnectionTableName
   OnDisconnectPermission:
     Type: AWS::Lambda::Permission
     DependsOn:
@@ -214,10 +222,10 @@ Resources:
         - !Ref CoreLibs
       Environment:
         Variables:
-          TABLE_NAME: !Ref TableName
+          TABLE_NAME: !Ref ConnectionTableName
       Policies:
         - DynamoDBCrudPolicy:
-            TableName: !Ref TableName
+            TableName: !Ref ConnectionTableName
         - Statement:
           - Effect: Allow
             Action:
@@ -269,10 +277,10 @@ Resources:
       Runtime: python3.8
       Environment:
         Variables:
-          TABLE_NAME: !Ref TableName
+          CONNECTION_TABLE_NAME: !Ref ConnectionTableName
       Policies:
         - DynamoDBCrudPolicy:
-            TableName: !Ref TableName
+            TableName: !Ref ConnectionTableName
         - Statement:
           - Effect: Allow
             Action:
@@ -304,10 +312,10 @@ Resources:
       Runtime: nodejs12.x
       Environment:
         Variables:
-          TABLE_NAME: !Ref TableName
+          TABLE_NAME: !Ref ConnectionTableName
       Policies:
         - DynamoDBCrudPolicy:
-            TableName: !Ref TableName
+            TableName: !Ref ConnectionTableName
         - Statement:
             - Effect: Allow
               Action:

@@ -16,7 +16,7 @@ UserDynamo -> AuthLambda: 3. respond success
 'AuthLambda --> Browser: respond 401
 AuthLambda -> Browser: 4. respond token
 Browser -> SocketLambda: 5. send token
-SocketLambda -> ConnectionDynamo : 6. add more connection info from user
+SocketLambda -> ConnectionDynamo : 6. add username to connection from decoded token
 SocketLambda -> Browser: 7. allow messaging
 User -> Browser: B. user typing message
 Browser -> SocketLambda: 1. user sending message

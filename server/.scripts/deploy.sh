@@ -34,7 +34,7 @@ sam deploy 	--profile "$PROFILE" \
 				StageName="$STAGE_NAME" \
 				DeploymentS3BucketName="$S3_BUCKET" \
 				AppName="$APP_NAME" \
-				TableName="${TABLE_NAME//-/_}" \
+				ConnectionTableName="${CONNECTION_TABLE_NAME//-/_}" \
 				IsUsingLocalDynamodb="0" \
 			--capabilities CAPABILITY_IAM
 

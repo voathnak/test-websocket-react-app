@@ -1,12 +1,15 @@
 import React, { useState, useCallback, useEffect } from "react";
 
+import { useSelector } from "react-redux";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 
 import Chat from "./Chat";
+import { loginUser } from "./redux/usersSlice";
 
 const { REACT_APP_WEB_SOCKET_URL: webSocketUrl } = process.env;
 
 const ChatSecondModified = () => {
+  const { user, status, test } = useSelector((state) => state.user);
   // Public API that will echo messages sent to it back to the client
   const [socketUrl, setSocketUrl] = useState(webSocketUrl);
   const [messageHistory, setMessageHistory] = useState([]);
@@ -72,7 +75,24 @@ const ChatSecondModified = () => {
   const getConnection = () => {
     const m = JSON.stringify({
       action: "configuration",
-      data: JSON.stringify({ type: "rpc", name: "get-connections" }),
+      data: JSON.stringify({
+        type: "rpc",
+        name: "get-connections",
+        data: { token: user.token },
+      }),
+    });
+    console.info({ m });
+    sendMessage(m);
+  };
+
+  const setConnection = () => {
+    const m = JSON.stringify({
+      action: "configuration",
+      data: JSON.stringify({
+        type: "rpc",
+        name: "set-connection",
+        data: { token: user.token },
+      }),
     });
     console.info({ m });
     sendMessage(m);
@@ -80,6 +100,8 @@ const ChatSecondModified = () => {
 
   useEffect(() => {
     getConnection();
+    console.info("####$$$$");
+    console.info({ user, status, test });
   }, []);
 
   const onSubmit = useCallback(() => {
@@ -150,6 +172,9 @@ const ChatSecondModified = () => {
           </button>
           <button type="submit" onClick={getConnection}>
             getConnection
+          </button>
+          <button type="submit" onClick={setConnection}>
+            setConnection
           </button>
         </div>
       </div>

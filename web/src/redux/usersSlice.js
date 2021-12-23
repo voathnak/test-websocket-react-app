@@ -12,28 +12,31 @@ const initialState = {
   status: null,
 };
 
-export const loginUser = createAsyncThunk("post/login", async () => {
-  // console.log({ obj });
-  const myHeaders = new Headers();
-  myHeaders.append("Content-Type", "application/json");
+export const loginUser = createAsyncThunk(
+  "post/login",
+  async ({ username, password }) => {
+    // console.log({ obj });
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    console.info({ username, password });
+    const raw = JSON.stringify({
+      username,
+      password,
+    });
 
-  const raw = JSON.stringify({
-    username: "vlim",
-    password: "P@$$uu0rD",
-  });
+    const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
 
-  const requestOptions = {
-    method: "POST",
-    headers: myHeaders,
-    body: raw,
-    redirect: "follow",
-  };
-
-  return fetch(
-    "https://0y8x4tfft1.execute-api.ap-southeast-1.amazonaws.com/dev/users/login",
-    requestOptions
-  ).then(async (res) => ({ status: res.status, data: await res.json() }));
-});
+    return fetch(
+      "https://0y8x4tfft1.execute-api.ap-southeast-1.amazonaws.com/dev/users/login",
+      requestOptions
+    ).then(async (res) => ({ status: res.status, data: await res.json() }));
+  }
+);
 
 export const userSlice = createSlice({
   name: "user",

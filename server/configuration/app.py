@@ -1,12 +1,17 @@
 import json
 import os
 
-from utils.constant import MessageType
+import jwt
+
+from jwt import DecodeError
+from utils.constant import MessageType, Error
+from utils.models.connection import Connection
 from utils.utils import log_event, httpResponse
 import boto3
 
 dynamodb = boto3.resource('dynamodb')
-table = dynamodb.Table(os.environ['TABLE_NAME'])
+table = dynamodb.Table(os.environ['CONNECTION_TABLE_NAME'])
+SECRET_KEY = os.environ['SECRET_KEY']
 
 
 def send_health_check(client, connection_ids):
@@ -32,6 +37,17 @@ def send_message(client, data, connection_id):
         "desc": "online connections id"
     })
     print("#" * 5, "<send_message>", "message:", str(data), ", connection_id:", connection_id)
+    client.post_to_connection(Data=message_data, ConnectionId=connection_id)
+
+
+def response_error_message(client, error, connection_id):
+    message_data = json.dumps({
+        "type": "error",
+        "code": error.code,
+        "message": error.message,
+        "desc": f"error with code: {error.code} >> {error.message}"
+    })
+    print("#" * 5, f"<responded_error> code: {error.code} message: {str(error.message)} connection_id: {connection_id}")
     client.post_to_connection(Data=message_data, ConnectionId=connection_id)
 
 
@@ -67,13 +83,49 @@ def get_all_connection_ids():
     return [c.get("connectionId") for c in connections]
 
 
-def get_connection(socket_api, reqctx):
+def get_connection(socket_api, reqctx, request_data=None):
     requester_id = reqctx.get("connectionId")
     all_connection_ids = get_all_connection_ids()
     send_health_check(socket_api, all_connection_ids)
+
+    if not set_connection(socket_api, reqctx, request_data):
+        return
+
     all_connection_ids = get_all_connection_ids()
     for connection_id in all_connection_ids:
         send_message(socket_api, [c for c in all_connection_ids if c != requester_id], connection_id)
+
+
+def set_connection(socket_api, reqctx, request_data=None):
+    requester_id = reqctx.get("connectionId")
+    print("$"*100)
+    print(" request_data:", request_data)
+    token = request_data.get("token")
+
+    try:
+        decoded = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
+        print("decoded:", decoded)
+        connection = Connection()
+        connection.update(requester_id, {"username": decoded.get("username")})
+        return True
+    except DecodeError:
+        print("ERROR DecodeError")
+        response_error_message(socket_api, Error.ClientError.invalidToken, requester_id)
+        return False
+    except Exception as e:
+        print("ERROR", e)
+        print("ERROR DecodeError")
+        response_error_message(socket_api, Error.ClientError.invalidToken, requester_id)
+        return False
+
+
+    print(" token:", token)
+    decoded = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
+    print("decoded:", decoded)
+
+    connection = Connection()
+    connection.update(requester_id, {"username": decoded.get("username")})
+    print("$"*100)
 
 
 def handler(event, context):
@@ -85,14 +137,15 @@ def handler(event, context):
 
     func_set = {
         "rpc": {
-            "get-connections": get_connection
+            "get-connections": get_connection,
+            "set-connection": set_connection,
         }
     }
     data = json.loads(body_data.get("data"))
-    request_type, request_name = data.get("type"), data.get("name")
+    request_type, request_name, request_data = data.get("type"), data.get("name"), data.get("data")
 
     try:
-        func_set.get(request_type).get(request_name)(socket_api, reqctx)
+        func_set.get(request_type).get(request_name)(socket_api, reqctx, request_data)
 
         # for connection_id in other_connection_ids:
         #     # send_message(socket_api, "Hello dear!", connection_id)
