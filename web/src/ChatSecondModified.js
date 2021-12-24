@@ -140,7 +140,7 @@ const ChatSecondModified = () => {
     sendMessage(
       JSON.stringify({
         data: JSON.stringify({
-          text: textMessage,
+          text: `${user.username}: ${textMessage}`,
           id: new Date().getTime(),
         }),
         action: "sendmessage",

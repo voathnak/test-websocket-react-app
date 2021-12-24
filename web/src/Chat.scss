@@ -94,6 +94,9 @@
       //margin: 0 auto;
       //height: 80vh;
       position: relative;
+      .input {
+        overflow: scroll;
+      }
 
       > ul {
         width: 100%;

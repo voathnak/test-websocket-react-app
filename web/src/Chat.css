@@ -76,6 +76,9 @@
   font-size: 18px;
   position: relative;
 }
+.chat-container .chat-window .chat-box .input {
+  overflow: scroll;
+}
 .chat-container .chat-window .chat-box > ul {
   width: 100%;
   list-style: none;
