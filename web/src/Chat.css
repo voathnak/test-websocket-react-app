@@ -4,6 +4,24 @@
 /*.chat-box > ul > li:nth-of-type(even) {*/
 /*    text-align: right;*/
 /*}*/
+.status-box {
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+}
+.status-box span {
+  width: 96%;
+  margin: 0 auto;
+}
+.status-box span:nth-child(2n) {
+  background-color: #d9eeee;
+}
+.status-box span span {
+  text-align: left;
+  width: 44%;
+  margin: 0 auto;
+}
+
 .chat-window {
   margin: 0 auto;
   border: 1px solid orange;

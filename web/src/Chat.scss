@@ -4,6 +4,29 @@
 /*.chat-box > ul > li:nth-of-type(even) {*/
 /*    text-align: right;*/
 /*}*/
+.status-box {
+  display: flex;
+  flex-direction: column;
+
+  background-color: #fff;
+
+  span {
+    &:nth-child(2n) {
+      background-color: #d9eeee;
+    }
+
+    width: 96%;
+    margin: 0 auto;
+
+    span {
+      text-align: left;
+      width: 44%;
+      margin: 0 auto;
+    }
+  }
+
+}
+
 .chat-window {
   margin: 0 auto;
   border: 1px solid orange;
@@ -12,6 +35,7 @@
   height: 80vh;
   display: flex;
   flex-wrap: nowrap;
+
   .chat-users {
     width: 25%;
     border: 1px solid yellow;
@@ -24,6 +48,7 @@
     height: 80vh;
     //position: relative;
   }
+
   .chat-box {
     width: 50%;
     border: 1px solid black;
@@ -35,39 +60,47 @@
     //margin: 0 auto;
     height: 80vh;
     position: relative;
-    >ul {
+
+    > ul {
       width: 100%;
       list-style: none;
       margin: 0;
       padding: 0;
-      >li {
+
+      > li {
         width: 92%;
         padding: 0 4%;
         //height: 30px;
         list-style: none;
         border: 1px solid blue;
         margin: 0;
+
         .message-box {
           border: 1px solid red;
           display: flex;
           flex-direction: column;
-          >p {
+
+          > p {
             padding: 0;
             margin: 5px;
           }
+
           .time {
             font-size: 10px;
           }
         }
       }
-      >li.sent {
+
+      > li.sent {
         text-align: right;
       }
-      >li.received {
+
+      > li.received {
         text-align: left;
       }
     }
-    >.input {
+
+    > .input {
       width: 100%;
       height: 30px;
       margin: 0;
@@ -76,14 +109,16 @@
       position: absolute;
       bottom: 0;
       left: 0;
-      >input {
+
+      > input {
         width: 80%;
         height: 30px;
         margin: 0;
         padding: 0;
         border: none;
       }
-      >button {
+
+      > button {
         width: 20%;
         height: 30px;
         margin: 0;

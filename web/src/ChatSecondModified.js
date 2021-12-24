@@ -160,22 +160,36 @@ const ChatSecondModified = () => {
   };
 
   return (
-    <div className="chat-window">
-      <div className="chat-users">{listOnlineUser()}</div>
-      <div className="chat-box">
-        <span>The WebSocket is currently {connectionStatus}</span>
-        {listMessageHistory()}
-        <div className="input">
-          <input onChange={onTextChanged} />
-          <button type="submit" onClick={onSubmit}>
-            Send
-          </button>
-          <button type="submit" onClick={getConnection}>
-            getConnection
-          </button>
-          <button type="submit" onClick={setConnection}>
-            setConnection
-          </button>
+    <div className="chat-container">
+      <div className="status-box">
+        <span>
+          <span>
+            currently logged in username <b>{user.username}</b>
+          </span>
+        </span>
+        <span>
+          <span>
+            connectionStatus: <b>{connectionStatus}</b>
+          </span>
+        </span>
+      </div>
+
+      <div className="chat-window">
+        <div className="chat-users">{listOnlineUser()}</div>
+        <div className="chat-box">
+          {listMessageHistory()}
+          <div className="input">
+            <input onChange={onTextChanged} />
+            <button type="submit" onClick={onSubmit}>
+              Send
+            </button>
+            <button type="submit" onClick={getConnection}>
+              getConnection
+            </button>
+            <button type="submit" onClick={setConnection}>
+              setConnection
+            </button>
+          </div>
         </div>
       </div>
     </div>
