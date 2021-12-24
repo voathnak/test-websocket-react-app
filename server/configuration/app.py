@@ -14,6 +14,7 @@ table = dynamodb.Table(os.environ['CONNECTION_TABLE_NAME'])
 SECRET_KEY = os.environ['SECRET_KEY']
 
 
+# remove user socket timeout connection
 def send_health_check(client, connection_ids):
     message_data = json.dumps({
         "type": MessageType.healthCheck,
@@ -28,6 +29,17 @@ def send_health_check(client, connection_ids):
         except Exception as e:
             print("Error sending health check to connection")
             print("Error detail:", e)
+
+    response_update_online_user(client)
+
+
+# notify other user
+def response_update_online_user(socket_api):
+    all_connections = get_all_connections()
+    for conn in all_connections:
+        # not include self connections
+        nic_self_connections = [c for c in all_connections if c.get('connectionId') != conn.get("connectionId")]
+        send_message(socket_api, nic_self_connections, conn.get("connectionId"))
 
 
 def send_message(client, data, connection_id):
@@ -83,6 +95,25 @@ def get_all_connection_ids():
     return [c.get("connectionId") for c in connections]
 
 
+def get_all_connections():
+    scan_kwargs = {
+        'ProjectionExpression': 'connectionId, username',
+    }
+    done = False
+    start_key = None
+    connections = []
+    while not done:
+        if start_key:
+            scan_kwargs['ExclusiveStartKey'] = start_key
+        response = table.scan(**scan_kwargs)
+        connections.extend(response.get('Items', []))
+        start_key = response.get('LastEvaluatedKey', None)
+        done = start_key is None
+
+    return connections
+
+
+# user completely login
 def get_connection(socket_api, reqctx, request_data=None):
     requester_id = reqctx.get("connectionId")
     all_connection_ids = get_all_connection_ids()
@@ -91,9 +122,11 @@ def get_connection(socket_api, reqctx, request_data=None):
     if not set_connection(socket_api, reqctx, request_data):
         return
 
-    all_connection_ids = get_all_connection_ids()
-    for connection_id in all_connection_ids:
-        send_message(socket_api, [c for c in all_connection_ids if c != requester_id], connection_id)
+    all_connections = get_all_connections()
+    for conn in all_connections:
+        # not include self connections
+        nic_self_connections = [c for c in all_connections if c.get('connectionId') != conn.get("connectionId")]
+        send_message(socket_api, nic_self_connections, conn.get("connectionId"))
 
 
 def set_connection(socket_api, reqctx, request_data=None):
@@ -117,7 +150,6 @@ def set_connection(socket_api, reqctx, request_data=None):
         print("ERROR DecodeError")
         response_error_message(socket_api, Error.ClientError.invalidToken, requester_id)
         return False
-
 
     print(" token:", token)
     decoded = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])

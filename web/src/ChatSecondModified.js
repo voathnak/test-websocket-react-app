@@ -149,9 +149,9 @@ const ChatSecondModified = () => {
     console.info("onlineUsers:", onlineUsers);
     const users = onlineUsers.map((x) => {
       return (
-        <li key={x}>
+        <li key={x.connectionId}>
           <div>
-            <p>{`${x}`}</p>
+            <p>{`${x.username}`}</p>
           </div>
         </li>
       );
