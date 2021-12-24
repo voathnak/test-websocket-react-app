@@ -25,6 +25,13 @@ const Login = () => {
     setPassword(e.target.value);
   };
 
+  const handleKeypress = (e) => {
+    console.info(e.keyCode);
+    if (e.keyCode === 13) {
+      onSubmit();
+    }
+  };
+
   return (
     <div>
       <div>
@@ -37,10 +44,18 @@ const Login = () => {
         <p>test: {test}</p>
       </div>
       <div>
-        <input name="username" onChange={onUsernameChange} />
+        <input
+          name="username"
+          onChange={onUsernameChange}
+          onKeyDown={handleKeypress}
+        />
       </div>
       <div>
-        <input name="password" onChange={onPasswordChange} />
+        <input
+          name="password"
+          onChange={onPasswordChange}
+          onKeyDown={handleKeypress}
+        />
       </div>
       <div>
         <button type="button" onClick={onSubmit}>

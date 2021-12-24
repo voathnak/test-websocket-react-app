@@ -24,6 +24,37 @@ const ChatSecondModified = () => {
     lastJsonMessage,
   } = useWebSocket(socketUrl);
 
+  const onOnlineUserUpdate = () => {
+    const { data } = lastJsonMessage;
+    setOnlineUsers(data);
+  };
+  const onMessageUpdate = () => {
+    const { data, type } = lastJsonMessage;
+    const { text, id } = JSON.parse(data);
+    setMessageHistory([
+      ...messageHistory,
+      {
+        type,
+        data: {
+          text,
+          id,
+          type: "received",
+        },
+        time: lastMessage.timeStamp,
+      },
+    ]);
+  };
+
+  const onHealthCheck = () => {
+    console.info("INFO: server health checking");
+  };
+
+  const receiveUpdate = {
+    "online-user": onOnlineUserUpdate,
+    message: onMessageUpdate,
+    "health-check": onHealthCheck,
+  };
+
   useEffect(() => {
     if (lastMessage !== null) {
       // setMessageHistory((prev) => prev.concat(lastMessage));
@@ -34,22 +65,16 @@ const ChatSecondModified = () => {
       console.info({ data, type });
       // const {type} = lastMessage;
       // if(type = )
-      if (type === "message") {
-        const { text, id } = JSON.parse(data);
-        setMessageHistory([
-          ...messageHistory,
-          {
-            type,
-            data: {
-              text,
-              id,
-              type: "received",
-            },
-            time: lastMessage.timeStamp,
-          },
-        ]);
-      } else if (type === "online-user") {
-        setOnlineUsers(data);
+      console.info("receiveUpdate", receiveUpdate);
+      console.info("receiveUpdate[type]", receiveUpdate[type]);
+      try {
+        receiveUpdate[type]();
+      } catch (error) {
+        if (error instanceof TypeError) {
+          console.warn(`Type: ${type} was not handling`);
+        } else {
+          console.error({ error });
+        }
       }
     }
   }, [lastMessage, setMessageHistory]);
@@ -58,6 +83,12 @@ const ChatSecondModified = () => {
     () => setSocketUrl(webSocketUrl),
     []
   );
+
+  const onClickUser = (e) => {
+    console.info(e.target.dataset);
+    console.info(`${e.target.dataset.username} clicked`);
+    window.test = e;
+  };
 
   const connectionStatus = {
     [ReadyState.CONNECTING]: "Connecting",
@@ -151,12 +182,21 @@ const ChatSecondModified = () => {
       return (
         <li key={x.connectionId}>
           <div>
-            <p>{`${x.username}`}</p>
+            <button type="button" onClick={() => onClickUser({ x })}>
+              {`${x.username}`}
+            </button>
           </div>
         </li>
       );
     });
     return <ul>{users}</ul>;
+  };
+
+  const handleKeypress = (e) => {
+    console.info(e.keyCode);
+    if (e.keyCode === 13) {
+      onSubmit();
+    }
   };
 
   return (
@@ -173,21 +213,25 @@ const ChatSecondModified = () => {
           </span>
         </span>
       </div>
+      <div className="manual-control-box">
+        <span>Manual Control: </span>
+
+        <button type="submit" onClick={getConnection}>
+          getConnection
+        </button>
+        <button type="submit" onClick={setConnection}>
+          setConnection
+        </button>
+      </div>
 
       <div className="chat-window">
         <div className="chat-users">{listOnlineUser()}</div>
         <div className="chat-box">
           {listMessageHistory()}
           <div className="input">
-            <input onChange={onTextChanged} />
+            <input onChange={onTextChanged} onKeyDown={handleKeypress} />
             <button type="submit" onClick={onSubmit}>
               Send
-            </button>
-            <button type="submit" onClick={getConnection}>
-              getConnection
-            </button>
-            <button type="submit" onClick={setConnection}>
-              setConnection
             </button>
           </div>
         </div>

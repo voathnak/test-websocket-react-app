@@ -17,3 +17,6 @@ class Error:
 
     class ClientError:
         invalidToken = ErrorTemplate(4100, "Invalid Token", "The token is invalid")
+
+    class IntegrationError:
+        rpcFunctionNotFound = ErrorTemplate(3404, "Invalid RPC function name", "Invalid RPC function name")
