@@ -1,21 +1,45 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect } from 'react';
 
-import { useSelector } from "react-redux";
-import useWebSocket, { ReadyState } from "react-use-websocket";
+import { useSelector } from 'react-redux';
+import useWebSocket, { ReadyState } from 'react-use-websocket';
+import { RootState } from './redux';
+import "./Chat.css"
 
-import Chat from "./Chat";
-import { loginUser } from "./redux/usersSlice";
+const { REACT_APP_WEB_SOCKET_URL: socketUrl } = process.env;
 
-const { REACT_APP_WEB_SOCKET_URL: webSocketUrl } = process.env;
+interface MessageHistory {
+  type: 'online-user' | 'health-check' | 'message' | 'sent';
+  data: {
+    text: string;
+    id: string;
+    type: 'received';
+  };
+  time: string;
+}
 
-const ChatSecondModified = () => {
-  const { user, status, test } = useSelector((state) => state.user);
+interface User {
+  connectionId: string;
+  username: string;
+}
+
+interface Properties {
+  webSocketUrl: string
+}
+
+const ChatSecondModified = ({webSocketUrl}: Properties) => {
+  const { user, status, test } = useSelector((state: RootState) => state.user);
   // Public API that will echo messages sent to it back to the client
-  const [socketUrl, setSocketUrl] = useState(webSocketUrl);
-  const [messageHistory, setMessageHistory] = useState([]);
-  const [onlineUsers, setOnlineUsers] = useState([]);
-  const [textMessage, setTextMessage] = useState("");
+  // const [socketUrl, setSocketUrl] = useState(webSocketUrl);
+  const [messageHistory, setMessageHistory] = useState([] as MessageHistory[]);
+  const [onlineUsers, setOnlineUsers] = useState([] as User[]);
+  const [textMessage, setTextMessage] = useState('');
   const [customerTab, setCustomerTabs] = useState([]);
+
+  const getSocketUrl = useCallback(() => {
+    return new Promise<string>( resolve => {
+      resolve(webSocketUrl);
+    });
+  }, [webSocketUrl]);
 
   const {
     sendMessage,
@@ -23,7 +47,7 @@ const ChatSecondModified = () => {
     readyState,
     sendJsonMessage,
     lastJsonMessage,
-  } = useWebSocket(socketUrl);
+  } = useWebSocket(getSocketUrl);
 
   const onOnlineUserUpdate = () => {
     const { data } = lastJsonMessage;
@@ -39,21 +63,21 @@ const ChatSecondModified = () => {
         data: {
           text,
           id,
-          type: "received",
+          type: 'received',
         },
-        time: lastMessage.timeStamp,
+        time: lastMessage?.timeStamp,
       },
-    ]);
+    ] as MessageHistory[]);
   };
 
   const onHealthCheck = () => {
-    console.info("INFO: server health checking");
+    console.info('INFO: server health checking');
   };
 
-  const receiveUpdate = {
-    "online-user": onOnlineUserUpdate,
+  const receiveUpdate: { [key: string]: () => void } = {
+    'online-user': onOnlineUserUpdate,
     message: onMessageUpdate,
-    "health-check": onHealthCheck,
+    'health-check': onHealthCheck,
   };
 
   useEffect(() => {
@@ -66,8 +90,8 @@ const ChatSecondModified = () => {
       console.info({ data, type });
       // const {type} = lastMessage;
       // if(type = )
-      console.info("receiveUpdate", receiveUpdate);
-      console.info("receiveUpdate[type]", receiveUpdate[type]);
+      console.info('receiveUpdate', receiveUpdate);
+      console.info('receiveUpdate[type]', receiveUpdate[type]);
       try {
         receiveUpdate[type]();
       } catch (error) {
@@ -80,36 +104,36 @@ const ChatSecondModified = () => {
     }
   }, [lastMessage, setMessageHistory]);
 
-  const handleClickChangeSocketUrl = useCallback(
-    () => setSocketUrl(webSocketUrl),
-    []
-  );
+  // const handleClickChangeSocketUrl = useCallback(
+  //   () => setSocketUrl(webSocketUrl),
+  //   []
+  // );
 
-  const onClickUser = (e) => {
-    console.info(e.target.dataset);
-    console.info(`${e.target.dataset.username} clicked`);
-    window.test = e;
+  const onSelectUser = (user: User) => {
+    console.info(user);
   };
 
   const connectionStatus = {
-    [ReadyState.CONNECTING]: "Connecting",
-    [ReadyState.OPEN]: "Open",
-    [ReadyState.CLOSING]: "Closing",
-    [ReadyState.CLOSED]: "Closed",
-    [ReadyState.UNINSTANTIATED]: "Uninstantiated",
+    [ReadyState.CONNECTING]: 'Connecting',
+    [ReadyState.OPEN]: 'Open',
+    [ReadyState.CLOSING]: 'Closing',
+    [ReadyState.CLOSED]: 'Closed',
+    [ReadyState.UNINSTANTIATED]: 'Uninstantiated',
   }[readyState];
 
-  const onTextChanged = ({ target: { value } }) => {
+  const onTextChanged = ({
+    target: { value },
+  }: React.ChangeEvent<HTMLInputElement>) => {
     console.info(value);
     setTextMessage(value);
   };
 
   const getConnection = () => {
     const m = JSON.stringify({
-      action: "configuration",
+      action: 'configuration',
       data: JSON.stringify({
-        type: "rpc",
-        name: "get-connections",
+        type: 'rpc',
+        name: 'get-connections',
         data: { token: user.token },
       }),
     });
@@ -119,10 +143,10 @@ const ChatSecondModified = () => {
 
   const setConnection = () => {
     const m = JSON.stringify({
-      action: "configuration",
+      action: 'configuration',
       data: JSON.stringify({
-        type: "rpc",
-        name: "set-connection",
+        type: 'rpc',
+        name: 'set-connection',
         data: { token: user.token },
       }),
     });
@@ -132,38 +156,38 @@ const ChatSecondModified = () => {
 
   useEffect(() => {
     getConnection();
-    console.info("####$$$$");
+    console.info('####$$$$');
     console.info({ user, status, test });
   }, []);
 
   const onSubmit = useCallback(() => {
-    console.info("sending text:", textMessage);
+    console.info('sending text:', textMessage);
     sendMessage(
       JSON.stringify({
         data: JSON.stringify({
           text: `${user.username}: ${textMessage}`,
           id: new Date().getTime(),
         }),
-        action: "sendmessage",
+        action: 'sendmessage',
       })
     );
     const id = new Date().getTime();
     setMessageHistory([
       ...messageHistory,
       {
-        type: "sent",
+        type: 'sent',
         data: {
           text: textMessage,
           id,
-          type: "sent",
+          type: 'sent',
         },
         time: id,
       },
-    ]);
+    ] as MessageHistory[]);
   }, [textMessage]);
 
   const listMessageHistory = () => {
-    console.info("messageHistory:", messageHistory);
+    console.info('messageHistory:', messageHistory);
     const messages = messageHistory.map((x) => {
       return (
         <li key={x.time} className={x.data.type}>
@@ -178,13 +202,13 @@ const ChatSecondModified = () => {
   };
 
   const listOnlineUser = () => {
-    console.info("onlineUsers:", onlineUsers);
-    const users = onlineUsers.map((x) => {
+    console.info('onlineUsers:', onlineUsers);
+    const users = onlineUsers.map((user: User) => {
       return (
-        <li key={x.connectionId}>
+        <li key={user.connectionId}>
           <div>
-            <button type="button" onClick={() => onClickUser({ x })}>
-              {`${x.username}`}
+            <button type="button" onClick={() => onSelectUser(user)}>
+              {`${user.username}`}
             </button>
           </div>
         </li>
@@ -193,9 +217,9 @@ const ChatSecondModified = () => {
     return <ul>{users}</ul>;
   };
 
-  const handleKeypress = (e) => {
-    console.info(e.keyCode);
-    if (e.keyCode === 13) {
+  const handleKeypress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    console.info(e.key);
+    if (e.key === 'Enter') {
       onSubmit();
     }
   };
