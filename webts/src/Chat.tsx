@@ -184,6 +184,7 @@ const ChatSecondModified = ({webSocketUrl}: Properties) => {
         time: id,
       },
     ] as MessageHistory[]);
+    setTextMessage("");
   }, [textMessage]);
 
   const listMessageHistory = () => {
@@ -221,8 +222,23 @@ const ChatSecondModified = ({webSocketUrl}: Properties) => {
     console.info(e.key);
     if (e.key === 'Enter') {
       onSubmit();
+      // e.currentTarget.textContent = "";
     }
   };
+
+  useEffect(() => {
+    const d = new Date();
+    console.group(`${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}:${d.getMilliseconds()}`);
+    console.info({textMessage});
+    console.info({messageHistory});
+    console.info({onlineUsers});
+    console.info({onlineUsers: JSON.stringify(onlineUsers)});
+    console.groupEnd();
+    return () => {
+      // setTextMessage("");
+    };
+  }, [textMessage, messageHistory, onlineUsers]);
+
 
   return (
     <div className="chat-container">
@@ -254,8 +270,8 @@ const ChatSecondModified = ({webSocketUrl}: Properties) => {
         <div className="chat-box">
           <div className="messages-box">{listMessageHistory()}</div>
           <div className="input">
-            <input onChange={onTextChanged} onKeyDown={handleKeypress} />
-            <button type="submit" onClick={onSubmit}>
+            <input onChange={onTextChanged} onKeyDown={handleKeypress} value={textMessage} />
+            <button type="submit" onClick={onSubmit} disabled={readyState !== ReadyState.OPEN}>
               Send
             </button>
           </div>
