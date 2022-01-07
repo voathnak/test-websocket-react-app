@@ -1,6 +1,8 @@
 body {
-  background-color: #d2c6b0;
+  background-color: #fff;
   /*background-color: #282c34;*/
+  font-family: "Public Sans", sans-serif;
+  font-size: 16px;
 }
 
 .App {
@@ -19,7 +21,7 @@ body {
 }
 
 .App-header {
-  background-color: #d2c6b0;
+  /*background-color: #d2c6b0;*/
   /*background-color: #282c34;*/
   height: 10vw;
   display: flex;
@@ -31,7 +33,7 @@ body {
 }
 
 .chat-container {
-  background-color: #d2c6b0;
+  /*background-color: #d2c6b0;*/
   /*background-color: #282c34;*/
   height: 80vh;
   width: 100vw;

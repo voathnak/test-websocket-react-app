@@ -108,7 +108,7 @@ class Model(Schema):
         return record
 
     def create(self, values):
-        timestamp = str(datetime.utcnow().timestamp())
+        timestamp = decimal.Decimal(datetime.utcnow().timestamp())
         item = {
             'createdAt': timestamp,
             'updatedAt': timestamp,
@@ -127,15 +127,24 @@ class Model(Schema):
         try:
             creating_doc = self._table.put_item(Item=item)
             if creating_doc['ResponseMetadata']['HTTPStatusCode']:
-                self.get(item.get(self._primary_key))
+                self.get(item.get(self._primary_key), item.get(self._sort_key))
                 return self
 
         except Exception as e:
             self._fetch_error(e)
 
-    def get(self, key):
+    def get(self, primary_key, sort_key=None):
         try:
-            record = self._table.get_item(Key={self._primary_key: key})
+            key = {self._primary_key: primary_key}
+            if sort_key and self._sort_key:
+                key.update({self._sort_key: sort_key})
+#                 record = self._table.query(
+#                     KeyConditionExpression=Key(self._primary_key).eq(primary_key)
+#                                            & Key(self._sort_key).gt(0)
+# )
+#             else:
+            record = self._table.get_item(Key=key)
+
             return self.recorded(record.get('Item', []))
 
         except Exception as e:

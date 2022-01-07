@@ -1,3 +1,4 @@
+import datetime
 import json
 import os
 import re
@@ -5,6 +6,7 @@ from functools import reduce
 
 import jwt
 
+from utils.orm import response
 
 email_regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+([.]\w{2,10})+$'
 
@@ -47,7 +49,8 @@ def check_email(email):
 
 
 def log_event(event):
-    print("#" * 100)
+    print(datetime.datetime.now())
+    print("#" * 2, datetime.datetime.now(), "#"*70)
     event_json = json.dumps(event, indent=4, sort_keys=False)
     print("#---- event:", event_json)
     print("#" * 100)

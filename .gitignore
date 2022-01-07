@@ -1,2 +1,4 @@
 web2/
 **/layer/*
+**/registry.terraform.io/*
+**/.terraform/output/*

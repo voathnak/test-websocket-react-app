@@ -4,6 +4,7 @@ actor       User
 Entity     Browser
 control     AuthLambda #yellow
 control     SocketLambda #green
+control     MesssageRespondLambda #lightblue
 database    UserDynamo
 database    ConnectionDynamo
 database    messageDynamo

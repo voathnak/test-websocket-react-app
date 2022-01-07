@@ -6,6 +6,8 @@ import jwt
 from jwt import DecodeError
 from utils.constant import MessageType, Error
 from utils.models.connection import Connection
+from utils.socket_utilities import get_all_connections, get_all_connection_ids, response_error_message, APIGWSocketCore, \
+    get_socket_client
 from utils.utils import log_event, httpResponse
 import boto3
 
@@ -14,80 +16,9 @@ table = dynamodb.Table(os.environ['CONNECTION_TABLE_NAME'])
 SECRET_KEY = os.environ['SECRET_KEY']
 
 
-def get_all_connection_ids():
-    scan_kwargs = {
-        'ProjectionExpression': 'connectionId',
-    }
-    done = False
-    start_key = None
-    connections = []
-    while not done:
-        if start_key:
-            scan_kwargs['ExclusiveStartKey'] = start_key
-        response = table.scan(**scan_kwargs)
-        connections.extend(response.get('Items', []))
-        start_key = response.get('LastEvaluatedKey', None)
-        done = start_key is None
-
-    print("#" * 100)
-    print("connections:", connections)
-    print("#" * 100)
-
-    return [c.get("connectionId") for c in connections]
-
-
-def get_all_connections():
-    scan_kwargs = {
-        'ProjectionExpression': 'connectionId, username',
-    }
-    done = False
-    start_key = None
-    connections = []
-    while not done:
-        if start_key:
-            scan_kwargs['ExclusiveStartKey'] = start_key
-        response = table.scan(**scan_kwargs)
-        connections.extend(response.get('Items', []))
-        start_key = response.get('LastEvaluatedKey', None)
-        done = start_key is None
-
-    return connections
-
-
-def response_error_message(socket, error, requesterId):
-    message_data = json.dumps({
-        "type": "error",
-        "code": error.code,
-        "message": error.message,
-        "desc": f"error with code: {error.code} >> {error.message}"
-    })
-    print("#" * 5,
-          f"<responded_error> code: {error.code} message: {str(error.message)} connection_id: {requesterId}")
-    socket.post_to_connection(Data=message_data, ConnectionId=requesterId)
-
-
-class APIGWSocketCore:
-    def __init__(self, api_gateway_lambda_event):
-        self.event = api_gateway_lambda_event
-        log_event(self.event)
-        self.context = self.event.get('requestContext')
-        # self.requesterId = self.socket.get("connectionId")
-        self.requesterId = self.context.get("connectionId")
-        self.socket = self.get_socket_client()
-
-    def get_socket_client(self):
-        endpoint_url = 'https://{}/{}'.format(self.context.get('domainName'), self.context.get('stage'))
-        return boto3.client('apigatewaymanagementapi', endpoint_url=endpoint_url)
-
-    def response_error_message(self, error):
-        response_error_message(self.socket, error, self.requesterId)
-
-
-
-
-class ConfigurationServer(APIGWSocketCore):
+class ConfigurationService(APIGWSocketCore):
     def __init__(self, event):
-        super(ConfigurationServer, self).__init__(event)
+        super(ConfigurationService, self).__init__(event)
         self.func_set = {
             "rpc": {
                 "get-connections": self.get_connection,
@@ -115,7 +46,7 @@ class ConfigurationServer(APIGWSocketCore):
 
     # notify other user
     def response_update_online_user(self):
-        all_connections = get_all_connections()
+        all_connections = get_all_connections(table)
         for conn in all_connections:
             # not include self connections
             nic_self_connections = [c for c in all_connections if c.get('connectionId') != conn.get("connectionId")]
@@ -135,8 +66,7 @@ class ConfigurationServer(APIGWSocketCore):
         user completely login
         """
 
-
-        all_connection_ids = get_all_connection_ids()
+        all_connection_ids = get_all_connection_ids(table)
         self.send_health_check(all_connection_ids)
 
         if not self.set_connection(request_data):
@@ -184,12 +114,15 @@ class ConfigurationServer(APIGWSocketCore):
 
 
 def handler(event, context):
+    socket = get_socket_client(event)
     try:
-        service = ConfigurationServer(event)
+        service = ConfigurationService(event)
         return service.controller()
     except Exception as e:
         print("An exception occurred", e)
-        response_error_message(Error.ServerError.internalServerError)
+        response_error_message(socket,
+                               Error.ServerError.internalServerError,
+                               event.get('requestContext').get("connectionId"))
 
     return httpResponse(200, "Data sent.")
 

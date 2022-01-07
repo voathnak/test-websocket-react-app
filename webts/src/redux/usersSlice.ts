@@ -1,13 +1,8 @@
 import {AsyncThunk, createAsyncThunk, createSlice} from "@reduxjs/toolkit";
+import {User} from "../type";
 
 
-interface User {
-    isLoggedIn?: boolean,
-    username: string,
-    token: string,
-    photoURL?: string,
-    id: string,
-}
+
 interface UsersState {
   user: User,
   test: string,

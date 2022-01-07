@@ -43,6 +43,13 @@ Parameters:
     MaxLength: 50
     AllowedPattern: ^[A-Za-z_]+$
     ConstraintDescription: 'Required. Can be characters and underscore only. No numbers or special characters allowed.'
+  UserMessageTableName:
+    Type: String
+    Description: (Required) The name of the new DynamoDB to store connection identifiers for each connected clients. Minimum 3 characters
+    MinLength: 3
+    MaxLength: 50
+    AllowedPattern: ^[A-Za-z-_]+$
+    ConstraintDescription: 'Required. Can be characters and underscore only. No numbers or special characters allowed.'
 
 Globals:
   Function:
@@ -51,6 +58,9 @@ Globals:
       Variables:
         SECRET_KEY: !Sub "${SecretKey}"
         IS_USING_LOCAL_DYNAMODB: !Sub "${IsUsingLocalDynamodb}"
+        CONNECTION_TABLE_NAME: !Ref ConnectionTableName
+        USER_MESSAGE_TABLE_NAME: !Ref UserMessageTableName
+
 
 Resources:
   SimpleChatWebSocket:
@@ -222,10 +232,12 @@ Resources:
         - !Ref CoreLibs
       Environment:
         Variables:
-          TABLE_NAME: !Ref ConnectionTableName
+          CONNECTION_TABLE_NAME: !Ref ConnectionTableName
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref ConnectionTableName
+        - DynamoDBCrudPolicy:
+            TableName: !Ref UserMessageTableName
         - Statement:
           - Effect: Allow
             Action:

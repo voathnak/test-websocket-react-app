@@ -35,6 +35,7 @@ sam deploy 	--profile "$PROFILE" \
 				DeploymentS3BucketName="$S3_BUCKET" \
 				AppName="$APP_NAME" \
 				ConnectionTableName="${CONNECTION_TABLE_NAME//-/_}" \
+				UserMessageTableName="${USER_MESSAGE_TABLE_NAME}" \
 				IsUsingLocalDynamodb="0" \
 			--capabilities CAPABILITY_IAM
 
