@@ -5,11 +5,11 @@ variable "aws_region" {
   default = "ap-southeast-1"
 }
 
-variable "service_name" {
-  description = "Microservice name"
+variable "changes_version" {
+  description = "version"
 
   type    = string
-  default = "message-process"
+  default = "a"
 }
 
 variable "project_name" {
@@ -24,4 +24,11 @@ variable "SECRET_KEY" {
 
   type    = string
   default = "62fec8f63ccfeeb60149f4c49fbcda10"
+}
+
+variable "accountId" {
+  description = "accountId"
+
+  type    = string
+  default = "661275851074"
 }

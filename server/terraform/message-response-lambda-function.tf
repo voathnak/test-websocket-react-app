@@ -1,7 +1,7 @@
 locals {
   message_response_lambda = {
     lambda_zip_path = "outputs/message-response-lambda.zip"
-    function_name = format("%s-%s-%s-%s", var.project_name, var.service_name, "message_response", terraform.workspace)
+    function_name = format("%s-v%s-%s-%s", var.project_name, var.changes_version, "message_response", terraform.workspace)
     handler = "message_response.handler"
     runtime = "python3.8"
   }
@@ -22,7 +22,7 @@ resource "aws_lambda_function" "message_response_lambda" {
 
   # The filebase64sha256() function is available in Terraform 0.11.12 and later
   # For Terraform 0.11.11 and earlier, use the base64sha256() function and the file() function:
-  source_code_hash = filebase64sha256(local.message_response_lambda.lambda_zip_path)
+#  source_code_hash = filebase64sha256(local.message_response_lambda.lambda_zip_path)
 
   runtime = local.message_response_lambda.runtime
   layers = [aws_lambda_layer_version.core_lib_layer.arn, aws_lambda_layer_version.python_libs_layer.arn]
@@ -34,6 +34,7 @@ resource "aws_lambda_function" "message_response_lambda" {
       CONNECTION_TABLE_NAME = "vlim-ws-chat-dev-i--conns-table"
       SOCKET_URL = "https://3duti05k8l.execute-api.ap-southeast-1.amazonaws.com/dev-i-vi"
       IS_USING_LOCAL_DYNAMODB = 0
+      STAGE_NAME = terraform.workspace
     }
   }
 

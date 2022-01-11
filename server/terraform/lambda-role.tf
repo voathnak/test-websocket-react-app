@@ -1,15 +1,17 @@
-resource "aws_iam_role_policy" "lambda_assume_policy" {
-  name = "${var.service_name}_lambda_policy_${terraform.workspace}"
-  role = aws_iam_role.lambda_assume_role.id
-
-  # Terraform's "jsonencode" function converts a
-  # Terraform expression result to valid JSON syntax.
-  #  policy = jsonencode()
-  policy = file("iam/lambda-policy.json")
-}
-
 resource "aws_iam_role" "lambda_assume_role" {
-  name = "${var.service_name}_lambda_role_${terraform.workspace}"
+  name = "${var.project_name}_lambda_role_${terraform.workspace}_v${var.changes_version}"
 
   assume_role_policy = file("iam/lambda-assume-policy.json")
+}
+
+resource "aws_iam_role" "full_access_dynamodb_lambda_role" {
+  name = "${var.project_name}_${terraform.workspace}_v${var.changes_version}_full_access_dynamodb_lambda_role"
+
+  assume_role_policy = file("iam/lambda-assume-policy.json")
+}
+
+resource "aws_iam_role" "invocation_role" {
+  name = "${var.project_name}_${terraform.workspace}_v${var.changes_version}_api_gateway_auth_invocation"
+  path = "/"
+  assume_role_policy =  file("iam/lambda-assume-policy.json")
 }
