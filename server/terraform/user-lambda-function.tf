@@ -45,20 +45,6 @@ resource "aws_cloudwatch_log_group" "user" {
   retention_in_days = 7
 }
 
-#resource "aws_lambda_permission" "apigw_lambda_permission" {
-#  statement_id  = "Allow${aws_api_gateway_rest_api.root_api.name}Invoke"
-#  action        = "lambda:InvokeFunction"
-#  function_name = aws_lambda_function.user.function_name
-#  principal     = "apigateway.amazonaws.com"
-#
-#  # The /*/*/* part allows invocation from any stage, method and resource path
-#  # within API Gateway REST API.
-#    source_arn = "${aws_api_gateway_rest_api.root_api.execution_arn}/*/${aws_api_gateway_method.get_users_method.http_method}${aws_api_gateway_resource.root_api_resource.path}"
-##  source_arn = "arn:aws:execute-api:${var.aws_region}:${var.accountId}:${aws_api_gateway_rest_api.root_api.id}/*/${aws_api_gateway_method.method.http_method}${aws_api_gateway_resource.root_api_resource.path}"
-#
-#}
-
-
 resource "aws_api_gateway_resource" "users_api_resource" {
   parent_id   = aws_api_gateway_rest_api.root_api.root_resource_id
   path_part   = "users"
@@ -70,38 +56,6 @@ resource "aws_api_gateway_resource" "users_signup_api_resource" {
   path_part   = "signup"
   rest_api_id = aws_api_gateway_rest_api.root_api.id
 }
-
-#resource "aws_api_gateway_method" "get_users_method" {
-#  authorization = "NONE"
-#  http_method   = "GET"
-#  resource_id   = aws_api_gateway_resource.root_api_resource.id
-#  rest_api_id   = aws_api_gateway_rest_api.root_api.id
-#}
-#
-#resource "aws_api_gateway_method" "post_users_method" {
-#  authorization = "NONE"
-#  http_method   = "POST"
-#  resource_id   = aws_api_gateway_resource.root_api_resource.id
-#  rest_api_id   = aws_api_gateway_rest_api.root_api.id
-#}
-#
-#resource "aws_api_gateway_integration" "get_root_api_integration" {
-#  http_method             = aws_api_gateway_method.get_users_method.http_method
-#  resource_id             = aws_api_gateway_resource.root_api_resource.id
-#  rest_api_id             = aws_api_gateway_rest_api.root_api.id
-#  integration_http_method = "POST"
-#  type                    = "AWS_PROXY"
-#  uri                     = aws_lambda_function.user.invoke_arn
-#}
-#
-#resource "aws_api_gateway_integration" "post_root_api_integration" {
-#  http_method             = aws_api_gateway_method.post_users_method.http_method
-#  resource_id             = aws_api_gateway_resource.root_api_resource.id
-#  rest_api_id             = aws_api_gateway_rest_api.root_api.id
-#  integration_http_method = "POST"
-#  type                    = "AWS_PROXY"
-#  uri                     = aws_lambda_function.user.invoke_arn
-#}
 
 module "get_users_method_integration" {
   source = "./method_integration"
