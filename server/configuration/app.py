@@ -72,7 +72,7 @@ class ConfigurationService(APIGWSocketCore):
         if not self.set_connection(request_data):
             return
 
-        all_connections = get_all_connections()
+        all_connections = get_all_connections(table)
         for conn in all_connections:
             # not include self connections
             nic_self_connections = [c for c in all_connections if c.get('connectionId') != conn.get("connectionId")]
