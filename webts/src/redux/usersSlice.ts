@@ -43,7 +43,7 @@ export const loginUser = createAsyncThunk(
     const requestOptions = {method: "POST", headers, body, redirect: "follow"};
 
     const response = await fetch(
-      "https://0y8x4tfft1.execute-api.ap-southeast-1.amazonaws.com/dev/users/login",
+      "https://sn3cj4aqh0.execute-api.ap-southeast-1.amazonaws.com/dev/users/login",
       requestOptions as RequestInit
     );
     return ({ status: response.status, data: await response.json() }) as LoginReturned;
