@@ -8,13 +8,13 @@ from utils.constant import MessageType, Error
 from utils.models.connection import Connection
 from utils.models.message import Message
 from utils.socket_utilities import APIGWSocketCore, response_error_message, get_socket_client, create_socket_client
-from utils.utils import log_event, httpResponse
+from utils.utils import log_event, httpResponse, log_env
 import boto3
 
 dynamodb = boto3.resource('dynamodb')
-table = dynamodb.Table(os.environ['CONNECTION_TABLE_NAME'])
-SECRET_KEY = os.environ['SECRET_KEY']
-SOCKET_URL = os.environ['SOCKET_URL']
+conn_table = dynamodb.Table(os.environ.get('CONNECTION_TABLE_NAME', ""))
+SECRET_KEY = os.environ.get('SECRET_KEY', "")
+SOCKET_URL = os.environ.get('SOCKET_URL', "")
 
 # Todo: update user on table update
 
@@ -25,7 +25,8 @@ LOGGER.setLevel(logging.INFO)
 
 def handler(event, context):
     log_event(event)
-    socket = create_socket_client(SOCKET_URL)
+    log_env(['CONNECTION_TABLE_NAME', 'SECRET_KEY', 'SOCKET_URL'])
+
     for record in event['Records']:
         print("#!@#"*6, "eventID: ", record['eventID'])
         print("#!@#"*6, "eventName: ", record['eventName'])

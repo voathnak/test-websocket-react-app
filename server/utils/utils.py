@@ -56,6 +56,15 @@ def log_event(event):
     print("#" * 100)
 
 
+def log_env(keys):
+    print(datetime.datetime.now())
+    print("#" * 2, datetime.datetime.now(), "#"*70)
+    env_dict = dict((x, os.environ.get(x, "")) for x in keys)
+    d_json = json.dumps(env_dict, indent=4, sort_keys=False)
+    print(f"#---- ENV:", d_json)
+    print("#" * 100)
+
+
 def log_event_body(event):
     body = json.loads(event.get("body"))
     print("#" * 100)

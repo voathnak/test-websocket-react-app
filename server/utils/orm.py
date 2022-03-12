@@ -18,7 +18,8 @@ from botocore.exceptions import ClientError
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-table_prefix, is_using_local_dynamodb = os.environ.get("TABLE_PREFIX"), bool(int(os.environ['IS_USING_LOCAL_DYNAMODB']))
+table_prefix, is_using_local_dynamodb = os.environ.get("TABLE_PREFIX"), \
+                                        bool(int(os.environ.get('IS_USING_LOCAL_DYNAMODB', 0)))
 dynamodb = boto3.resource('dynamodb', endpoint_url='http://host.docker.internal:7878') if is_using_local_dynamodb else \
     boto3.resource('dynamodb')
 
