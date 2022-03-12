@@ -10,20 +10,21 @@ import {setSelectedRoom} from "../redux/environmentVariable";
 
 const {REACT_APP_WEB_SOCKET_URL: socketUrl} = process.env;
 
-interface Message {
-  messageType: 'online-user' | 'health-check' | 'text-message';
-  content: MessageContent;
-  time: string;
-  username?: string;
-  profilePhoto?: string;
-  direction: 'received' | 'sent';
+type Message = {
+  messageType: 'online-user' | 'health-check' | 'text-message',
+  content: MessageContent,
+  time: string,
+  username?: string,
+  profilePhoto?: string,
+  direction: 'received' | 'sent',
+  status: 'sent' | 'read',
 }
 
-interface MessageContent {
-  text: string;
-  timestamp: string;
-  sender: string;
-  room: string;
+type MessageContent = {
+  text: string,
+  timestamp: string,
+  sender: string,
+  room: string,
 }
 
 
@@ -75,19 +76,24 @@ const Chat = ({webSocketUrl}: Properties) => {
   };
   const onMessageUpdate = () => {
     const {content, messageType} = lastJsonMessage;
-    const {text, timestamp} = content;
+    const {text, timestamp, sender, room} = content;
+    const messageContent: MessageContent = {text, timestamp, sender, room};
+    const message: Message = {
+      messageType: messageType,
+        content: messageContent,
+      direction: sender !== user.username ? 'received' : 'sent',
+      time: timestamp.toString(),
+      status: "sent"
+    }
+    // message list that exclude that just got sent
+    const filteredMessageHistory = messageHistory.filter((x) =>
+      x.content.timestamp !== timestamp.toString());
     setMessageHistory([
-      ...messageHistory,
-      {
-        messageType: messageType,
-        content: {
-          text,
-          timestamp,
-        },
-        direction: content.sender !== user.username ? 'received' : 'sent',
-        time: lastMessage?.timeStamp,
-      },
-    ] as Message[]);
+      ...filteredMessageHistory,
+      message,
+    ]);
+    // @ts-ignore
+    window.messageHistory = messageHistory
   };
 
   const onHealthCheck = () => {
@@ -161,29 +167,25 @@ const Chat = ({webSocketUrl}: Properties) => {
 
   const onSubmit = useCallback(() => {
     console.info('sending text:', textMessage);
+    const time = new Date().getTime();
+    const messageContent = {
+      text: `${user.username}: ${textMessage}`,
+      timestamp: time.toString(),
+      sender: user.username,
+      room: selectedRoom
+    } as MessageContent;
     const messageData = JSON.stringify({
-      data: JSON.stringify({
-        text: `${user.username}: ${textMessage}`,
-        timestamp: new Date().getTime(),
-        sender: user.username,
-        room: selectedRoom
-      }),
+      data: JSON.stringify(messageContent),
       action: 'sendmessage',
     });
     console.info('sending --->', messageData,
       JSON.parse(JSON.parse(messageData).data));
     sendMessage(messageData);
-    const timestamp = new Date().getTime();
     setMessageHistory([
       ...messageHistory,
       {
-        messageType: '',
-        content: {
-          text: textMessage,
-          timestamp: timestamp,
-        },
+        content: messageContent,
         direction: 'sent',
-        time: timestamp,
       },
     ] as Message[]);
     setTextMessage("");
@@ -193,10 +195,10 @@ const Chat = ({webSocketUrl}: Properties) => {
     console.info('messageHistory:', messageHistory);
     const messages = messageHistory.map((x) => {
       return (
-        <div key={x.time} className={[x.direction, "message-row"].join(" ")}>
+        <div key={x.content.timestamp} className={[x.direction, "message-row"].join(" ")}>
           <div className={"message-balloon"}>
             <div className="message-box">
-              <div className="time">{x.username && `${x.username}, `}{x.time}</div>
+              <div className="time">{x.content.sender && `${x.content.sender}, `}{x.content.timestamp}</div>
               <div className="message-text-box">
                 <span>{`${x.content.text}`}</span>
               </div>
@@ -205,6 +207,10 @@ const Chat = ({webSocketUrl}: Properties) => {
                 <div>
                   <span className={"key"}>direction</span>
                   <span className={"value"}>{`${x.direction}`}</span>
+                </div>
+                <div>
+                  <span className={"key"}>status</span>
+                  <span className={"value"}>{`${x.status}`}</span>
                 </div>
               </div>)}
             </div>

@@ -1,5 +1,5 @@
-export interface User {
-  connectionId?: string;
+export type User = {
+  connectionId?: string,
   isLoggedIn?: boolean,
   username: string,
   token: string,
