@@ -11,7 +11,7 @@ table = dynamodb.Table(os.environ['TABLE_NAME'])
 
 def send_message(client, data, to_connection_id):
     message_data = json.dumps({
-        "type": MessageType.onlineUser,
+        "messageType": MessageType.onlineUser,
         "data": data,
         "desc": "online connections id"
     })

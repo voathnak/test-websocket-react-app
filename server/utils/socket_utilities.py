@@ -46,7 +46,7 @@ def get_all_connections(connection_table):
 
 def response_error_message(socket, error, requester_id):
     message_data = json.dumps({
-        "type": "error",
+        "messageType": "error",
         "code": error.code,
         "message": error.message,
         "desc": f"error with code: {error.code} >> {error.message}"

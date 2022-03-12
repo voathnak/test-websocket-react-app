@@ -29,7 +29,7 @@ class ConfigurationService(APIGWSocketCore):
     # remove user socket timeout connection
     def send_health_check(self, connection_ids):
         message_data = json.dumps({
-            "type": MessageType.healthCheck,
+            "messageType": MessageType.healthCheck,
         })
 
         for connection_id in connection_ids:
@@ -54,7 +54,7 @@ class ConfigurationService(APIGWSocketCore):
 
     def send_message(self, data, connection_id):
         message_data = json.dumps({
-            "type": MessageType.onlineUser,
+            "messageType": MessageType.onlineUser,
             "data": data,
             "desc": "online connections id"
         })

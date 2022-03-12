@@ -6,7 +6,7 @@ class ErrorTemplate:
 
 
 class MessageType:
-    message = "message"
+    message = "text-message"
     onlineUser = "online-user"
     healthCheck = "health-check"
 

@@ -9,16 +9,20 @@ import {User} from "../type";
 
 const {REACT_APP_WEB_SOCKET_URL: socketUrl} = process.env;
 
-interface MessageHistory {
-  type: 'online-user' | 'health-check' | 'message';
-  data: {
-    text: string;
-    id: string;
-    type: 'received';
-  };
+interface Message {
+  messageType: 'online-user' | 'health-check' | 'text-message';
+  content: MessageContent;
   time: string;
   username?: string;
   profilePhoto?: string;
+  direction: 'received' | 'sent';
+}
+
+interface MessageContent {
+  text: string;
+  timestamp: string;
+  sender: string;
+  room: string;
 }
 
 
@@ -55,20 +59,20 @@ const ChatSecondModified = ({webSocketUrl}: Properties) => {
     setOnlineUsers(data);
   };
   const onMessageUpdate = () => {
-    const {data, type} = lastJsonMessage;
-    const {text, id} = JSON.parse(data);
+    const {content, messageType} = lastJsonMessage;
+    const {text, timestamp} = content;
     setMessageHistory([
       ...messageHistory,
       {
-        type,
-        data: {
+        messageType: messageType,
+        content: {
           text,
-          id,
-          type: 'received',
+          timestamp,
         },
+        direction: 'received',
         time: lastMessage?.timeStamp,
       },
-    ] as MessageHistory[]);
+    ] as Message[]);
   };
 
   const onHealthCheck = () => {
@@ -77,7 +81,7 @@ const ChatSecondModified = ({webSocketUrl}: Properties) => {
 
   const receiveUpdate: { [key: string]: () => void } = {
     'online-user': onOnlineUserUpdate,
-    message: onMessageUpdate,
+    'text-message': onMessageUpdate,
     'health-check': onHealthCheck,
   };
 
@@ -87,17 +91,17 @@ const ChatSecondModified = ({webSocketUrl}: Properties) => {
       // const data = JSON.parse(lastMessage.data);
       console.info({lastJsonMessage});
       console.info({lastMessage});
-      const {data, type} = lastJsonMessage;
-      console.info({data, type});
+      const {content, messageType} = lastJsonMessage;
+      console.info({content, messageType});
       // const {type} = lastMessage;
       // if(type = )
       console.info('receiveUpdate', receiveUpdate);
-      console.info('receiveUpdate[type]', receiveUpdate[type]);
+      console.info('receiveUpdate[messageType]', receiveUpdate[messageType]);
       try {
-        receiveUpdate[type]();
+        receiveUpdate[messageType]();
       } catch (error) {
         if (error instanceof TypeError) {
-          console.warn(`Type: ${type} was not handling`);
+          console.warn(`Type: ${messageType} was not handling`);
         } else {
           console.error({error});
         }
@@ -139,28 +143,31 @@ const ChatSecondModified = ({webSocketUrl}: Properties) => {
 
   const onSubmit = useCallback(() => {
     console.info('sending text:', textMessage);
-    sendMessage(
-      JSON.stringify({
-        data: JSON.stringify({
-          text: `${user.username}: ${textMessage}`,
-          id: new Date().getTime(),
-        }),
-        action: 'sendmessage',
-      })
-    );
-    const id = new Date().getTime();
+    const messageData = JSON.stringify({
+      data: JSON.stringify({
+        text: `${user.username}: ${textMessage}`,
+        timestamp: new Date().getTime(),
+        sender: user.username,
+        room: selectedRoom
+      }),
+      action: 'sendmessage',
+    });
+    console.info('sending --->', messageData,
+      JSON.parse(JSON.parse(messageData).data));
+    sendMessage(messageData);
+    const timestamp = new Date().getTime();
     setMessageHistory([
       ...messageHistory,
       {
-        type: '',
-        data: {
+        messageType: '',
+        content: {
           text: textMessage,
-          id,
-          type: 'sent',
+          timestamp: timestamp,
         },
-        time: id,
+        direction: 'sent',
+        time: timestamp,
       },
-    ] as MessageHistory[]);
+    ] as Message[]);
     setTextMessage("");
   }, [textMessage]);
 
@@ -168,12 +175,12 @@ const ChatSecondModified = ({webSocketUrl}: Properties) => {
     console.info('messageHistory:', messageHistory);
     const messages = messageHistory.map((x) => {
       return (
-        <div key={x.time} className={[x.data.type, "message-row"].join(" ")}>
+        <div key={x.time} className={[x.direction, "message-row"].join(" ")}>
           <div className={"message-balloon"}>
             <div className="message-box">
               <div className="time">{x.username && `${x.username}, `}{x.time}</div>
               <div className="message-text-box">
-                <span>{`${x.data.text}`}</span>
+                <span>{`${x.content.text}`}</span>
               </div>
             </div>
             <div className={"profile-photo"}>
