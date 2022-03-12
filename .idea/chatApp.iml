@@ -5,12 +5,18 @@
       <sourceFolder url="file://$MODULE_DIR$/server" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/web/node_modules" />
       <excludeFolder url="file://$MODULE_DIR$/web2" />
+      <excludeFolder url="file://$MODULE_DIR$/server/terraform/layer" />
+      <excludeFolder url="file://$MODULE_DIR$/webts" />
+      <excludeFolder url="file://$MODULE_DIR$/web" />
+      <excludeFolder url="file://$MODULE_DIR$/server/layer" />
+      <excludeFolder url="file://$MODULE_DIR$/server/core" />
     </content>
     <content url="file://$MODULE_DIR$/web/node_modules" />
     <content url="file:///opt/python">
       <sourceFolder url="file:///opt/python" isTestSource="false" />
+      <excludeFolder url="file:///opt/python/snail" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.9 (chatApp)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.8 (chatApp)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="PackageRequirementsSettings">

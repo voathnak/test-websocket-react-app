@@ -66,12 +66,14 @@ class MessagingService(APIGWSocketCore):
 ######################################
 
 def handler(event, context):
-    socket = get_socket_client(event)
+    log_event(event)
+    log_env(['CONNECTION_TABLE_NAME', 'SECRET_KEY'])
     try:
         service = MessagingService(event)
         return service.controller()
     except Exception as e:
         print("An exception occurred", e)
+        socket = get_socket_client(event)
         response_error_message(socket,
                                Error.ServerError.internalServerError,
                                event.get('requestContext').get("connectionId"))

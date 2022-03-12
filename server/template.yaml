@@ -174,7 +174,7 @@ Resources:
       CodeUri: onconnect/
       Handler: app.handler
       MemorySize: 128
-      Runtime: python3.8
+      Runtime: python3.9
       Layers:
         - !Ref PythonLibs
         - !Ref CoreLibs
@@ -226,7 +226,7 @@ Resources:
       CodeUri: pysendmessage/
       Handler: app.handler
       MemorySize: 128
-      Runtime: python3.8
+      Runtime: python3.9
       Layers:
         - !Ref PythonLibs
         - !Ref CoreLibs
@@ -286,7 +286,7 @@ Resources:
       CodeUri: configuration/
       Handler: app.handler
       MemorySize: 128
-      Runtime: python3.8
+      Runtime: python3.9
       Environment:
         Variables:
           CONNECTION_TABLE_NAME: !Ref ConnectionTableName
@@ -386,14 +386,14 @@ Resources:
     Properties:
       ContentUri: layer/core
       CompatibleRuntimes: # optional
-        - python3.8
+        - python3.9
 
   PythonLibs:
     Type: 'AWS::Serverless::LayerVersion'
     Properties:
       ContentUri: layer/python_libs
       CompatibleRuntimes: # optional
-        - python3.8
+        - python3.9
 
 
 Outputs:

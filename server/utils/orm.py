@@ -14,6 +14,7 @@ from datetime import datetime
 import boto3
 from botocore.exceptions import ClientError
 
+from utils.constants.http_status_code import METHOD_NOT_ALLOWED
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -164,28 +165,28 @@ class Model(Schema):
             logger.error(e)
             return response(400, {"message": e, "code": 1002})
 
-    # def controller(self, event, context):
-    #     http_method = event.get('httpMethod')
-    #     path = re.sub(f".*{self._name}", "", event.get("requestContext").get("resourcePath").lower())
-    #
-    #     if http_method == "POST":
-    #         if path == "/find":
-    #             return self.find_field_with_value(event)
-    #         return self.pre_create(event, context)
-    #     elif http_method == "GET":
-    #         if path == "/{id}":
-    #             return self.pre_get(event, context)
-    #         return self.pre_list()
-    #     elif http_method == "DELETE":
-    #         if path == "" or path == "/":
-    #             return self.pre_delete_multi(event)
-    #         elif path == "/{id}":
-    #             return self.pre_delete(event, context)
-    #     elif http_method == "PUT":
-    #         if path == "/{id}":
-    #             return self.pre_update(event, context)
-    #
-    #     return response(METHOD_NOT_ALLOWED, {"message": "Method not allowed", "code": 1003})
+    def rest_controller(self, event, context):
+        http_method = event.get('httpMethod')
+        path = re.sub(f".*{self._name}", "", event.get("requestContext").get("resourcePath").lower())
+
+        if http_method == "POST":
+            if path == "/find":
+                return self.find_field_with_value(event)
+            return self.pre_create(event, context)
+        elif http_method == "GET":
+            if path == "/{id}":
+                return self.pre_get(event, context)
+            return self.pre_list()
+        elif http_method == "DELETE":
+            if path == "" or path == "/":
+                return self.pre_delete_multi(event)
+            elif path == "/{id}":
+                return self.pre_delete(event, context)
+        elif http_method == "PUT":
+            if path == "/{id}":
+                return self.pre_update(event, context)
+
+        return response(METHOD_NOT_ALLOWED, {"message": "Method not allowed", "code": 1003})
 
     def pre_create(self, event, context):
         try:
@@ -315,6 +316,51 @@ class Model(Schema):
             return response(400, {'message': str(te), "code": 1073})
         except Exception as e:
             return response(400, {'message': str(e), "code": 1074})
+
+    def search(self, field_name, value, operator='eq', projections=None):
+        try:
+            query_set = {
+                "eq": Key(field_name).eq(value),
+                "contains": Key(field_name).begins_with(value),
+            }
+            projection_field = self.projection_field()
+            projection_field.remove(field_name)
+            expression_attribute_names = {"#k": field_name}
+
+            if projections:
+                projection_expression = f"#k, {', '.join([f'#{x}' for x in projections])}"
+                expression_attribute_names.update({f"#{x}": x for x in projections})
+            else:
+                projection_expression = f"#k, {', '.join([f'  # {x}' for x in projection_field])}"
+                expression_attribute_names.update({f"#{x}": x for x in projection_field})
+
+
+            scan_kwargs = {
+                'FilterExpression': query_set.get(operator),
+                # 'ProjectionExpression': f"#k, active",
+                'ProjectionExpression': projection_expression,
+                'ExpressionAttributeNames': expression_attribute_names
+            }
+
+            done = False
+            start_key = None
+            docs = []
+            while not done:
+                if start_key:
+                    scan_kwargs['ExclusiveStartKey'] = start_key
+                res = self._table.scan(**scan_kwargs)
+                docs += res.get('Items', [])
+                start_key = res.get('LastEvaluatedKey', None)
+                done = start_key is None
+            return docs
+        except ValidationError as err:
+            print(err.messages)
+            print(err.valid_data)
+            print("Error 1082", err)
+        except TypeError as te:
+            print("Error 1083", te)
+        except Exception as e:
+            print("Error 1084", e)
 
     def pre_get(self, event, context):
         try:

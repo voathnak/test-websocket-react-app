@@ -1,11 +1,13 @@
 import React, {useState, useCallback, useEffect} from 'react';
 
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import useWebSocket, {ReadyState} from 'react-use-websocket';
 import "./Chat.css"
 import {RootState} from "../redux";
 import {getConnection, setConnection} from "./ServerMethod";
 import {User} from "../type";
+import {setSelectedRoom} from "../redux/environmentVariable";
+import {loginUser} from "../redux/usersSlice";
 
 const {REACT_APP_WEB_SOCKET_URL: socketUrl} = process.env;
 
@@ -31,11 +33,13 @@ interface Properties {
   webSocketUrl: string
 }
 
-const ChatSecondModified = ({webSocketUrl}: Properties) => {
+const Chat = ({webSocketUrl}: Properties) => {
+  const dispatch = useDispatch();
   const {user, status, test} = useSelector((state: RootState) => state.user);
+  const { selectedRoom } = useSelector((state: RootState) => state.environmentVariable);
   // Public API that will echo messages sent to it back to the client
   // const [socketUrl, setSocketUrl] = useState(webSocketUrl);
-  const [messageHistory, setMessageHistory] = useState([] as MessageHistory[]);
+  const [messageHistory, setMessageHistory] = useState([] as Message[]);
   const [onlineUsers, setOnlineUsers] = useState([] as User[]);
   const [textMessage, setTextMessage] = useState('');
   const [customerTab, setCustomerTabs] = useState([]);
@@ -52,7 +56,18 @@ const ChatSecondModified = ({webSocketUrl}: Properties) => {
     readyState,
     sendJsonMessage,
     lastJsonMessage,
-  } = useWebSocket(getSocketUrl);
+  } = useWebSocket(getSocketUrl, {
+    onOpen: () => {
+      console.log('opened');
+      setConnection(sendMessage, user);
+    },
+    //Will attempt to reconnect on all close events, such as server shutting down
+    shouldReconnect: (closeEvent) => true,
+  });
+
+  const send = (message: Message) => {
+    sendMessage(JSON.stringify(message));
+  }
 
   const onOnlineUserUpdate = () => {
     const {data} = lastJsonMessage;
@@ -114,8 +129,11 @@ const ChatSecondModified = ({webSocketUrl}: Properties) => {
   //   []
   // );
 
-  const onSelectUser = (user: User) => {
-    console.info(user);
+  const onSelectUser = (activeUser: User) => {
+    console.info(activeUser);
+    dispatch(setSelectedRoom(
+      [activeUser.username, user.username].sort().join("-")
+    ));
   };
 
   const connectionStatus = {
@@ -259,7 +277,7 @@ const ChatSecondModified = ({webSocketUrl}: Properties) => {
 
       <div className="chat-window">
         <div className="chat-users">{listOnlineUser()}</div>
-        <div className="chat-box">
+        {selectedRoom && (<div className="chat-box">
           <div className="messages-container">{listMessageHistory()}</div>
           <div className="input">
             <input onChange={onTextChanged} onKeyDown={handleKeypress} value={textMessage}/>
@@ -267,10 +285,10 @@ const ChatSecondModified = ({webSocketUrl}: Properties) => {
               Send
             </button>
           </div>
-        </div>
+        </div>)}
       </div>
     </div>
   );
 };
 
-export default ChatSecondModified;
+export default Chat;

@@ -1,0 +1,149 @@
+openapi: 3.0.0
+info:
+  title: models
+  version: '1.0'
+servers:
+  - url: 'http://localhost:3000'
+paths: {}
+components:
+  schemas:
+    User:
+      description: ''
+      type: object
+      properties:
+        connectionId:
+          type: string
+          minLength: 1
+        username:
+          type: string
+          minLength: 1
+      required:
+        - connectionId
+        - username
+      x-examples:
+        example-1:
+          connectionId: OqX2ach4SQ0CFHw=
+          username: tino
+    DynamoDBMessageRecordImage:
+      description: ''
+      type: object
+      x-examples:
+        example-1:
+          createdAt:
+            'N': '1646806827.1790559291839599609375'
+          active:
+            BOOL: true
+          userId:
+            S: nak
+          content:
+            S: '{"text": "nak: llllll","id": 1646806825147, "sender": "nak", "room": "nak-tino" }'
+          timestamp:
+            'N': '1646806827.17482089996337890625'
+          updatedAt:
+            'N': '1646806827.1790559291839599609375'
+      properties:
+        createdAt:
+          type: object
+          properties:
+            'N':
+              type: string
+              minLength: 1
+        active:
+          type: object
+          properties:
+            BOOL:
+              type: boolean
+        userId:
+          type: object
+          properties:
+            S:
+              type: string
+              minLength: 1
+        content:
+          type: object
+          properties:
+            S:
+              type: string
+              minLength: 1
+        timestamp:
+          type: object
+          properties:
+            'N':
+              type: string
+              minLength: 1
+        updatedAt:
+          type: object
+          properties:
+            'N':
+              type: string
+              minLength: 1
+    DynamoDBEventRecord:
+      description: ''
+      type: object
+      x-examples:
+        example-1:
+          ApproximateCreationDateTime: 1646739805
+          Keys:
+            userId:
+              S: nak
+            timestamp:
+              'N': '1646739805.154017925262451171875'
+          NewImage:
+            createdAt:
+              'N': '1646739805.1557490825653076171875'
+            active:
+              BOOL: true
+            userId:
+              S: nak
+            content:
+              S: '{"text":"nak: yahoo","id":1646739804895,"sender":"nak","room":"lin-nak"}'
+            timestamp:
+              'N': '1646739805.154017925262451171875'
+            updatedAt:
+              'N': '1646739805.1557490825653076171875'
+          SequenceNumber: '9505200000000028808937438'
+          SizeBytes: 208
+          StreamViewType: NEW_AND_OLD_IMAGES
+      title: ''
+      properties:
+        ApproximateCreationDateTime:
+          type: number
+        Keys:
+          type: object
+          required:
+            - userId
+            - timestamp
+          properties:
+            userId:
+              type: object
+              required:
+                - S
+              properties:
+                S:
+                  type: string
+                  minLength: 1
+            timestamp:
+              type: object
+              required:
+                - 'N'
+              properties:
+                'N':
+                  type: string
+                  minLength: 1
+        NewImage:
+          $ref: '#/components/schemas/DynamoDBMessageRecordImage'
+        SequenceNumber:
+          type: string
+          minLength: 1
+        SizeBytes:
+          type: number
+        StreamViewType:
+          type: string
+          minLength: 1
+      required:
+        - ApproximateCreationDateTime
+        - Keys
+        - NewImage
+        - SequenceNumber
+        - SizeBytes
+        - StreamViewType
