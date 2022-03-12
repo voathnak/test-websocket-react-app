@@ -101,6 +101,28 @@
   display: flex;
   flex-direction: column;
 }
+.chat-container .chat-window .chat-box .messages-container .messages-inner-container .message-row .message-balloon .message-box .debug-info {
+  border: 0.1vh solid cyan;
+  font-size: small;
+  text-align: left;
+  padding: 1vh;
+}
+.chat-container .chat-window .chat-box .messages-container .messages-inner-container .message-row .message-balloon .message-box .debug-info .header {
+  background-color: #68bedb;
+  padding: 0.2vh 1vh;
+}
+.chat-container .chat-window .chat-box .messages-container .messages-inner-container .message-row .message-balloon .message-box .debug-info .key {
+  background-color: #63707b;
+  color: white;
+  padding: 0.2vh 1vh;
+  border: 0.1vh solid;
+}
+.chat-container .chat-window .chat-box .messages-container .messages-inner-container .message-row .message-balloon .message-box .debug-info .value {
+  background-color: white;
+  color: #63707b;
+  padding: 0.2vh 1vh;
+  border: 0.1vh solid;
+}
 .chat-container .chat-window .chat-box .messages-container .messages-inner-container .message-row .message-balloon .message-box .message-text-box {
   border-radius: 8px;
   padding: 0.6vh 1vw;

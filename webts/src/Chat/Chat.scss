@@ -114,6 +114,7 @@
             //border: 1px solid blue;
             margin: 0;
             display: flex;
+            //flex-direction: column;
 
             .message-balloon {
               //border: 1px solid red;
@@ -125,7 +126,28 @@
               .message-box{
                 display: flex;
                 flex-direction: column;
-
+                .debug-info {
+                  border: .1vh solid cyan;
+                  font-size: small;
+                  text-align: left;
+                  padding: 1vh;
+                  .header {
+                    background-color: #68bedb;
+                    padding: 0.2vh 1vh;
+                  }
+                  .key {
+                    background-color: #63707b;
+                    color: white;
+                    padding: 0.2vh 1vh;
+                    border: 0.1vh solid;
+                  }
+                  .value {
+                    background-color: white;
+                    color: #63707b;
+                    padding: 0.2vh 1vh;
+                    border: 0.1vh solid;
+                  }
+                }
                 .message-text-box {
                   //border: 1px solid green;
                   border-radius: 8px;
@@ -165,6 +187,7 @@
                  }
               }
             }
+
           }
 
           > .message-row.sent {

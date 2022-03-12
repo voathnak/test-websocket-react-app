@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useEffect} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 
 import {useDispatch, useSelector} from 'react-redux';
 import useWebSocket, {ReadyState} from 'react-use-websocket';
@@ -7,7 +7,6 @@ import {RootState} from "../redux";
 import {getConnection, setConnection} from "./ServerMethod";
 import {User} from "../type";
 import {setSelectedRoom} from "../redux/environmentVariable";
-import {loginUser} from "../redux/usersSlice";
 
 const {REACT_APP_WEB_SOCKET_URL: socketUrl} = process.env;
 
@@ -34,6 +33,7 @@ interface Properties {
 }
 
 const Chat = ({webSocketUrl}: Properties) => {
+  const debug = true;
   const dispatch = useDispatch();
   const {user, status, test} = useSelector((state: RootState) => state.user);
   const { selectedRoom } = useSelector((state: RootState) => state.environmentVariable);
@@ -84,7 +84,7 @@ const Chat = ({webSocketUrl}: Properties) => {
           text,
           timestamp,
         },
-        direction: 'received',
+        direction: content.sender !== user.username ? 'received' : 'sent',
         time: lastMessage?.timeStamp,
       },
     ] as Message[]);
@@ -200,6 +200,13 @@ const Chat = ({webSocketUrl}: Properties) => {
               <div className="message-text-box">
                 <span>{`${x.content.text}`}</span>
               </div>
+              {debug && (<div className={"debug-info"}>
+                <div className={"header"}>Debug Info:</div>
+                <div>
+                  <span className={"key"}>direction</span>
+                  <span className={"value"}>{`${x.direction}`}</span>
+                </div>
+              </div>)}
             </div>
             <div className={"profile-photo"}>
               <img src={x.profilePhoto || "https://minimal-assets-api.vercel.app/assets/images/avatars/avatar_2.jpg"}
