@@ -1,8 +1,8 @@
 resource "aws_dynamodb_table" "users-dynamodb-table" {
   name           = "${var.project_name}-${terraform.workspace}-users-dynamodb"
   billing_mode   = "PROVISIONED"
-  read_capacity  = 2
-  write_capacity = 2
+  read_capacity  = 1
+  write_capacity = 1
   hash_key       = "userId"
 
   attribute {

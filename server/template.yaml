@@ -162,8 +162,8 @@ Resources:
         - AttributeName: "connectionId"
           KeyType: "HASH"
       ProvisionedThroughput:
-        ReadCapacityUnits: 5
-        WriteCapacityUnits: 5
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
       SSESpecification:
         SSEEnabled: True
       TableName: !Ref ConnectionTableName
