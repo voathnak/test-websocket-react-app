@@ -4,6 +4,7 @@ import os
 from decimal import Decimal
 
 from utils.constant import MessageType, Error
+from utils.custom_types.message import MessageContent
 from utils.models.connection import Connection
 from utils.models.message import Message
 from utils.socket_utilities import APIGWSocketCore, response_error_message, get_socket_client
@@ -39,10 +40,12 @@ class MessagingService(APIGWSocketCore):
             print("#--#"*40)
             # Todo: save message
             message = Message()
+            message_content = MessageContent(**json.loads(content))
             message.create({
+                "roomId": message_content.room,
                 "userId": connection.username,
                 "timestamp": timestamp,
-                "content": content
+                "content": message_content.json()
             })
         except Exception as e:
             print(f"An exception occurred: <<{e}>>")

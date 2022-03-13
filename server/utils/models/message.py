@@ -7,10 +7,11 @@ from utils.orm import Model
 
 class Message(Model):
     _fixed_name = os.environ.get('USER_MESSAGE_TABLE_NAME')
-    _primary_key = "userId"
+    _primary_key = "roomId"
     _sort_key = "timestamp"
 
-    userId = fields.Str(required=True)
+    roomId = fields.Str(required=True)
+    userId = fields.Str(required=True) # sender
     timestamp = fields.Decimal(required=True)
     content = fields.Str(required=True)
 

@@ -3,13 +3,13 @@ resource "aws_dynamodb_table" "message-dynamodb-table" {
   billing_mode   = "PROVISIONED"
   read_capacity  = 1
   write_capacity = 1
-  hash_key       = "userId"
+  hash_key       = "roomId"
   range_key      = "timestamp"
   stream_enabled = true
   stream_view_type = "NEW_AND_OLD_IMAGES"
 
   attribute {
-    name = "userId"
+    name = "roomId"
     type = "S"
   }
 
