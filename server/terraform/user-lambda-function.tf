@@ -56,6 +56,11 @@ resource "aws_api_gateway_resource" "users_signup_api_resource" {
   path_part   = "signup"
   rest_api_id = aws_api_gateway_rest_api.root_api.id
 }
+resource "aws_api_gateway_resource" "users_login_api_resource" {
+  parent_id   = aws_api_gateway_resource.users_api_resource.id
+  path_part   = "login"
+  rest_api_id = aws_api_gateway_rest_api.root_api.id
+}
 
 module "get_users_method_integration" {
   source = "./method_integration"
@@ -73,6 +78,15 @@ module "users_signup_method_integration" {
   authorization = "NONE"
   http_method   = "POST"
   resource   = aws_api_gateway_resource.users_signup_api_resource
+  rest_api   = aws_api_gateway_rest_api.root_api
+  function = aws_lambda_function.user
+}
+module "users_login_method_integration" {
+  source = "./method_integration"
+
+  authorization = "NONE"
+  http_method   = "POST"
+  resource   = aws_api_gateway_resource.users_login_api_resource
   rest_api   = aws_api_gateway_rest_api.root_api
   function = aws_lambda_function.user
 }

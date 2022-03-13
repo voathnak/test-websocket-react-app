@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="da43ebd7-3c5f-435e-843a-7506b10bdbea" name="Changes" comment="IMP/FE empty chat text box after sent">
+    <list default="true" id="da43ebd7-3c5f-435e-843a-7506b10bdbea" name="Changes" comment="fixed chat duplicate on sender">
+      <change beforePath="$PROJECT_DIR$/../.idea/chatApp.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/chatApp.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/terraform/outputs/core_lib_layer.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../server/terraform/outputs/core_lib_layer.zip" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/terraform/outputs/message-response-lambda.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../server/terraform/outputs/message-response-lambda.zip" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/terraform/outputs/python_libs_layer.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../server/terraform/outputs/python_libs_layer.zip" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/terraform/terraform.tfstate.d/dev/terraform.tfstate" beforeDir="false" afterPath="$PROJECT_DIR$/../server/terraform/terraform.tfstate.d/dev/terraform.tfstate" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/terraform/terraform.tfstate.d/dev/terraform.tfstate.backup" beforeDir="false" afterPath="$PROJECT_DIR$/../server/terraform/terraform.tfstate.d/dev/terraform.tfstate.backup" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/App.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Chat.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Chat.css.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Chat.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Chat.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/redux/usersSlice.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/redux/usersSlice.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,6 +25,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="TypeScript File" />
+        <option value="JavaScript File" />
       </list>
     </option>
   </component>
@@ -94,6 +96,9 @@
       <option name="presentableId" value="Default" />
       <updated>1640406130394</updated>
       <workItem from="1640406132322" duration="41789000" />
+      <workItem from="1646678622873" duration="6997000" />
+      <workItem from="1646766027268" duration="1137000" />
+      <workItem from="1646917113198" duration="23267000" />
     </task>
     <task id="LOCAL-00001" summary="IMP/FE empty chat text box after sent">
       <created>1640511282996</created>
@@ -102,7 +107,21 @@
       <option name="project" value="LOCAL" />
       <updated>1640511282996</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="add debug info and correct the direction field">
+      <created>1647070394396</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1647070394396</updated>
+    </task>
+    <task id="LOCAL-00003" summary="fixed chat duplicate on sender">
+      <created>1647103556916</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1647103556916</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -121,7 +140,21 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="IMP/FE empty chat text box after sent" />
-    <option name="LAST_COMMIT_MESSAGE" value="IMP/FE empty chat text box after sent" />
+    <MESSAGE value="add debug info and correct the direction field" />
+    <MESSAGE value="fixed chat duplicate on sender" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed chat duplicate on sender" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/Chat/index.tsx</url>
+          <line>77</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

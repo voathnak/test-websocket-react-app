@@ -8,8 +8,8 @@ from marshmallow import fields, validates, ValidationError
 from utils.orm import Model, response
 from utils.utils import auth
 
-STAGE_NAME = os.environ['STAGE_NAME']
-SECRET_KEY = os.environ['SECRET_KEY']
+STAGE_NAME = os.environ.get('STAGE_NAME', '')
+SECRET_KEY = os.environ.get('SECRET_KEY', '')
 
 
 class UserModel(Model):
@@ -25,7 +25,7 @@ class UserModel(Model):
     def __init__(self):
         super(UserModel, self).__init__()
 
-    def controller(self, event, context):
+    def rest_controller(self, event, context):
         http_method = event.get('httpMethod')
         path = re.sub(f".*{self._name}", "", event.get("requestContext").get("resourcePath").lower())
 
@@ -37,7 +37,7 @@ class UserModel(Model):
         elif http_method == "GET":
             if path == "/current":
                 return self.get_user(event, context)
-        return super(UserModel, self).controller(event, context)
+        return super(UserModel, self).rest_controller(event, context)
 
     def login(self, event):
         data = json.loads(event.get('body'))
@@ -76,5 +76,6 @@ class UserModel(Model):
     @validates("username")
     def validate_unique_username(self, value):
         if self.get(value):
+            print("Validation: on username", value)
             raise ValidationError("username already exist and cannot be updated.")
 

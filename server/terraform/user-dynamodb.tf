@@ -3,10 +3,10 @@ resource "aws_dynamodb_table" "users-dynamodb-table" {
   billing_mode   = "PROVISIONED"
   read_capacity  = 1
   write_capacity = 1
-  hash_key       = "userId"
+  hash_key       = "username"
 
   attribute {
-    name = "userId"
+    name = "username"
     type = "S"
   }
 

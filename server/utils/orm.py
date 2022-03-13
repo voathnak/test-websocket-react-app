@@ -21,8 +21,8 @@ logger.setLevel(logging.INFO)
 
 table_prefix, is_using_local_dynamodb = os.environ.get("TABLE_PREFIX"), \
                                         bool(int(os.environ.get('IS_USING_LOCAL_DYNAMODB', 0)))
-dynamodb = boto3.resource('dynamodb', endpoint_url='http://host.docker.internal:7878') if is_using_local_dynamodb else \
-    boto3.resource('dynamodb')
+dynamodb = boto3.resource('dynamodb', endpoint_url='http://localhost:7878') if is_using_local_dynamodb else \
+    boto3.resource('dynamodb', region_name='ap-southeast-1')
 
 if is_using_local_dynamodb:
     print("👽👽👽👽 is_using_local_dynamodb: {} 👽👽👽👽".format(is_using_local_dynamodb))
@@ -49,6 +49,8 @@ class Model(Schema):
     _required_fields = []
     _output_id = True
     _systems_fields = ['id', 'createdAt', 'updatedAt']
+    _primary_key = False
+    _sort_key = False
 
     active = fields.Boolean(default=True)
 
@@ -129,17 +131,20 @@ class Model(Schema):
         try:
             creating_doc = self._table.put_item(Item=item)
             if creating_doc['ResponseMetadata']['HTTPStatusCode']:
-                self.get(item.get(self._primary_key), item.get(self._sort_key))
+                self.get(item.get(self._primary_key), item.get(self._sort_key, None))
                 return self
 
         except Exception as e:
             self._fetch_error(e)
 
-    def get(self, primary_key, sort_key=None):
+    def get(self, primary_key_value, sort_key_value=None):
+        logger.info(f"Getting specific record from "
+                    f"{self._table.name} with "
+                    f"{self._primary_key} = {primary_key_value}")
         try:
-            key = {self._primary_key: primary_key}
-            if sort_key and self._sort_key:
-                key.update({self._sort_key: sort_key})
+            key = {self._primary_key: primary_key_value}
+            if sort_key_value and self._sort_key:
+                key.update({self._sort_key: sort_key_value})
 #                 record = self._table.query(
 #                     KeyConditionExpression=Key(self._primary_key).eq(primary_key)
 #                                            & Key(self._sort_key).gt(0)
