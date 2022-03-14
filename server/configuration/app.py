@@ -48,7 +48,7 @@ class ConfigurationService(APIGWSocketCore):
     def response_update_online_user(self):
         all_connections = get_all_connections(table)
         for conn in all_connections:
-            # not include self connections
+            # not include self (sending connection) connections
             nic_self_connections = [c for c in all_connections if c.get('connectionId') != conn.get("connectionId")]
             self.send_message(nic_self_connections, conn.get("connectionId"))
 
@@ -74,7 +74,7 @@ class ConfigurationService(APIGWSocketCore):
 
         all_connections = get_all_connections(table)
         for conn in all_connections:
-            # not include self connections
+            # not include self (sending connection) connections
             nic_self_connections = [c for c in all_connections if c.get('connectionId') != conn.get("connectionId")]
             self.send_message(nic_self_connections, conn.get("connectionId"))
 
