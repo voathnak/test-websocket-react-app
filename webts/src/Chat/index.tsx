@@ -71,8 +71,8 @@ const Chat = ({webSocketUrl}: Properties) => {
   }
 
   const onOnlineUserUpdate = () => {
-    const {data} = lastJsonMessage;
-    setOnlineUsers(data);
+    const {content} = lastJsonMessage;
+    setOnlineUsers(content.connectionIds);
   };
   const onMessageUpdate = () => {
     const {content, messageType} = lastJsonMessage;

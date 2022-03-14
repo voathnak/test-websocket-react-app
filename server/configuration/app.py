@@ -1,15 +1,16 @@
 import json
 import os
 
+import boto3
 import jwt
-
 from jwt import DecodeError
-from utils.custom_types.message import TextMessageContent
+
+from utils.constant import Error
+from utils.custom_types.message import OnlineUserMessage
 from utils.models.connection import Connection
 from utils.socket_utilities import get_all_connections, get_all_connection_ids, response_error_message, APIGWSocketCore, \
-    get_socket_client
-from utils.utils import log_event, httpResponse
-import boto3
+    get_socket_client, send_message
+from utils.utils import httpResponse
 
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table(os.environ['CONNECTION_TABLE_NAME'])
@@ -53,13 +54,8 @@ class ConfigurationService(APIGWSocketCore):
             self.send_message(nic_self_connections, conn.get("connectionId"))
 
     def send_message(self, data, connection_id):
-        message_data = json.dumps({
-            "messageType": MessageType.onlineUser,
-            "data": data,
-            "desc": "online connections id"
-        })
-        print("#" * 5, "<send_message>", "message:", str(data), ", connection_id:", connection_id)
-        self.socket.post_to_connection(Data=message_data, ConnectionId=connection_id)
+        message = OnlineUserMessage(data)
+        send_message(self.socket, message, connection_id)
 
     def get_connection(self, request_data=None):
         """

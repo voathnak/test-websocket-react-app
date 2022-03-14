@@ -1,8 +1,18 @@
+from typing import List
+
 from utils.custom_types.base import BaseType
 
 
 class MessageContent(BaseType):
     pass
+
+
+class OnlineUserResponse(MessageContent):
+    connectionIds: List[str] = []
+
+    def __init__(self, connection_ids):
+        super().__init__()
+        self.connectionIds = connection_ids
 
 
 class TextMessageContent(MessageContent):
@@ -42,3 +52,10 @@ class TextMessage(SocketMessage):
     def __init__(self, content: TextMessageContent):
         message_type = 'text-message'
         super().__init__(message_type, content)
+
+
+class OnlineUserMessage(SocketMessage):
+    def __init__(self, connection_ids: List[str]):
+        message_type = 'online-user'
+        online_user_response = OnlineUserResponse(connection_ids)
+        super().__init__(message_type, online_user_response)

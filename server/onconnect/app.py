@@ -1,26 +1,13 @@
 import json
 import os
 
-from utils.constant import MessageType
+from utils.custom_types.message import OnlineUserMessage
+from utils.socket_utilities import send_message
 from utils.utils import log_event, httpResponse
 import boto3
 
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table(os.environ['TABLE_NAME'])
-
-
-def send_message(client, data, to_connection_id):
-    message_data = json.dumps({
-        "messageType": MessageType.onlineUser,
-        "data": data,
-        "desc": "online connections id"
-    })
-    print("#" * 5, "<send_message>", "message:", message_data, ", to_connection_id:", to_connection_id)
-    try:
-        client.post_to_connection(Data=message_data, ConnectionId=to_connection_id)
-    except Exception as e:
-        print("Error sending data to connection")
-        print("Error detail:", e)
 
 
 def get_all_connection_ids():
@@ -51,7 +38,7 @@ def broadcast_new_joiner(reqctx):
     conn_ids = get_all_connection_ids()
     self_id = reqctx.get("connectionId")
     for connection_id in [c for c in conn_ids if c != self_id]:
-        send_message(socket_api, [c for c in conn_ids if c != connection_id], connection_id)
+        send_message(socket_api, OnlineUserMessage([c for c in conn_ids if c != connection_id]), connection_id)
 
 
 def handler(event, context):
