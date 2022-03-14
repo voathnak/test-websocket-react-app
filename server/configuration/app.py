@@ -6,7 +6,7 @@ import jwt
 from jwt import DecodeError
 
 from utils.constant import Error
-from utils.custom_types.message import OnlineUserMessage
+from utils.custom_types.message import OnlineUserUpdate
 from utils.models.connection import Connection
 from utils.socket_utilities import get_all_connections, get_all_connection_ids, response_error_message, APIGWSocketCore, \
     get_socket_client, send_message
@@ -54,7 +54,7 @@ class ConfigurationService(APIGWSocketCore):
             self.send_message(nic_self_connections, conn.get("connectionId"))
 
     def send_message(self, data, connection_id):
-        message = OnlineUserMessage(data)
+        message = OnlineUserUpdate(data)
         send_message(self.socket, message, connection_id)
 
     def get_connection(self, request_data=None):

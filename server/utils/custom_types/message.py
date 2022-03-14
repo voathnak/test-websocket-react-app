@@ -48,13 +48,13 @@ class SocketMessage(BaseType):
         return f" type: {self.messageType}, content: {self.content}"
 
 
-class TextMessage(SocketMessage):
+class TextMessageUpdate(SocketMessage):
     def __init__(self, content: TextMessageContent):
         message_type = 'text-message'
         super().__init__(message_type, content)
 
 
-class OnlineUserMessage(SocketMessage):
+class OnlineUserUpdate(SocketMessage):
     def __init__(self, connection_ids: List[str]):
         message_type = 'online-user'
         online_user_response = OnlineUserResponse(connection_ids)
