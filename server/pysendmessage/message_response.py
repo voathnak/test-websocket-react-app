@@ -4,8 +4,7 @@ import os
 
 import boto3
 
-from utils.constant import TextMessage
-from utils.custom_types.message import MessageContent
+from utils.custom_types.message import TextMessageContent, TextMessage
 from utils.models.connection import Connection
 from utils.socket_utilities import create_socket_client, \
     send_message
@@ -38,9 +37,10 @@ def handler(event, context):
         room = json.loads(dynamodb.get('NewImage', {})
                           .get('content', {}).get('S', '{}')).get('room', False)
 
-        message_content = MessageContent(
+        message_content = TextMessageContent(
             **json.loads(dynamodb.get('NewImage', {})
                          .get('content', {}).get('S', '{}')))
+        message = TextMessage(message_content)
         print("#!@#"*6, "room: ", room)
         if room:
             connection = Connection()
@@ -50,5 +50,5 @@ def handler(event, context):
             print("#!@#"*6, 'connections:', connections)
             socket = create_socket_client(SOCKET_URL)
             for conn in connections:
-                send_message(socket, TextMessage, message_content, conn[0].get("connectionId"))
+                send_message(socket, message, conn[0].get("connectionId"))
     return event

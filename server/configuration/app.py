@@ -4,7 +4,7 @@ import os
 import jwt
 
 from jwt import DecodeError
-from utils.constant import MessageType, Error
+from utils.custom_types.message import TextMessageContent
 from utils.models.connection import Connection
 from utils.socket_utilities import get_all_connections, get_all_connection_ids, response_error_message, APIGWSocketCore, \
     get_socket_client
@@ -29,7 +29,7 @@ class ConfigurationService(APIGWSocketCore):
     # remove user socket timeout connection
     def send_health_check(self, connection_ids):
         message_data = json.dumps({
-            "messageType": MessageType.healthCheck,
+            "messageType": "health-check",
         })
 
         for connection_id in connection_ids:

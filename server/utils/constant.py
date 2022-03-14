@@ -8,12 +8,6 @@ class ErrorTemplate:
         self.message = message
 
 
-MessageType = namedtuple('MessageType', 'code')
-
-TextMessage = MessageType("text-message")
-OnlineUser = MessageType("online-user")
-HealthCheck = MessageType("health-check")
-
 class Error:
     class ServerError:
         internalServerError = ErrorTemplate(5000, "Internal Server Error", "something when wrong in the server")
