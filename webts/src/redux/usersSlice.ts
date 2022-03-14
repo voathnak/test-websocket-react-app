@@ -1,6 +1,6 @@
 import {AsyncThunk, createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {User} from "../type";
-
+const { REACT_APP_AUTH_URL: authServiceUrl = "" } = process.env;
 
 
 interface UsersState {
@@ -42,8 +42,7 @@ export const loginUser = createAsyncThunk(
 
     const requestOptions = {method: "POST", headers, body, redirect: "follow"};
 
-    const response = await fetch(
-      "https://sn3cj4aqh0.execute-api.ap-southeast-1.amazonaws.com/dev/users/login",
+    const response = await fetch(authServiceUrl,
       requestOptions as RequestInit
     );
     return ({ status: response.status, data: await response.json() }) as LoginReturned;

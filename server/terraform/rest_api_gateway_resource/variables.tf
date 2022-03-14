@@ -1,15 +1,21 @@
+  variable "parent_id" {
+    type = string
+  }
+  variable "path_part" {
+    type = string
+  }
   variable "authorization" {
     type = string
   }
   variable "http_method" {
     type = string
   }
-  variable "resource" {
-    type = object({
-      id = string
-      path = string
-    })
-  }
+#  variable "resource" {
+#    type = object({
+#      id = string
+#      path = string
+#    })
+#  }
   variable "function" {
     type = object({
       function_name = string

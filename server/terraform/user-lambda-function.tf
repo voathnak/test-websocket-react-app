@@ -44,49 +44,53 @@ resource "aws_cloudwatch_log_group" "user" {
 
   retention_in_days = 7
 }
+#resource "aws_api_gateway_resource" "users_api_resource" {
+#  parent_id   = aws_api_gateway_rest_api.root_api.root_resource_id
+#  path_part   = "users"
+#  rest_api_id = aws_api_gateway_rest_api.root_api.id
+#}
 
-resource "aws_api_gateway_resource" "users_api_resource" {
-  parent_id   = aws_api_gateway_rest_api.root_api.root_resource_id
-  path_part   = "users"
-  rest_api_id = aws_api_gateway_rest_api.root_api.id
-}
 
-resource "aws_api_gateway_resource" "users_signup_api_resource" {
-  parent_id   = aws_api_gateway_resource.users_api_resource.id
-  path_part   = "signup"
-  rest_api_id = aws_api_gateway_rest_api.root_api.id
-}
-resource "aws_api_gateway_resource" "users_login_api_resource" {
-  parent_id   = aws_api_gateway_resource.users_api_resource.id
-  path_part   = "login"
-  rest_api_id = aws_api_gateway_rest_api.root_api.id
-}
+#resource "aws_api_gateway_resource" "users_signup_api_resource" {
+#  parent_id   = aws_api_gateway_resource.users_api_resource.id
+#  path_part   = "signup"
+#  rest_api_id = aws_api_gateway_rest_api.root_api.id
+#}
+#
+#resource "aws_api_gateway_resource" "users_login_api_resource" {
+#  parent_id   = aws_api_gateway_resource.users_api_resource.id
+#  path_part   = "login"
+#  rest_api_id = aws_api_gateway_rest_api.root_api.id
+#}
 
-module "get_users_method_integration" {
-  source = "./method_integration"
+module "get_users_gateway_resource" {
+  source = "./rest_api_gateway_resource"
 
+  parent_id = aws_api_gateway_rest_api.root_api.root_resource_id
   authorization = "NONE"
   http_method   = "GET"
-  resource   = aws_api_gateway_resource.users_api_resource
+  path_part   = "users"
   rest_api   = aws_api_gateway_rest_api.root_api
   function = aws_lambda_function.user
 }
 
-module "users_signup_method_integration" {
-  source = "./method_integration"
+module "users_signup_gateway_resource" {
+  source = "./rest_api_gateway_resource"
 
+  parent_id = module.get_users_gateway_resource.api_resource.id
   authorization = "NONE"
   http_method   = "POST"
-  resource   = aws_api_gateway_resource.users_signup_api_resource
+  path_part   = "signup"
   rest_api   = aws_api_gateway_rest_api.root_api
   function = aws_lambda_function.user
 }
-module "users_login_method_integration" {
-  source = "./method_integration"
+module "users_login_gateway_resource" {
+  source = "./rest_api_gateway_resource"
 
+  parent_id = module.get_users_gateway_resource.api_resource.id
   authorization = "NONE"
   http_method   = "POST"
-  resource   = aws_api_gateway_resource.users_login_api_resource
+  path_part   = "login"
   rest_api   = aws_api_gateway_rest_api.root_api
   function = aws_lambda_function.user
 }

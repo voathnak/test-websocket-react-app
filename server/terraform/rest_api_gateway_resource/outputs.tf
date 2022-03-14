@@ -1,0 +1,28 @@
+output "method_id" {
+  value = aws_api_gateway_method.method.id
+}
+
+
+output "method_response_id" {
+  value = aws_api_gateway_method_response.response_200.id
+}
+
+output "options_method_id" {
+  value = aws_api_gateway_method.options_method.id
+}
+
+output "options_method_response_id" {
+  value = aws_api_gateway_method_response.options_200.id
+}
+
+output "integration_id" {
+  value = aws_api_gateway_integration.api_integration.id
+}
+
+output "options_integration_id" {
+  value = aws_api_gateway_integration.options_integration.id
+}
+
+output "api_resource" {
+  value = aws_api_gateway_resource.api_resource
+}

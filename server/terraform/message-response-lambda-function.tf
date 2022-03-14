@@ -49,7 +49,7 @@ resource "aws_cloudwatch_log_group" "message_response" {
   retention_in_days = 30
 }
 
-resource "aws_lambda_event_source_mapping" "example" {
+resource "aws_lambda_event_source_mapping" "message_db_source_mapping" {
   event_source_arn  = aws_dynamodb_table.message-dynamodb-table.stream_arn
   function_name     = aws_lambda_function.message_response_lambda.arn
   starting_position = "LATEST"

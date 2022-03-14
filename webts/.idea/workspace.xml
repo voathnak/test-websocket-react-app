@@ -7,9 +7,10 @@
       <change beforePath="$PROJECT_DIR$/../server/terraform/outputs/core_lib_layer.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../server/terraform/outputs/core_lib_layer.zip" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/terraform/outputs/message-response-lambda.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../server/terraform/outputs/message-response-lambda.zip" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/terraform/outputs/python_libs_layer.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../server/terraform/outputs/python_libs_layer.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server/terraform/terraform.tfstate.d/dev/terraform.tfstate" beforeDir="false" afterPath="$PROJECT_DIR$/../server/terraform/terraform.tfstate.d/dev/terraform.tfstate" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server/terraform/terraform.tfstate.d/dev/terraform.tfstate.backup" beforeDir="false" afterPath="$PROJECT_DIR$/../server/terraform/terraform.tfstate.d/dev/terraform.tfstate.backup" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/terraform/outputs/user-lambda.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../server/terraform/outputs/user-lambda.zip" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/redux/usersSlice.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/redux/usersSlice.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -98,7 +99,7 @@
       <workItem from="1640406132322" duration="41789000" />
       <workItem from="1646678622873" duration="6997000" />
       <workItem from="1646766027268" duration="1137000" />
-      <workItem from="1646917113198" duration="23267000" />
+      <workItem from="1646917113198" duration="23580000" />
     </task>
     <task id="LOCAL-00001" summary="IMP/FE empty chat text box after sent">
       <created>1640511282996</created>
