@@ -26,18 +26,10 @@ class Message(BaseType):
     messageType: str = ""
     content: MessageContent = {}
 
-    def __init__(self, message_type, content: MessageContent):
-        self.messageType = message_type
+    def __init__(self, message_type: MessageType, content: MessageContent):
+        super().__init__()
+        self.messageType = message_type.code
         self.content = content
 
     def __str__(self):
         return f" type: {self.messageType}, content: {self.content}"
-
-
-class TextMessage(Message):
-
-    def __init__(self, content: MessageContent):
-        message_type = MessageType.message
-        super().__init__(message_type, content)
-
-

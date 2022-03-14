@@ -1,16 +1,15 @@
-import datetime
 import json
-import os
-from decimal import Decimal
-
 import logging
-from utils.constant import MessageType, Error
-from utils.custom_types.message import MessageContent, TextMessage
-from utils.models.connection import Connection
-from utils.models.message import Message
-from utils.socket_utilities import APIGWSocketCore, response_error_message, get_socket_client, create_socket_client
-from utils.utils import log_event, httpResponse, log_env
+import os
+
 import boto3
+
+from utils.constant import TextMessage
+from utils.custom_types.message import MessageContent
+from utils.models.connection import Connection
+from utils.socket_utilities import create_socket_client, \
+    send_message
+from utils.utils import log_event, log_env
 
 dynamodb = boto3.resource('dynamodb')
 conn_table = dynamodb.Table(os.environ.get('CONNECTION_TABLE_NAME', ""))
@@ -22,19 +21,6 @@ SOCKET_URL = os.environ.get('SOCKET_URL', "")
 
 LOGGER = logging.getLogger()
 LOGGER.setLevel(logging.INFO)
-
-
-def send_message(client, content: MessageContent, to_connection_id):
-    message = TextMessage(content)
-
-    print("#" * 5, "<send_message>", "message:", message.json(),
-          ", to_connection_id:", to_connection_id)
-    try:
-        client.post_to_connection(Data=message.json(),
-                                  ConnectionId=to_connection_id)
-    except Exception as e:
-        print("Error sending data to connection")
-        print("Error detail:", e)
 
 
 def handler(event, context):
@@ -64,5 +50,5 @@ def handler(event, context):
             print("#!@#"*6, 'connections:', connections)
             socket = create_socket_client(SOCKET_URL)
             for conn in connections:
-                send_message(socket, message_content, conn[0].get("connectionId"))
+                send_message(socket, TextMessage, message_content, conn[0].get("connectionId"))
     return event

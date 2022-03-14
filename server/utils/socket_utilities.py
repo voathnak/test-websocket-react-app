@@ -1,6 +1,9 @@
 import json
 
 import boto3
+
+from utils.constant import MessageType
+from utils.custom_types.message import MessageContent, Message
 from utils.utils import log_event
 
 
@@ -64,6 +67,20 @@ def get_socket_client(event):
 
 def create_socket_client(endpoint_url):
     return boto3.client('apigatewaymanagementapi', endpoint_url=endpoint_url)
+
+
+def send_message(client, message_type: MessageType, content: MessageContent,
+                 to_connection_id):
+    message = Message(message_type, content)
+
+    print("#" * 5, "<send_message>", "message:", message.json(),
+          ", to_connection_id:", to_connection_id)
+    try:
+        client.post_to_connection(Data=message.json(),
+                                  ConnectionId=to_connection_id)
+    except Exception as e:
+        print("Error sending data to connection")
+        print("Error detail:", e)
 
 
 class APIGWSocketCore:

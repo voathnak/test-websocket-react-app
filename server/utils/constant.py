@@ -1,3 +1,6 @@
+from collections import namedtuple
+
+
 class ErrorTemplate:
     def __init__(self, code, name, message):
         self.code = code
@@ -5,11 +8,11 @@ class ErrorTemplate:
         self.message = message
 
 
-class MessageType:
-    message = "text-message"
-    onlineUser = "online-user"
-    healthCheck = "health-check"
+MessageType = namedtuple('MessageType', 'code')
 
+TextMessage = MessageType("text-message")
+OnlineUser = MessageType("online-user")
+HealthCheck = MessageType("health-check")
 
 class Error:
     class ServerError:
