@@ -59,3 +59,17 @@ class OnlineUserUpdate(SocketMessage):
         message_type = 'online-user'
         online_user_response = OnlineUserResponse(connection_ids)
         super().__init__(message_type, online_user_response)
+
+
+class MessageHistory(MessageContent):
+    messageList: List[TextMessageContent] = []
+
+    def __init__(self, messages_list: List[TextMessageContent]):
+        super().__init__()
+        self.messageList = messages_list
+
+
+class MessageHistoryUpdate(SocketMessage):
+    def __init__(self, content: MessageHistory):
+        message_type = 'message-history'
+        super().__init__(message_type, content)

@@ -336,7 +336,7 @@ class Model(Schema):
                 projection_expression = f"#k, {', '.join([f'#{x}' for x in projections])}"
                 expression_attribute_names.update({f"#{x}": x for x in projections})
             else:
-                projection_expression = f"#k, {', '.join([f'  # {x}' for x in projection_field])}"
+                projection_expression = f"#k, {', '.join([f'#{x}' for x in projection_field])}"
                 expression_attribute_names.update({f"#{x}": x for x in projection_field})
 
 
@@ -346,6 +346,8 @@ class Model(Schema):
                 'ProjectionExpression': projection_expression,
                 'ExpressionAttributeNames': expression_attribute_names
             }
+
+            logger.info(f"scan_kwargs: {scan_kwargs}")
 
             done = False
             start_key = None

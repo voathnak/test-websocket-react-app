@@ -4,7 +4,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import useWebSocket, {ReadyState} from 'react-use-websocket';
 import "./Chat.css"
 import {RootState} from "../redux";
-import {getConnection, setConnection} from "./ServerMethod";
+import {getConnection, getMessages, setConnection} from "./ServerMethod";
 import {User} from "../type";
 import {setSelectedRoom} from "../redux/environmentVariable";
 
@@ -96,6 +96,27 @@ const Chat = ({webSocketUrl}: Properties) => {
     window.messageHistory = messageHistory
   };
 
+  const onMessageHistoryUpdate = () => {
+    const messageContents: MessageContent[] = lastJsonMessage.content.messageList;
+    const messages: Message[] = messageContents.map(msc => ({
+      messageType: "text-message",
+      content: msc,
+      direction: msc.sender !== user.username ? 'received' : 'sent',
+      time: msc.timestamp,
+      status: "sent"
+    } as Message));
+
+    console.log({messages});
+    const messageIds = messages.map(ms => ms.content.timestamp);
+    console.log({messageIds});
+    const filteredMessageHistory = messageHistory.filter((x) =>
+      !messageIds.includes(x.content.timestamp));
+    setMessageHistory([
+      ...filteredMessageHistory,
+      ...messages,
+    ]);
+  };
+
   const onHealthCheck = () => {
     console.info('INFO: server health checking');
   };
@@ -104,6 +125,7 @@ const Chat = ({webSocketUrl}: Properties) => {
     'online-user': onOnlineUserUpdate,
     'text-message': onMessageUpdate,
     'health-check': onHealthCheck,
+    'message-history': onMessageHistoryUpdate,
   };
 
   useEffect(() => {
@@ -123,6 +145,7 @@ const Chat = ({webSocketUrl}: Properties) => {
       } catch (error) {
         if (error instanceof TypeError) {
           console.warn(`Type: ${messageType} was not handling`);
+          console.error({error});
         } else {
           console.error({error});
         }
@@ -216,7 +239,7 @@ const Chat = ({webSocketUrl}: Properties) => {
             </div>
             <div className={"profile-photo"}>
               <img src={x.profilePhoto || "https://minimal-assets-api.vercel.app/assets/images/avatars/avatar_2.jpg"}
-              alt={`profile-photo`}/>
+                   alt={`profile-photo`}/>
             </div>
           </div>
         </div>
@@ -286,12 +309,38 @@ const Chat = ({webSocketUrl}: Properties) => {
         <button type="submit" onClick={() => setConnection(sendMessage, user)}>
           setConnection
         </button>
+        <button type="submit" onClick={() => getMessages(sendMessage, user, selectedRoom)}>
+          getMessages
+        </button>
       </div>
 
       <div className="chat-window">
         <div className="chat-users">{listOnlineUser()}</div>
         {selectedRoom && (<div className="chat-box">
-          <div className="messages-container">{listMessageHistory()}</div>
+          <div className="messages-container">
+            <div className={'messages-inner-container'}>
+              <div className={'messages-container-header'}>
+                <div className={"profile-photo"}>
+                  <img src={user.photoURL || "https://minimal-assets-api.vercel.app/assets/images/avatars/avatar_2.jpg"}
+                       alt={`profile-photo`}/>
+                </div>
+                <div className={'header-info'}>
+                  <div className={'room-name'}>
+                    {selectedRoom.split('-').filter(x => x != user.username).join('-')}
+                  </div>
+                  <div className={'info'}>
+                    <div className={'member'}>
+                      {selectedRoom.split('-').length} members,
+                    </div>
+                    <div className={'status'}>
+                      Online
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {listMessageHistory()}
+            </div>
+          </div>
           <div className="input">
             <input onChange={onTextChanged} onKeyDown={handleKeypress} value={textMessage}/>
             <button type="submit" onClick={onSubmit} disabled={readyState !== ReadyState.OPEN}>

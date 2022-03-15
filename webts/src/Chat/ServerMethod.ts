@@ -26,3 +26,16 @@ export const setConnection = (sendMessage: SendMessage, user: User) => {
   console.info({m});
   sendMessage(m);
 };
+
+export const getMessages = (sendMessage: SendMessage, user: User, room: string) => {
+  const m = JSON.stringify({
+    action: 'configuration',
+    data: JSON.stringify({
+      type: 'rpc',
+      name: 'get-messages',
+      data: {token: user.token, room},
+    }),
+  });
+  console.info({m});
+  sendMessage(m);
+};
