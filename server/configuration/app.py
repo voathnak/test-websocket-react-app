@@ -6,8 +6,10 @@ import jwt
 from jwt import DecodeError
 
 from utils.constant import Error
-from utils.custom_types.message import OnlineUserUpdate
+from utils.custom_types.message import OnlineUserUpdate, TextMessageContent, MessageHistoryUpdate, MessageHistory
 from utils.models.connection import Connection
+from utils.models.message import Message
+from utils.custom_types.rpc_request_schema.get_room_message import GetMessagesRequest
 from utils.socket_utilities import get_all_connections, get_all_connection_ids, response_error_message, APIGWSocketCore, \
     get_socket_client, send_message
 from utils.utils import httpResponse
@@ -24,6 +26,7 @@ class ConfigurationService(APIGWSocketCore):
             "rpc": {
                 "get-connections": self.get_connection,
                 "set-connection": self.set_connection,
+                "get-messages": self.get_messages,
             }
         }
 
@@ -44,6 +47,24 @@ class ConfigurationService(APIGWSocketCore):
                 print("Error detail:", e)
 
         self.response_update_online_user()
+
+    def get_messages(self, request_data=None):
+        """
+        user try to get all message by specific room
+        """
+        print("👽👽 get_messages 👽👽")
+
+        request = GetMessagesRequest(**request_data)
+
+        message = Message()
+        all_messages = message.search('roomId', request.roomId)
+        print(f"🥸🥸👹👹 all_messages: {all_messages} 🥸🥸👹👹")
+
+        message_contents = [TextMessageContent(**json.loads(ms.get('content')))
+                            for ms in all_messages]
+        socket_message = MessageHistoryUpdate(MessageHistory(message_contents))
+
+        send_message(self.socket, socket_message, self.requesterId)
 
     # notify other user
     def response_update_online_user(self):
