@@ -158,7 +158,7 @@ const Chat = ({webSocketUrl}: Properties) => {
   //   []
   // );
 
-  const onSelectUser = (activeUser: User) => {
+  const onSelectRoom = (activeUser: User) => {
     console.info(activeUser);
     dispatch(setSelectedRoom(
       [activeUser.username, user.username].sort().join("-")
@@ -250,14 +250,25 @@ const Chat = ({webSocketUrl}: Properties) => {
 
   const listOnlineUser = () => {
     console.info('onlineUsers:', onlineUsers);
-    const users = onlineUsers.map((user: User) => {
+    const users = onlineUsers.map((u: User) => {
       return (
-        <div className={"li"} key={user.connectionId}>
-          <div>
-            <button type="button" onClick={() => onSelectUser(user)}>
-              {`${user.username}`}
-            </button>
-          </div>
+        <div key={u.connectionId}>
+          <button type="button" onClick={() => onSelectRoom(u)}
+                  className={selectedRoom === [u.username, user.username].sort().join("-") ? "selected" : "other"}>
+
+            <div className={"profile-photo"}>
+              <img src={u.photoURL || "https://minimal-assets-api.vercel.app/assets/images/avatars/avatar_2.jpg"}
+                   alt={`profile-photo`}/>
+            </div>
+            <div className={'room-info'}>
+              <div className={'room-name'}>
+                {`${u.username}`}
+              </div>
+              <div className={'last-chat-message'}>
+                  {selectedRoom.split('-').length} members,
+              </div>
+            </div>
+          </button>
         </div>
       );
     });
@@ -288,37 +299,42 @@ const Chat = ({webSocketUrl}: Properties) => {
 
   return (
     <div className="chat-container">
-      <div className="status-box">
-      <span>
-        <span>
-          currently logged in username <b>{user.username}</b>
-  </span>
-  </span>
-        <span>
-  <span>
-    connectionStatus: <b>{connectionStatus}</b>
-  </span>
-  </span>
-      </div>
-      <div className="manual-control-box">
-        <span>Manual Control: </span>
+      <div className="chat-window-header">
+        <div>
+          <span>
+            currently logged in username <b>{user.username}</b>
+          </span>
+        </div>
+        <div>
+          <span>
+            connectionStatus: <b>{connectionStatus}</b>
+          </span>
+        </div>
+        <div className="manual-control-box">
+          <span>Manual Control: </span>
 
-        <button type="submit" onClick={() => getConnection(sendMessage, user)}>
-          getConnection
-        </button>
-        <button type="submit" onClick={() => setConnection(sendMessage, user)}>
-          setConnection
-        </button>
-        <button type="submit" onClick={() => getMessages(sendMessage, user, selectedRoom)}>
-          getMessages
-        </button>
+          <button type="submit" onClick={() => getConnection(sendMessage, user)}>
+            getConnection
+          </button>
+          <button type="submit" onClick={() => setConnection(sendMessage, user)}>
+            setConnection
+          </button>
+          <button type="submit" onClick={() => getMessages(sendMessage, user, selectedRoom)}>
+            getMessages
+          </button>
+        </div>
       </div>
 
       <div className="chat-window">
-        <div className="chat-users">{listOnlineUser()}</div>
+        <div className="chat-users">
+          <div className={'chat-list-header'}>
+
+          </div>
+          {listOnlineUser()}
+        </div>
         {selectedRoom && (<div className="chat-box">
-          <div className="messages-container">
-            <div className={'messages-inner-container'}>
+          <div className="messages-window">
+            <div className={'messages-container'}>
               <div className={'messages-container-header'}>
                 <div className={"profile-photo"}>
                   <img src={user.photoURL || "https://minimal-assets-api.vercel.app/assets/images/avatars/avatar_2.jpg"}

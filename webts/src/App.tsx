@@ -38,17 +38,10 @@ function App() {
   console.info('user.isLoggedIn', user.isLoggedIn);
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-      </header>
       {!user.isLoggedIn ? (
         <Login />
       ) : (
-        <div className="chat-container">
-          {/* <Chat /> */}
-          {/* <ChatSecond /> */}
-          <Chat webSocketUrl={webSocketUrl as string} />
-        </div>
+        <Chat webSocketUrl={webSocketUrl as string} />
       )}
     </div>
   );
