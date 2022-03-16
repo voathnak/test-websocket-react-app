@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 
 import {useDispatch, useSelector} from 'react-redux';
 import useWebSocket, {ReadyState} from 'react-use-websocket';
@@ -159,10 +159,10 @@ const Chat = ({webSocketUrl}: Properties) => {
   // );
 
   const onSelectRoom = (activeUser: User) => {
-    console.info(activeUser);
-    dispatch(setSelectedRoom(
-      [activeUser.username, user.username].sort().join("-")
-    ));
+    console.info("onSelectRoom", activeUser);
+    const room = [activeUser.username, user.username].sort().join("-");
+    getMessages(sendMessage, user, room);
+    dispatch(setSelectedRoom(room));
   };
 
   const connectionStatus = {
