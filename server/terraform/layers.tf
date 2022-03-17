@@ -1,6 +1,7 @@
 locals {
   core_lib_layer_zip_path = "outputs/core_lib_layer.zip"
   python_libs_layer_zip_path = "outputs/python_libs_layer.zip"
+  image_processing_libs_layer_zip_path = "outputs/image_processing_libs_layer.zip"
 }
 
 data "archive_file" "core-lib-layer-archive" {
@@ -27,6 +28,20 @@ resource "aws_lambda_layer_version" "python_libs_layer" {
   filename   = local.python_libs_layer_zip_path
   layer_name = format("%s-%s-v%s-%s", var.project_name, terraform.workspace, var.changes_version, "PythonLibs")
 #  source_code_hash = filebase64sha256(local.python_libs_layer_zip_path)
+
+  compatible_runtimes = ["python3.8"]
+}
+
+data "archive_file" "image_processing-libs-layer-archive" {
+  type        = "zip"
+  source_dir = "/Users/vlim/Research/poc/chatApp/server/layer/image_processing_libs"
+  output_path = local.image_processing_libs_layer_zip_path
+}
+
+resource "aws_lambda_layer_version" "image_processing_libs_layer" {
+  filename   = local.image_processing_libs_layer_zip_path
+  layer_name = format("%s-%s-v%s-%s", var.project_name, terraform.workspace, var.changes_version, "ImageProcessingLibs")
+  source_code_hash = filebase64sha256(local.image_processing_libs_layer_zip_path)
 
   compatible_runtimes = ["python3.8"]
 }
