@@ -1,19 +1,5 @@
 resource "aws_s3_bucket" "image_bucket" {
   bucket = format("%s-%s-%s-%s", var.project_name, var.service_name, terraform.workspace, "image-bucket")
-  acl    = "public-read"
-
-  cors_rule {
-    allowed_headers = ["*"]
-    allowed_methods = ["GET", "PUT", "POST", "DELETE", "HEAD"]
-    allowed_origins = ["http://*", "https://*"]
-    expose_headers  = [
-      "x-amz-server-side-encryption",
-      "x-amz-request-id",
-      "x-amz-id-2",
-      "ETag"
-    ]
-    max_age_seconds = 3600
-  }
 
   force_destroy = true
 
@@ -24,6 +10,28 @@ resource "aws_s3_bucket" "image_bucket" {
   #    #
   #    prevent_destroy = true
   #  }
+}
+
+resource "aws_s3_bucket_cors_configuration" "bucket_cors_configuration" {
+  bucket = aws_s3_bucket.image_bucket.bucket
+
+  cors_rule {
+    allowed_headers = ["*"]
+    allowed_methods = ["GET", "PUT", "POST"]
+    allowed_origins = ["*"]
+    expose_headers  = [
+      "x-amz-server-side-encryption",
+      "x-amz-request-id",
+      "x-amz-id-2",
+      "ETag"
+    ]
+    max_age_seconds = 3000
+  }
+}
+
+resource "aws_s3_bucket_acl" "bucket_acl" {
+  bucket = aws_s3_bucket.image_bucket.id
+  acl    = "public-read"
 }
 
 resource "aws_s3_bucket_policy" "allow_access_public" {
@@ -38,6 +46,7 @@ resource "aws_s3_bucket_policy" "allow_access_public" {
 
 data "aws_iam_policy_document" "allow_access_from_public" {
   statement {
+    sid = "allow_access_from_public-image_bucket"
     principals {
       type        = "*"
       identifiers = ["*"]
