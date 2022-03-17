@@ -14,6 +14,7 @@ from datetime import datetime
 import boto3
 from botocore.exceptions import ClientError
 
+from utils.constant import JAVASCRIPT_ISO_DATETIME_FORMAT
 from utils.constants.http_status_code import METHOD_NOT_ALLOWED
 
 logger = logging.getLogger()
@@ -400,7 +401,7 @@ class Model(Schema):
                 self._load(item)
                 self._has_record = True
                 changed = False
-                values.update({'updatedAt': str(datetime.utcnow().timestamp())})
+                values.update({'updatedAt': decimal.Decimal(datetime.utcnow().timestamp())})
                 update_expression = 'SET '
                 expression_attribute_values = {}
                 expression_attribute_names = {}
@@ -423,7 +424,7 @@ class Model(Schema):
                         ReturnValues='ALL_NEW',
                     )
                     self._load(updated_record.get('Attributes'))
-                    return updated_record.get('Attributes')
+                    return self._from_dict(updated_record.get('Attributes'))
                 return "No Changed"
             else:
                 self._has_record = False
@@ -458,7 +459,7 @@ class Model(Schema):
 
     def __setattr__(self, name, value):
         if (name == 'createdAt' or name == 'updatedAt') and is_float(value):
-            self.__dict__[name] = datetime.fromtimestamp(float(value)).strftime("%b %d %Y %H:%M:%S")
+            self.__dict__[name] = datetime.fromtimestamp(float(value)).strftime(JAVASCRIPT_ISO_DATETIME_FORMAT)
         elif name == self._primary_key and self._output_id:
             self.id = str(value)
             self.__dict__[name] = value
@@ -482,6 +483,8 @@ class CustomEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, Model):
             return dict(obj)
+        if isinstance(obj, decimal.Decimal):
+            return float(obj)
         else:
             return super(CustomEncoder, self).default(obj)
 

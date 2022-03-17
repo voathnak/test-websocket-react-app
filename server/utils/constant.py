@@ -1,6 +1,3 @@
-from collections import namedtuple
-
-
 class ErrorTemplate:
     def __init__(self, code, name, message):
         self.code = code
@@ -17,3 +14,6 @@ class Error:
 
     class IntegrationError:
         rpcFunctionNotFound = ErrorTemplate(3404, "Invalid RPC function name", "Invalid RPC function name")
+
+
+JAVASCRIPT_ISO_DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
