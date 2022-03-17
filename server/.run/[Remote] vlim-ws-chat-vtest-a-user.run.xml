@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="[Remote] vlim-ws-chat-vtest-a-user" type="aws.lambda" factoryName="Remote" nameIsGenerated="true">
+    <option name="credentialProviderId" value="profile:private-vlim" />
+    <option name="regionId" value="ap-southeast-1" />
+    <option name="functionName" value="vlim-ws-chat-vtest-a-user" />
+    <option name="input" value="$PROJECT_DIR$$PROJECT_DIR$/../../../../../test/test-update-nak.json" />
+    <option name="inputIsFile" value="true" />
+    <method v="2" />
+  </configuration>
+</component>

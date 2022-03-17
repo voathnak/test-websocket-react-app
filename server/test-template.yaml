@@ -1,0 +1,268 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  product
+
+  Sample SAM Template for product
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+
+Parameters:
+  DeploymentS3BucketName:
+    Type: String
+    Description: The name of the S3 bucket in which the Swagger specification is stored
+  StageName:
+    Type: String
+    Description: The name of the stage, e.g. "dev", "preprod", "prod"
+    Default: dev
+  AppName:
+    Type: String
+    Description: The name of the APP
+    Default: vlim-ws-chat
+  VersionName:
+    Type: String
+    Description: The version of the APP
+    Default: vi
+  TableName:
+    Type: String
+    Description: the name of the table
+  SecretKey:
+    Type: String
+    Description: The name of the APP
+    Default: 62fec8f63ccfeeb60149f4c49fbcda10
+  BOTTOKEN:
+    Type: String
+    Description: The token of the telegram bot [VLIMServerLogsBot]
+    Default: 1425139424:AAGS4IP3fvntbuiR3Mrjf4o3ZV3nK2Pvhrg
+  TodoTableName:
+    Type: String
+    Default: 'TodosTable'
+    Description: (Required) The name of the new DynamoDB table you want to create and save to. Minimum 3 characters
+    MinLength: 3
+    MaxLength: 50
+    AllowedPattern: ^[A-Za-z]+$
+    ConstraintDescription: 'Required parameter. Must be characters only. No numbers allowed.'
+  UserTableName:
+    Type: String
+    Default: 'users-dynamodb'
+    Description: (Required) The name of the new DynamoDB table you want to create and save to. Minimum 3 characters
+    MinLength: 3
+    MaxLength: 50
+    AllowedPattern: ^[A-Za-z]+$
+    ConstraintDescription: 'Required parameter. Must be characters only. No numbers allowed.'
+  IsUsingLocalDynamodb:
+    Type: String
+    Default: '1'
+    Description: A flag to turn the service to use local dynamodb or on cloud
+    AllowedPattern: \d+$
+
+Globals:
+  Function:
+    Timeout: 60
+    Environment:
+      Variables:
+        BOT_TOKEN: !Ref BOTTOKEN
+        SECRET_KEY: !Sub "${SecretKey}"
+        STAGE_NAME: !Sub "${StageName}"
+        TABLE_PREFIX: !Sub "${AppName}-${StageName}-"
+        IS_USING_LOCAL_DYNAMODB: !Sub "${IsUsingLocalDynamodb}"
+  Api:
+    Cors:
+      AllowMethods: "'GET,POST,OPTIONS'"
+      AllowHeaders: "'content-type, Authorization'"
+      AllowOrigin: "'*'"
+      AllowCredentials: "'*'"
+
+Resources:
+  RestApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name:
+        Fn::Sub: ${AppName}-${StageName}-${VersionName}-api-gateway
+      MethodSettings:
+        - LoggingLevel: INFO
+          ResourcePath: '/*' # allows for logging on any resource
+          HttpMethod: '*' # allows for logging on any method
+      StageName:
+        Ref: StageName
+      Cors:
+        AllowMethods: "'POST,GET,PUT,PATCH,DELETE,OPTIONS'"
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+        AllowOrigin: "'*'"
+      Auth:
+        DefaultAuthorizer: MyLambdaTokenAuthorizer
+        Authorizers:
+          MyLambdaTokenAuthorizer:
+            FunctionArn: !GetAtt TokenAuthFunction.Arn
+            # NOTE: Additional options:
+            Identity:
+              Header: Authorization
+              ValidationExpression: Bearer.*
+              ReauthorizeEvery: 0 # seconds
+        AddDefaultAuthorizerToCorsPreflight: False
+
+
+  TokenAuthFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName:
+        Fn::Sub: ${AppName}-${StageName}-${VersionName}-TokenAuth
+      CodeUri: services/base/
+      Handler: authorizer.handler
+      Runtime: python3.8
+      Environment:
+        Variables:
+          SECRET_KEY: !Sub "${SecretKey}"
+          STAGE_NAME: !Sub "${StageName}"
+      Layers:
+        - !Ref PythonLibs
+        - !Ref CoreLibs
+
+  UserFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Sub "${AppName}-${StageName}-${UserTableName}"
+      Environment:
+        Variables:
+          USER_TABLE_NAME: !Sub "${AppName}-${StageName}-${UserTableName}"
+      FunctionName:
+        Fn::Sub: ${AppName}-${StageName}-${VersionName}-createUser
+      CodeUri: users/
+      Handler: handler.lambda_handler
+      Runtime: python3.8
+      Events:
+        createUser:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: RestApi
+            Path: /users
+            Method: post
+        listUser:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: RestApi
+            Path: /users
+            Method: get
+        getUser:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: RestApi
+            Path: /users/{id}
+            Method: get
+        getCurrentUser:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: RestApi
+            Path: /users/current
+            Method: get
+        deleteUser:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: RestApi
+            Path: /users/{id}
+            Method: delete
+        deleteMultiUser:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: RestApi
+            Path: /users
+            Method: delete
+        updateUser:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: RestApi
+            Path: /users/{id}
+            Method: put
+        authenticateUser:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: RestApi
+            Path: /users/login
+            Method: post
+            Auth:
+              Authorizer: NONE
+        registerUser:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: RestApi
+            Path: /users/signup
+            Method: post
+            Auth:
+              Authorizer: NONE
+        findUser:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: RestApi
+            Path: /users/find
+            Method: post
+      Layers:
+        - !Ref PythonLibs
+        - !Ref CoreLibs
+
+
+
+
+  UsersDynamoDbTable:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: !Sub "${AppName}-${StageName}-${UserTableName}"
+      AttributeDefinitions:
+        - AttributeName: username
+          AttributeType: S
+      KeySchema:
+        - AttributeName: username
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+
+
+
+
+
+
+
+  CoreLibs:
+    Type: 'AWS::Serverless::LayerVersion'
+    Properties:
+      ContentUri: layer/core
+      CompatibleRuntimes: # optional
+        - python3.8
+
+  PythonLibs:
+    Type: 'AWS::Serverless::LayerVersion'
+    Properties:
+      ContentUri: layer/python_libs
+      CompatibleRuntimes: # optional
+        - python3.8
+
+
+
+Outputs:
+  RestApiId:
+    Description: "API Gateway ID"
+    Value: !Ref RestApi
+  ServerVersionApi:
+    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+    Value: !Sub "https://${RestApi}.execute-api.${AWS::Region}.amazonaws.com/${StageName}/version"
+  TodoApi:
+    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+    Value: !Sub "https://${RestApi}.execute-api.${AWS::Region}.amazonaws.com/${StageName}/todos"
+  ServerVersionFunction:
+    Description: "Hello World Lambda Function ARN"
+    Value: !GetAtt ServerVersionFunction.Arn
+  ServerVersionFunctionIamRole:
+    Description: "Implicit IAM Role created for Hello World function"
+    Value: !GetAtt ServerVersionFunctionRole.Arn

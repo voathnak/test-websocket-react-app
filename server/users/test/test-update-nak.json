@@ -1,0 +1,123 @@
+{
+  "resource": "/users/{id}",
+  "path": "/users/nak",
+  "httpMethod": "PUT",
+  "headers": {
+    "Accept": "*/*",
+    "Accept-Encoding": "gzip, deflate, br",
+    "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6Im5hayIsImlkIjoibmFrIiwiZW1haWwiOm51bGwsImFjY2VzcyI6bnVsbCwiaWF0IjoxNjQ3NTEyMDcyLjA2MTY1OX0.ht6LxvMGt2XcjPfmhY3HcbuIC2N9knO09uJ1SROiaK0",
+    "CloudFront-Forwarded-Proto": "https",
+    "CloudFront-Is-Desktop-Viewer": "true",
+    "CloudFront-Is-Mobile-Viewer": "false",
+    "CloudFront-Is-SmartTV-Viewer": "false",
+    "CloudFront-Is-Tablet-Viewer": "false",
+    "CloudFront-Viewer-Country": "KH",
+    "Content-Type": "application/json",
+    "Host": "uo89jo1heh.execute-api.ap-southeast-1.amazonaws.com",
+    "Postman-Token": "f22477a6-7c20-4390-9d3e-0349404ae3f0",
+    "User-Agent": "PostmanRuntime/7.29.0",
+    "Via": "1.1 0cfddac687b0e42e0853cfa412519154.cloudfront.net (CloudFront)",
+    "X-Amz-Cf-Id": "37VgmNBs_LrSWD2DZMhjZ3DcbZBGjwR11VPYJP45lD1hipPg1MjyvQ==",
+    "X-Amzn-Trace-Id": "Root=1-6233656b-2ac9ed7e58fe8cd716262a87",
+    "X-Forwarded-For": "110.235.247.218, 64.252.139.140",
+    "X-Forwarded-Port": "443",
+    "X-Forwarded-Proto": "https"
+  },
+  "multiValueHeaders": {
+    "Accept": [
+      "*/*"
+    ],
+    "Accept-Encoding": [
+      "gzip, deflate, br"
+    ],
+    "Authorization": [
+      "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6Im5hayIsImlkIjoibmFrIiwiZW1haWwiOm51bGwsImFjY2VzcyI6bnVsbCwiaWF0IjoxNjQ3NTEyMDcyLjA2MTY1OX0.ht6LxvMGt2XcjPfmhY3HcbuIC2N9knO09uJ1SROiaK0"
+    ],
+    "CloudFront-Forwarded-Proto": [
+      "https"
+    ],
+    "CloudFront-Is-Desktop-Viewer": [
+      "true"
+    ],
+    "CloudFront-Is-Mobile-Viewer": [
+      "false"
+    ],
+    "CloudFront-Is-SmartTV-Viewer": [
+      "false"
+    ],
+    "CloudFront-Is-Tablet-Viewer": [
+      "false"
+    ],
+    "CloudFront-Viewer-Country": [
+      "KH"
+    ],
+    "Content-Type": [
+      "application/json"
+    ],
+    "Host": [
+      "uo89jo1heh.execute-api.ap-southeast-1.amazonaws.com"
+    ],
+    "Postman-Token": [
+      "f22477a6-7c20-4390-9d3e-0349404ae3f0"
+    ],
+    "User-Agent": [
+      "PostmanRuntime/7.29.0"
+    ],
+    "Via": [
+      "1.1 0cfddac687b0e42e0853cfa412519154.cloudfront.net (CloudFront)"
+    ],
+    "X-Amz-Cf-Id": [
+      "37VgmNBs_LrSWD2DZMhjZ3DcbZBGjwR11VPYJP45lD1hipPg1MjyvQ=="
+    ],
+    "X-Amzn-Trace-Id": [
+      "Root=1-6233656b-2ac9ed7e58fe8cd716262a87"
+    ],
+    "X-Forwarded-For": [
+      "110.235.247.218, 64.252.139.140"
+    ],
+    "X-Forwarded-Port": [
+      "443"
+    ],
+    "X-Forwarded-Proto": [
+      "https"
+    ]
+  },
+  "queryStringParameters": null,
+  "multiValueQueryStringParameters": null,
+  "pathParameters": {
+    "id": "nak"
+  },
+  "stageVariables": null,
+  "requestContext": {
+    "resourceId": "b7z5mj",
+    "resourcePath": "/users/{id}",
+    "httpMethod": "PUT",
+    "extendedRequestId": "PIzI3ElFSQ0Farg=",
+    "requestTime": "17/Mar/2022:16:44:27 +0000",
+    "path": "/dev/users/nak",
+    "accountId": "097947100355",
+    "protocol": "HTTP/1.1",
+    "stage": "dev",
+    "domainPrefix": "uo89jo1heh",
+    "requestTimeEpoch": 1647535467744,
+    "requestId": "12673074-368a-4a3d-b838-ef654017004b",
+    "identity": {
+      "cognitoIdentityPoolId": null,
+      "accountId": null,
+      "cognitoIdentityId": null,
+      "caller": null,
+      "sourceIp": "110.235.247.218",
+      "principalOrgId": null,
+      "accessKey": null,
+      "cognitoAuthenticationType": null,
+      "cognitoAuthenticationProvider": null,
+      "userArn": null,
+      "userAgent": "PostmanRuntime/7.29.0",
+      "user": null
+    },
+    "domainName": "uo89jo1heh.execute-api.ap-southeast-1.amazonaws.com",
+    "apiId": "uo89jo1heh"
+  },
+  "body": "{\n    \"photo_link\": \"11111\"\n}",
+  "isBase64Encoded": false
+}
