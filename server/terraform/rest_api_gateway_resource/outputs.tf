@@ -2,11 +2,6 @@ output "method_id" {
   value = aws_api_gateway_method.method.id
 }
 
-
-output "method_response_id" {
-  value = aws_api_gateway_method_response.response_200.id
-}
-
 output "options_method_id" {
   value = aws_api_gateway_method.options_method.id
 }
@@ -30,7 +25,6 @@ output "api_resource" {
 output "deployment_sha" {
   value = sha1(jsonencode([
       aws_api_gateway_method.method.id,
-      aws_api_gateway_method_response.response_200.id,
       aws_api_gateway_method.options_method.id,
       aws_api_gateway_method_response.options_200.id,
       aws_api_gateway_integration.api_integration.id,
