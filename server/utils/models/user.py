@@ -21,6 +21,7 @@ class UserModel(Model):
     username = fields.Str(required=True)
     password = fields.Str(required=True)
     access = fields.Str(default="user")
+    photo_link = fields.Str()
 
     def __init__(self):
         super(UserModel, self).__init__()

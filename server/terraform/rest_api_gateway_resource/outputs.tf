@@ -1,5 +1,10 @@
 output "method_id" {
-  value = aws_api_gateway_method.method.id
+  value = [for method in aws_api_gateway_method.method : method.id]
+}
+
+
+output "integration_id" {
+  value = [for api_integration in aws_api_gateway_integration.api_integration : api_integration.id]
 }
 
 output "options_method_id" {
@@ -8,10 +13,6 @@ output "options_method_id" {
 
 output "options_method_response_id" {
   value = aws_api_gateway_method_response.options_200.id
-}
-
-output "integration_id" {
-  value = aws_api_gateway_integration.api_integration.id
 }
 
 output "options_integration_id" {
@@ -24,11 +25,14 @@ output "api_resource" {
 
 output "deployment_sha" {
   value = sha1(jsonencode([
-      aws_api_gateway_method.method.id,
-      aws_api_gateway_method.options_method.id,
-      aws_api_gateway_method_response.options_200.id,
-      aws_api_gateway_integration.api_integration.id,
-      aws_api_gateway_integration.options_integration.id,
-      aws_api_gateway_resource.api_resource.id
+    [for method in aws_api_gateway_method.method : method.id],
+    [for asm in aws_api_gateway_method.api_resource_specific_method : asm.id],
+    [for ai in aws_api_gateway_integration.api_integration : ai.id],
+    [for ai in aws_api_gateway_integration.api_resource_specific_integration : ai.id],
+    aws_api_gateway_method.options_method.id,
+    aws_api_gateway_method_response.options_200.id,
+    aws_api_gateway_integration.options_integration.id,
+    aws_api_gateway_resource.api_resource.id
+
   ]))
 }

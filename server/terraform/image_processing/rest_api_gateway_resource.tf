@@ -4,7 +4,7 @@ module "post_url_gateway_resource" {
 
   parent_id = var.rest_api.root_resource_id
   authorization = "NONE"
-  http_method   = "POST"
+  http_methods   = ["POST"]
   path_part   = "preSignUrl"
   rest_api   = var.rest_api
   function = aws_lambda_function.image_upload_url_lambda
