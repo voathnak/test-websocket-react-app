@@ -112,6 +112,25 @@ class Model(Schema):
         record._load(record_dict)
         return record
 
+    def pre_create(self, event, context):
+        try:
+            data = self.loads(event['body'])
+            # data = self.schema().loads(event['body'])
+        except ValidationError as err:
+            print(err.messages)
+            print(err.valid_data)
+            return response(400, {"message": err.messages, "code": 1011})
+        except TypeError as te:
+            return response(400, {'message': str(te), "code": 1012})
+        except Exception as e:
+            return response(400, {'message': str(e), "code": 1013})
+
+        # write the todos to the database
+        doc = self.create(data)
+
+        # create a response
+        return response(200, dict(doc))
+
     def create(self, values):
         timestamp = decimal.Decimal(datetime.utcnow().timestamp())
         item = {
@@ -138,26 +157,9 @@ class Model(Schema):
         except Exception as e:
             self._fetch_error(e)
 
-    def get(self, primary_key_value, sort_key_value=None):
-        logger.info(f"Getting specific record from "
-                    f"{self._table.name} with "
-                    f"{self._primary_key} = {primary_key_value}")
-        try:
-            key = {self._primary_key: primary_key_value}
-            if sort_key_value and self._sort_key:
-                key.update({self._sort_key: sort_key_value})
-#                 record = self._table.query(
-#                     KeyConditionExpression=Key(self._primary_key).eq(primary_key)
-#                                            & Key(self._sort_key).gt(0)
-# )
-#             else:
-            record = self._table.get_item(Key=key)
-
-            return self.recorded(record.get('Item', []))
-
-        except Exception as e:
-            self._fetch_error(e)
-            return response(400, {"message": e, "code": 1001})
+    def pre_list(self):
+        docs = self.list()
+        return response(200, [dict(result) for result in docs], "list")
 
     def list(self):
         try:
@@ -170,6 +172,157 @@ class Model(Schema):
             logger.error("Getting records from {}".format(self._table.name))
             logger.error(e)
             return response(400, {"message": e, "code": 1002})
+
+    def pre_get(self, event, context):
+        try:
+            _id = Schema.from_dict({'id': fields.Str(required=True)})().load(event.get('pathParameters')).get('id')
+            doc = self.get(_id)
+            if doc is None:
+                return response(404, {"message": "Record not found.", "code": 1031})
+            return response(200, dict(doc))
+        except ValidationError as err:
+            print(err.messages)
+            print(err.valid_data)
+            return response(400, {"message": str(err.messages), "code": 1032})
+        except TypeError as te:
+            return response(400, {'message': str(te), "code": 1033})
+        except Exception as e:
+            return response(400, {'message': str(e), "code": 1034})
+
+    def get(self, primary_key_value, sort_key_value=None):
+        logger.info(f"Getting specific record from "
+                    f"{self._table.name} with "
+                    f"{self._primary_key} = {primary_key_value}")
+        try:
+            key = {self._primary_key: primary_key_value}
+            if sort_key_value and self._sort_key:
+                key.update({self._sort_key: sort_key_value})
+            #                 record = self._table.query(
+            #                     KeyConditionExpression=Key(self._primary_key).eq(primary_key)
+            #                                            & Key(self._sort_key).gt(0)
+            # )
+            #             else:
+            record = self._table.get_item(Key=key)
+
+            return self.recorded(record.get('Item', []))
+
+        except Exception as e:
+            self._fetch_error(e)
+            return response(400, {"message": e, "code": 1001})
+
+    def get_one(self):
+        try:
+            record = self._collection.find_one()
+            return self.recorded(record)
+        except Exception as e:
+            self._fetch_error(e)
+
+    def pre_update(self, event, context):
+        try:
+            _id = event.get('pathParameters').get('id')
+            data = self.loads(event['body'], partial=True)
+            updated = self.update(_id, data)
+            if updated is None:
+                return response(404, {"message": "Record not found.", "code": 1041})
+            return response(200, dict(updated))
+        except ValidationError as err:
+            print(err.messages)
+            print(err.valid_data)
+            return response(400, {"message": str(err.messages), "code": 1042})
+        except TypeError as te:
+            return response(400, {'message': str(te), "code": 1043})
+        except Exception as e:
+            return response(400, {'message': str(e), "code": 1044})
+
+    def update(self, pkey, values):
+        try:
+            item = self._table.get_item(Key={self._primary_key: pkey}).get('Item', [])
+
+            if item:
+                self._load(item)
+                self._has_record = True
+                changed = False
+                values.update({'updatedAt': decimal.Decimal(datetime.utcnow().timestamp())})
+                update_expression = 'SET '
+                expression_attribute_values = {}
+                expression_attribute_names = {}
+                for key, value in values.items():
+                    if key != "_id" and key != 'createdAt':
+                        if self.__getattribute__(key) != value:
+                            changed = True
+                            update_expression += "#{} = :{}, ".format(key[:-2], key)
+                            expression_attribute_values[":{}".format(key)] = value
+                            expression_attribute_names["#{}".format(key[:-2])] = key
+                if changed:
+                    updated_record = self._table.update_item(
+                        Key={
+                            self._primary_key: pkey
+                        },
+                        ConditionExpression=f'attribute_exists({self._primary_key})',
+                        UpdateExpression=update_expression[:-2],
+                        ExpressionAttributeValues=expression_attribute_values,
+                        ExpressionAttributeNames=expression_attribute_names,
+                        ReturnValues='ALL_NEW',
+                    )
+                    self._load(updated_record.get('Attributes'))
+                    return self._from_dict(updated_record.get('Attributes'))
+                return "No Changed"
+            else:
+                self._has_record = False
+        except Exception as e:
+            logger.error("Updating records from {}".format(self._table.name))
+            logger.error(e)
+            raise
+        return self.get(pkey)
+
+    def pre_delete(self, event, context):
+        try:
+            _id = event.get('pathParameters').get('id')
+            deleted = self.delete(_id)
+            if deleted is None:
+                return response(404, {"message": "Record not found.", "code": 1051})
+            return response(204)
+        except ValidationError as err:
+            print(err.messages)
+            print(err.valid_data)
+            return response(400, {"message": str(err.messages), "code": 1052})
+        except TypeError as te:
+            return response(400, {'message': str(te), "code": 1053})
+        except Exception as e:
+            return response(400, {'message': str(e), "code": 1054})
+
+    def delete(self, _id):
+        try:
+            if isinstance(_id, str):
+                self._table.delete_item(Key={self._primary_key: _id})
+            elif isinstance(_id, list):
+                with self._table.batch_writer() as batch:
+                    for id in _id:
+                        batch.delete_item(Key={self._primary_key: id})
+
+        except Exception as e:
+            logger.error("Deleting records from {}".format(self._table.name))
+            logger.error(e)
+            raise
+
+        return True
+
+    def pre_delete_multi(self, event):
+        try:
+            data = json.loads(event['body'])
+            ids = data.get('ids')
+            self.delete(ids)
+            # if result is None:
+            #     return response(404, {"message": "Record not found.", "code": 1061})
+            return response(204)
+        except ValidationError as err:
+            print(err.messages)
+            print(err.valid_data)
+            return response(400, {"message": str(err.messages), "code": 1062})
+        except TypeError as te:
+            return response(400, {'message': str(te), "code": 1063})
+        except Exception as e:
+            return response(400, {'message': str(e), "code": 1064})
 
     def rest_controller(self, event, context):
         http_method = event.get('httpMethod')
@@ -193,79 +346,6 @@ class Model(Schema):
                 return self.pre_update(event, context)
 
         return response(METHOD_NOT_ALLOWED, {"message": "Method not allowed", "code": 1003})
-
-    def pre_create(self, event, context):
-        try:
-            data = self.loads(event['body'])
-            # data = self.schema().loads(event['body'])
-        except ValidationError as err:
-            print(err.messages)
-            print(err.valid_data)
-            return response(400, {"message": err.messages, "code": 1011})
-        except TypeError as te:
-            return response(400, {'message': str(te), "code": 1012})
-        except Exception as e:
-            return response(400, {'message': str(e), "code": 1013})
-
-        # write the todos to the database
-        doc = self.create(data)
-
-        # create a response
-        return response(200, dict(doc))
-
-    def pre_update(self, event, context):
-        try:
-            _id = event.get('pathParameters').get('id')
-            data = self.loads(event['body'], partial=True)
-            updated = self.update(_id, data)
-            if updated is None:
-                return response(404, {"message": "Record not found.", "code": 1041})
-            return response(200, dict(updated))
-        except ValidationError as err:
-            print(err.messages)
-            print(err.valid_data)
-            return response(400, {"message": str(err.messages), "code": 1042})
-        except TypeError as te:
-            return response(400, {'message': str(te), "code": 1043})
-        except Exception as e:
-            return response(400, {'message': str(e), "code": 1044})
-
-    def pre_delete(self, event, context):
-        try:
-            _id = event.get('pathParameters').get('id')
-            deleted = self.delete(_id)
-            if deleted is None:
-                return response(404, {"message": "Record not found.", "code": 1051})
-            return response(204)
-        except ValidationError as err:
-            print(err.messages)
-            print(err.valid_data)
-            return response(400, {"message": str(err.messages), "code": 1052})
-        except TypeError as te:
-            return response(400, {'message': str(te), "code": 1053})
-        except Exception as e:
-            return response(400, {'message': str(e), "code": 1054})
-
-    def pre_delete_multi(self, event):
-        try:
-            data = json.loads(event['body'])
-            ids = data.get('ids')
-            self.delete(ids)
-            # if result is None:
-            #     return response(404, {"message": "Record not found.", "code": 1061})
-            return response(204)
-        except ValidationError as err:
-            print(err.messages)
-            print(err.valid_data)
-            return response(400, {"message": str(err.messages), "code": 1062})
-        except TypeError as te:
-            return response(400, {'message': str(te), "code": 1063})
-        except Exception as e:
-            return response(400, {'message': str(e), "code": 1064})
-
-    def pre_list(self):
-        docs = self.list()
-        return response(200, [dict(result) for result in docs], "list")
 
     def json(self):
         return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
@@ -369,86 +449,6 @@ class Model(Schema):
             print("Error 1083", te)
         except Exception as e:
             print("Error 1084", e)
-
-    def pre_get(self, event, context):
-        try:
-            _id = Schema.from_dict({'id': fields.Str(required=True)})().load(event.get('pathParameters')).get('id')
-            doc = self.get(_id)
-            if doc is None:
-                return response(404, {"message": "Record not found.", "code": 1031})
-            return response(200, dict(doc))
-        except ValidationError as err:
-            print(err.messages)
-            print(err.valid_data)
-            return response(400, {"message": str(err.messages), "code": 1032})
-        except TypeError as te:
-            return response(400, {'message': str(te), "code": 1033})
-        except Exception as e:
-            return response(400, {'message': str(e), "code": 1034})
-
-    def get_one(self):
-        try:
-            record = self._collection.find_one()
-            return self.recorded(record)
-        except Exception as e:
-            self._fetch_error(e)
-
-    def update(self, pkey, values):
-        try:
-            item = self._table.get_item(Key={self._primary_key: pkey}).get('Item', [])
-
-            if item:
-                self._load(item)
-                self._has_record = True
-                changed = False
-                values.update({'updatedAt': decimal.Decimal(datetime.utcnow().timestamp())})
-                update_expression = 'SET '
-                expression_attribute_values = {}
-                expression_attribute_names = {}
-                for key, value in values.items():
-                    if key != "_id" and key != 'createdAt':
-                        if self.__getattribute__(key) != value:
-                            changed = True
-                            update_expression += "#{} = :{}, ".format(key[:-2], key)
-                            expression_attribute_values[":{}".format(key)] = value
-                            expression_attribute_names["#{}".format(key[:-2])] = key
-                if changed:
-                    updated_record = self._table.update_item(
-                        Key={
-                            self._primary_key: pkey
-                        },
-                        ConditionExpression=f'attribute_exists({self._primary_key})',
-                        UpdateExpression=update_expression[:-2],
-                        ExpressionAttributeValues=expression_attribute_values,
-                        ExpressionAttributeNames=expression_attribute_names,
-                        ReturnValues='ALL_NEW',
-                    )
-                    self._load(updated_record.get('Attributes'))
-                    return self._from_dict(updated_record.get('Attributes'))
-                return "No Changed"
-            else:
-                self._has_record = False
-        except Exception as e:
-            logger.error("Updating records from {}".format(self._table.name))
-            logger.error(e)
-            raise
-        return self.get(pkey)
-
-    def delete(self, _id):
-        try:
-            if isinstance(_id, str):
-                self._table.delete_item(Key={self._primary_key: _id})
-            elif isinstance(_id, list):
-                with self._table.batch_writer() as batch:
-                    for id in _id:
-                        batch.delete_item(Key={self._primary_key: id})
-
-        except Exception as e:
-            logger.error("Deleting records from {}".format(self._table.name))
-            logger.error(e)
-            raise
-
-        return True
 
     def __iter__(self):
         # filter out the field that's not declared by user (those are the field that belong to Schema class)
