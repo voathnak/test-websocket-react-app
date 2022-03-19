@@ -44,7 +44,7 @@ class UserModel(RestModel):
         data = json.loads(event.get('body'))
         user = self.get(data.get("username"))
         if user:
-            return response(401, json.dumps({'message': "Username already exist and cannot be updated."}))
+            return response(401, {'message': "Username already exist and cannot be updated."})
         else:
             return super(UserModel, self).pre_create(event, context)
 
@@ -80,7 +80,7 @@ class UserModel(RestModel):
 
             return response(200, self)
         else:
-            return response(401, json.dumps({'message': "Username or Password is invalid."}))
+            return response(401, {'message': "Username or Password is invalid."})
 
     # @validates("username")
     # def validate_unique_username(self, value):
