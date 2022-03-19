@@ -1,7 +1,7 @@
 import os
 
 from utils.models.user import UserModel
-from utils.orm import response
+from utils.orm.rest_model import response
 
 
 def delete_user(event, context):

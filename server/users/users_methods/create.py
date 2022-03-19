@@ -2,7 +2,7 @@ import json
 import os
 
 from utils.models.user import UserModel
-from utils.orm import response
+from utils.orm.rest_model import response
 
 
 def create_user(event, context):

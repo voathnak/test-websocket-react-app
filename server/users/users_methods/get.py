@@ -1,7 +1,7 @@
 import json
 
 from utils.models.user import UserModel
-from utils.orm import response
+from utils.orm.rest_model import response
 from utils.utils import auth, log_event
 
 

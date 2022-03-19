@@ -3,3 +3,5 @@ web2/
 **/registry.terraform.io/*
 **/.terraform/output/*
 /server/.scripts/api-gen/test/
+**/.aws-sam/*
+.aws-sam/*

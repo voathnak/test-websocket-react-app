@@ -6,7 +6,7 @@ from functools import reduce
 
 import jwt
 
-from utils.orm import response
+from utils.orm.rest_model import response
 
 email_regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+([.]\w{2,10})+$'
 

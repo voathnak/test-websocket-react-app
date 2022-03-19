@@ -15,7 +15,7 @@ dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table(os.environ.get('CONNECTION_TABLE_NAME', ''))
 SECRET_KEY = os.environ.get('SECRET_KEY', '')
 
-# Todo: update user on table update
+# Did: update user on table update
 
 
 class MessagingService(APIGWSocketCore):
@@ -29,7 +29,7 @@ class MessagingService(APIGWSocketCore):
 
         try:
             print("#--#"*40)
-            # Todo: get userId from connection
+            # Did: get userId from connection
             connection = Connection().get(self.requesterId)
             user_id = connection.username
             print(f"user_id: {user_id}")
@@ -38,7 +38,7 @@ class MessagingService(APIGWSocketCore):
             content = json.loads(self.event.get("body")).get('data')
             print(f"content: {content}")
             print("#--#"*40)
-            # Todo: save message
+            # Did: save message
             message = Message()
             message_content = TextMessageContent(**json.loads(content))
             message.create({

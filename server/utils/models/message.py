@@ -2,7 +2,8 @@
 import os
 
 from marshmallow import fields
-from utils.orm import Model
+
+from utils.orm.model import Model
 
 
 class Message(Model):

@@ -5,7 +5,7 @@ import jwt
 from datetime import datetime
 
 from utils.models.user import UserModel
-from utils.orm import response
+from utils.orm.rest_model import response
 
 SECRET_KEY = os.environ['SECRET_KEY']
 

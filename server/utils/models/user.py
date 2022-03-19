@@ -5,21 +5,21 @@ from datetime import datetime
 import jwt
 from marshmallow import fields, validates, ValidationError
 
-from utils.orm import Model, response
+from utils.orm.rest_model import RestModel, response
 from utils.utils import auth
 
 STAGE_NAME = os.environ.get('STAGE_NAME', '')
 SECRET_KEY = os.environ.get('SECRET_KEY', '')
 
 
-class UserModel(Model):
+class UserModel(RestModel):
     _fixed_name = os.environ.get('USER_TABLE_NAME')
     _name = "users"
     _primary_key = "username"
     email = fields.Str()
     name = fields.Str(required=True)
     username = fields.Str(required=True)
-    password = fields.Str(required=True)
+    password = fields.Str(required=True, load_only=True)
     access = fields.Str(default="user")
     photo_link = fields.Str()
 
@@ -34,11 +34,19 @@ class UserModel(Model):
             if path == "/login":
                 return self.login(event)
             elif path == "/signup":
-                return self.pre_create(event, context)
+                return self.signup(event, context)
         elif http_method == "GET":
             if path == "/current":
                 return self.get_user(event, context)
         return super(UserModel, self).rest_controller(event, context)
+
+    def signup(self, event, context):
+        data = json.loads(event.get('body'))
+        user = self.get(data.get("username"))
+        if user:
+            return response(401, json.dumps({'message': "Username already exist and cannot be updated."}))
+        else:
+            return super(UserModel, self).pre_create(event, context)
 
     def login(self, event):
         data = json.loads(event.get('body'))
@@ -74,9 +82,9 @@ class UserModel(Model):
         else:
             return response(401, json.dumps({'message': "Username or Password is invalid."}))
 
-    @validates("username")
-    def validate_unique_username(self, value):
-        if self.get(value):
-            print("Validation: on username", value)
-            raise ValidationError("username already exist and cannot be updated.")
+    # @validates("username")
+    # def validate_unique_username(self, value):
+    #     if self.get(value):
+    #         print("Validation: on username", value)
+    #         raise ValidationError("username already exist and cannot be updated.")
 

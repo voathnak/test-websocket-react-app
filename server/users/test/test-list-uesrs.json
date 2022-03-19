@@ -1,24 +1,24 @@
 {
-  "resource": "/users/login",
-  "path": "/users/login",
-  "httpMethod": "POST",
+  "resource": "/users",
+  "path": "/users",
+  "httpMethod": "GET",
   "headers": {
     "Accept": "*/*",
     "Accept-Encoding": "gzip, deflate, br",
+    "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6Im5hayIsImlkIjoibmFrIiwiZW1haWwiOm51bGwsImFjY2VzcyI6bnVsbCwiaWF0IjoxNjQ3NTQzMjg1LjU1MjkxMn0.H8sssHtOz3DmoEzb-K5vEluypQlS9e7mAnc2e6RhcIw",
     "CloudFront-Forwarded-Proto": "https",
     "CloudFront-Is-Desktop-Viewer": "true",
     "CloudFront-Is-Mobile-Viewer": "false",
     "CloudFront-Is-SmartTV-Viewer": "false",
     "CloudFront-Is-Tablet-Viewer": "false",
     "CloudFront-Viewer-Country": "KH",
-    "Content-Type": "application/json",
     "Host": "uo89jo1heh.execute-api.ap-southeast-1.amazonaws.com",
-    "Postman-Token": "8808ddba-1560-41dd-9017-ebb5bbafdadf",
+    "Postman-Token": "6529118b-c846-4c18-99a9-5990cb325302",
     "User-Agent": "PostmanRuntime/7.29.0",
-    "Via": "1.1 c9006eba4649f733be848dcf116b7e3a.cloudfront.net (CloudFront)",
-    "X-Amz-Cf-Id": "KwWU0eUgiVnMGE0Hq6y5DIvy0vn9-Z20cUjuUadbFLilY1nBY_bfLQ==",
-    "X-Amzn-Trace-Id": "Root=1-6234c379-7566daec2d83a7417ac57e11",
-    "X-Forwarded-For": "103.239.55.227, 64.252.139.78",
+    "Via": "1.1 75d57b6f1d28b9be49fef8fc0aa4a23c.cloudfront.net (CloudFront)",
+    "X-Amz-Cf-Id": "AR96ThDjLDhwdHCRPPz6b0E5IgHiXbykZQIl1LInfludDFAGEJijww==",
+    "X-Amzn-Trace-Id": "Root=1-6234c92c-29dc4d02489548d7167fb2fd",
+    "X-Forwarded-For": "103.239.55.227, 130.176.187.50",
     "X-Forwarded-Port": "443",
     "X-Forwarded-Proto": "https"
   },
@@ -28,6 +28,9 @@
     ],
     "Accept-Encoding": [
       "gzip, deflate, br"
+    ],
+    "Authorization": [
+      "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6Im5hayIsImlkIjoibmFrIiwiZW1haWwiOm51bGwsImFjY2VzcyI6bnVsbCwiaWF0IjoxNjQ3NTQzMjg1LjU1MjkxMn0.H8sssHtOz3DmoEzb-K5vEluypQlS9e7mAnc2e6RhcIw"
     ],
     "CloudFront-Forwarded-Proto": [
       "https"
@@ -47,29 +50,26 @@
     "CloudFront-Viewer-Country": [
       "KH"
     ],
-    "Content-Type": [
-      "application/json"
-    ],
     "Host": [
       "uo89jo1heh.execute-api.ap-southeast-1.amazonaws.com"
     ],
     "Postman-Token": [
-      "8808ddba-1560-41dd-9017-ebb5bbafdadf"
+      "6529118b-c846-4c18-99a9-5990cb325302"
     ],
     "User-Agent": [
       "PostmanRuntime/7.29.0"
     ],
     "Via": [
-      "1.1 c9006eba4649f733be848dcf116b7e3a.cloudfront.net (CloudFront)"
+      "1.1 75d57b6f1d28b9be49fef8fc0aa4a23c.cloudfront.net (CloudFront)"
     ],
     "X-Amz-Cf-Id": [
-      "KwWU0eUgiVnMGE0Hq6y5DIvy0vn9-Z20cUjuUadbFLilY1nBY_bfLQ=="
+      "AR96ThDjLDhwdHCRPPz6b0E5IgHiXbykZQIl1LInfludDFAGEJijww=="
     ],
     "X-Amzn-Trace-Id": [
-      "Root=1-6234c379-7566daec2d83a7417ac57e11"
+      "Root=1-6234c92c-29dc4d02489548d7167fb2fd"
     ],
     "X-Forwarded-For": [
-      "103.239.55.227, 64.252.139.78"
+      "103.239.55.227, 130.176.187.50"
     ],
     "X-Forwarded-Port": [
       "443"
@@ -83,18 +83,18 @@
   "pathParameters": null,
   "stageVariables": null,
   "requestContext": {
-    "resourceId": "dxky9q",
-    "resourcePath": "/users/login",
-    "httpMethod": "POST",
-    "extendedRequestId": "PMN6-FXTSQ0Fong=",
-    "requestTime": "18/Mar/2022:17:38:01 +0000",
-    "path": "/dev/users/login",
+    "resourceId": "33pyuq",
+    "resourcePath": "/users",
+    "httpMethod": "GET",
+    "extendedRequestId": "PMRe8HboyQ0FdAw=",
+    "requestTime": "18/Mar/2022:18:02:20 +0000",
+    "path": "/dev/users",
     "accountId": "097947100355",
     "protocol": "HTTP/1.1",
     "stage": "dev",
     "domainPrefix": "uo89jo1heh",
-    "requestTimeEpoch": 1647625081202,
-    "requestId": "9397fa27-6dd5-4e7b-9384-bf31679fc363",
+    "requestTimeEpoch": 1647626540235,
+    "requestId": "a7d61a93-27c2-45f3-977d-0cfa3c37a369",
     "identity": {
       "cognitoIdentityPoolId": null,
       "accountId": null,
@@ -112,6 +112,6 @@
     "domainName": "uo89jo1heh.execute-api.ap-southeast-1.amazonaws.com",
     "apiId": "uo89jo1heh"
   },
-  "body": "{\n    \"username\": \"nak\",\n    \"password\": \"123456\"\n}",
+  "body": null,
   "isBase64Encoded": false
 }

@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="[Local] UserFunction" type="aws.lambda" factoryName="Local" nameIsGenerated="true">
+  <configuration default="false" name="[Local] UserFunction update" type="aws.lambda" factoryName="Local">
     <option name="credentialProviderId" value="profile:aws1-vlim" />
     <option name="regionId" value="ap-southeast-1" />
     <option name="debugHost" value="localhost" />
@@ -24,7 +24,7 @@
     <option name="templateFile" value="$PROJECT_DIR$/test-template.yaml" />
     <option name="timeout" value="300" />
     <option name="useTemplate" value="true" />
-    <option name="input" value="users/test/test-update-nak.json" />
+    <option name="input" value="$PROJECT_DIR$$PROJECT_DIR$/../../../../../test/test-update-nak.json" />
     <option name="inputIsFile" value="true" />
     <sam>
       <option name="additionalBuildArgs" value="" />

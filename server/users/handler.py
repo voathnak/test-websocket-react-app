@@ -1,5 +1,4 @@
 from utils.models.user import UserModel
-from utils.orm import response
 from utils.utils import log_event, log_env
 
 
