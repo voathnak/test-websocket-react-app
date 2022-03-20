@@ -6,9 +6,18 @@
 /*}*/
 
 $total_height: 100vh;
-$second_header_height: 8vh;
+$second_header_height: 6vw;
 $thin_border_color: #dedee8;
 $header_bg_color: #c5ddd2;
+$smallest_font_size: .6vw;
+$smaller_font_size: .8vw;
+$small_font_size: 1vw;
+$small_medium_font_size: 1.2vw;
+$medium_font_size: 1.4vw;
+$large_medium_font_size: 1.6vw;
+$lage_font_size: 1.8vw;
+$lager_font_size: 2vw;
+$lagest_font_size: 2.2vw;
 
 .chat-container {
   .chat-window-header {
@@ -48,7 +57,7 @@ $header_bg_color: #c5ddd2;
   .profile-photo {
     margin: 1vh;
     border-radius: 50%;
-    border: 1px solid blue;
+    //border: 1px solid blue;
     width: 4vw;
     height: 4vw;
     display: flex;
@@ -66,7 +75,7 @@ $header_bg_color: #c5ddd2;
   .profile-photo {
     margin: 1vw;
     border-radius: 50%;
-    border: 1px solid blue;
+    //border: 1px solid blue;
     width: 4vw;
     height: 4vw;
     display: flex;
@@ -119,7 +128,7 @@ $header_bg_color: #c5ddd2;
         display: flex;
         flex-direction: row;
         //color: white;
-        font-size: 1vw;
+        font-size: $small_font_size;
         border: 0;
         border-bottom: 1px solid $thin_border_color;
 
@@ -133,7 +142,7 @@ $header_bg_color: #c5ddd2;
           margin: 0.6vw 1vw 1vw 0.2vw;
 
           .room-name {
-            font-size: 1.2vw;
+            font-size: $small_medium_font_size;
             font-weight: bold;
             text-transform: capitalize;
             text-align: left;
@@ -142,11 +151,11 @@ $header_bg_color: #c5ddd2;
           .last-chat-message {
             display: flex;
             flex-direction: row;
-            font-size: 1.2vh;
-            margin-top: 0.6vh;
+            font-size: $small_font_size;
+            margin-top: 0.4vw;
 
             div {
-              margin-right: 0.4vh;
+              margin-right: 0.2vw;
             }
           }
         }
@@ -162,7 +171,7 @@ $header_bg_color: #c5ddd2;
       padding: 0;
       //background-color: #efeeec;
       color: black;
-      font-size: 18px;
+      font-size: $lage_font_size;
       //margin: 0 auto;
       //height: 80vh;
       //position: relative;
@@ -194,10 +203,10 @@ $header_bg_color: #c5ddd2;
               height: 4vw;
             }
             .header-info {
-              margin: 1vh;
+              margin: 1vw .4vw;
 
               .room-name {
-                font-size: 2vh;
+                font-size: $large_medium_font_size;
                 font-weight: bold;
                 text-transform: capitalize;
                 text-align: left;
@@ -206,7 +215,7 @@ $header_bg_color: #c5ddd2;
               .info {
                 display: flex;
                 flex-direction: row;
-                font-size: 1.2vh;
+                font-size: $small_font_size;
                 margin-top: 0.4vh;
 
                 div {
@@ -247,39 +256,39 @@ $header_bg_color: #c5ddd2;
 
                   .debug-info {
                     border: .1vh solid cyan;
-                    font-size: small;
+                    font-size: $small_medium_font_size;
                     text-align: left;
                     padding: 1vh;
 
                     .header {
                       background-color: #68bedb;
-                      padding: 0.2vh 1vh;
+                      padding: 0.2vw 1vw;
                     }
 
                     .key {
                       background-color: #63707b;
                       color: white;
-                      padding: 0.2vh 1vh;
+                      padding: 0.2vw 1vw;
                       border: 0.1vh solid;
                     }
 
                     .value {
                       background-color: white;
                       color: #63707b;
-                      padding: 0.2vh 1vh;
+                      padding: 0.2vw 1vw;
                       border: 0.1vh solid;
                     }
                   }
 
                   .message-text-box {
                     //border: 1px solid green;
-                    border-radius: 8px;
-                    padding: .6vh 1vh;
+                    border-radius: .8vw;
+                    padding: .6vw 1vw;
                     display: flex;
                     flex-direction: column;
                     //width: 100%;
                     background-color: rgb(200, 250, 205);
-                    font-size: 0.875rem;
+                    font-size: $small_medium_font_size;
                     line-height: 1.57143;
                     font-weight: 400;
                     color: rgb(33, 43, 54);
@@ -287,8 +296,8 @@ $header_bg_color: #c5ddd2;
 
                   .time {
                     padding: 0;
-                    margin: 5px;
-                    font-size: 10px;
+                    margin: .4vw;
+                    font-size: $smaller_font_size;
                   }
 
                 }
@@ -328,7 +337,7 @@ $header_bg_color: #c5ddd2;
 
       > .input {
         width: 100%;
-        height: 4vh;
+        height: 3vw;
         margin: 0;
         padding: 0;
         border-top: .1px solid $thin_border_color;

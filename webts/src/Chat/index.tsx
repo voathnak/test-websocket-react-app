@@ -5,8 +5,9 @@ import useWebSocket, {ReadyState} from 'react-use-websocket';
 import "./Chat.css"
 import {RootState} from "../redux";
 import {getConnection, getMessages, setConnection} from "./ServerMethod";
-import {User} from "../type";
+import {Contact, Room, User} from "../type";
 import {setSelectedRoom} from "../redux/environmentVariable";
+import {userContact} from "../redux/usersSlice";
 
 const {REACT_APP_WEB_SOCKET_URL: socketUrl} = process.env;
 
@@ -28,16 +29,20 @@ type MessageContent = {
 }
 
 
-
 interface Properties {
   webSocketUrl: string
+}
+
+const getProfilePhoto = (contacts: Contact[], username: string) => {
+  const loggedInUserContacts = contacts.filter(x => x.username === username);
+  return loggedInUserContacts.length ? loggedInUserContacts[0].photoURL: false;
 }
 
 const Chat = ({webSocketUrl}: Properties) => {
   const debug = true;
   const dispatch = useDispatch();
-  const {user, status, test} = useSelector((state: RootState) => state.user);
-  const { selectedRoom } = useSelector((state: RootState) => state.environmentVariable);
+  const {user: currentLoggedInUser, status, test, contacts} = useSelector((state: RootState) => state.user);
+  const {selectedRoom} = useSelector((state: RootState) => state.environmentVariable);
   // Public API that will echo messages sent to it back to the client
   // const [socketUrl, setSocketUrl] = useState(webSocketUrl);
   const [messageHistory, setMessageHistory] = useState([] as Message[]);
@@ -60,7 +65,7 @@ const Chat = ({webSocketUrl}: Properties) => {
   } = useWebSocket(getSocketUrl, {
     onOpen: () => {
       console.log('opened');
-      setConnection(sendMessage, user);
+      setConnection(sendMessage, currentLoggedInUser);
     },
     //Will attempt to reconnect on all close events, such as server shutting down
     shouldReconnect: (closeEvent) => true,
@@ -80,8 +85,8 @@ const Chat = ({webSocketUrl}: Properties) => {
     const messageContent: MessageContent = {text, timestamp, sender, room};
     const message: Message = {
       messageType: messageType,
-        content: messageContent,
-      direction: sender !== user.username ? 'received' : 'sent',
+      content: messageContent,
+      direction: sender !== currentLoggedInUser.username ? 'received' : 'sent',
       time: timestamp.toString(),
       status: "sent"
     }
@@ -101,7 +106,7 @@ const Chat = ({webSocketUrl}: Properties) => {
     const messages: Message[] = messageContents.map(msc => ({
       messageType: "text-message",
       content: msc,
-      direction: msc.sender !== user.username ? 'received' : 'sent',
+      direction: msc.sender !== currentLoggedInUser.username ? 'received' : 'sent',
       time: msc.timestamp,
       status: "sent"
     } as Message));
@@ -158,10 +163,14 @@ const Chat = ({webSocketUrl}: Properties) => {
   //   []
   // );
 
-  const onSelectRoom = (activeUser: User) => {
-    console.info("onSelectRoom", activeUser);
-    const room = [activeUser.username, user.username].sort().join("-");
-    getMessages(sendMessage, user, room);
+  const onSelectRoom = (selectedRoom: Contact) => {
+    console.info("onSelectRoom", selectedRoom);
+    const room: Room = {
+      type: 'direct',
+      name: [selectedRoom.username, currentLoggedInUser.username].sort().join("-"),
+      photoURL: selectedRoom.photoURL
+    };
+    getMessages(sendMessage, currentLoggedInUser, room.name);
     dispatch(setSelectedRoom(room));
   };
 
@@ -181,21 +190,20 @@ const Chat = ({webSocketUrl}: Properties) => {
   };
 
 
-
   useEffect(() => {
-    getConnection(sendMessage, user);
+    getConnection(sendMessage, currentLoggedInUser);
     console.info('####$$$$');
-    console.info({user, status, test});
+    console.info({user: currentLoggedInUser, status, test});
   }, []);
 
   const onSubmit = useCallback(() => {
     console.info('sending text:', textMessage);
     const time = new Date().getTime();
     const messageContent = {
-      text: `${user.username}: ${textMessage}`,
+      text: `${currentLoggedInUser.username}: ${textMessage}`,
       timestamp: time.toString(),
-      sender: user.username,
-      room: selectedRoom
+      sender: currentLoggedInUser.username,
+      room: selectedRoom.name
     } as MessageContent;
     const messageData = JSON.stringify({
       data: JSON.stringify(messageContent),
@@ -238,7 +246,7 @@ const Chat = ({webSocketUrl}: Properties) => {
               </div>)}
             </div>
             <div className={"profile-photo"}>
-              <img src={x.profilePhoto || "https://minimal-assets-api.vercel.app/assets/images/avatars/avatar_2.jpg"}
+              <img src={getProfilePhoto(contacts, x.content.sender) || "https://minimal-assets-api.vercel.app/assets/images/avatars/avatar_2.jpg"}
                    alt={`profile-photo`}/>
             </div>
           </div>
@@ -250,22 +258,25 @@ const Chat = ({webSocketUrl}: Properties) => {
 
   const listOnlineUser = () => {
     console.info('onlineUsers:', onlineUsers);
-    const users = onlineUsers.map((u: User) => {
+    // const users = onlineUsers.map((u: User) => {
+    const exclude_self_contact = contacts.filter(x => x.username != currentLoggedInUser.username);
+    const users = exclude_self_contact.map((contact: Contact) => {
       return (
-        <div key={u.connectionId}>
-          <button type="button" onClick={() => onSelectRoom(u)}
-                  className={selectedRoom === [u.username, user.username].sort().join("-") ? "selected" : "other"}>
+        <div key={contact.connectionId}>
+          <button type="button" onClick={() => onSelectRoom(contact)}
+                  className={selectedRoom.name === [contact.username, currentLoggedInUser.username].sort().join("-")
+                    ? "selected" : "other"}>
 
             <div className={"profile-photo"}>
-              <img src={u.photoURL || "https://minimal-assets-api.vercel.app/assets/images/avatars/avatar_2.jpg"}
+              <img src={contact.photoURL || "https://minimal-assets-api.vercel.app/assets/images/avatars/avatar_2.jpg"}
                    alt={`profile-photo`}/>
             </div>
             <div className={'room-info'}>
               <div className={'room-name'}>
-                {`${u.username}`}
+                {`${contact.username}`}
               </div>
               <div className={'last-chat-message'}>
-                  {selectedRoom.split('-').length} members,
+                members,
               </div>
             </div>
           </button>
@@ -282,6 +293,13 @@ const Chat = ({webSocketUrl}: Properties) => {
       // e.currentTarget.textContent = "";
     }
   };
+
+  useEffect(() => {
+    dispatch(userContact());
+    return () => {
+      // setTextMessage("");
+    };
+  }, [currentLoggedInUser.isLoggedIn]);
 
   useEffect(() => {
     const d = new Date();
@@ -302,7 +320,7 @@ const Chat = ({webSocketUrl}: Properties) => {
       <div className="chat-window-header">
         <div>
           <span>
-            currently logged in username <b>{user.username}</b>
+            currently logged in username <b>{currentLoggedInUser.username}</b>
           </span>
         </div>
         <div>
@@ -313,13 +331,13 @@ const Chat = ({webSocketUrl}: Properties) => {
         <div className="manual-control-box">
           <span>Manual Control: </span>
 
-          <button type="submit" onClick={() => getConnection(sendMessage, user)}>
+          <button type="submit" onClick={() => getConnection(sendMessage, currentLoggedInUser)}>
             getConnection
           </button>
-          <button type="submit" onClick={() => setConnection(sendMessage, user)}>
+          <button type="submit" onClick={() => setConnection(sendMessage, currentLoggedInUser)}>
             setConnection
           </button>
-          <button type="submit" onClick={() => getMessages(sendMessage, user, selectedRoom)}>
+          <button type="submit" onClick={() => getMessages(sendMessage, currentLoggedInUser, selectedRoom.name)}>
             getMessages
           </button>
         </div>
@@ -332,21 +350,22 @@ const Chat = ({webSocketUrl}: Properties) => {
           </div>
           {listOnlineUser()}
         </div>
-        {selectedRoom && (<div className="chat-box">
+        {selectedRoom.name && (<div className="chat-box">
           <div className="messages-window">
             <div className={'messages-container'}>
               <div className={'messages-container-header'}>
                 <div className={"profile-photo"}>
-                  <img src={user.photoURL || "https://minimal-assets-api.vercel.app/assets/images/avatars/avatar_2.jpg"}
-                       alt={`profile-photo`}/>
+                  <img
+                    src={selectedRoom.photoURL || "https://minimal-assets-api.vercel.app/assets/images/avatars/avatar_2.jpg"}
+                    alt={`profile-photo`}/>
                 </div>
                 <div className={'header-info'}>
                   <div className={'room-name'}>
-                    {selectedRoom.split('-').filter(x => x != user.username).join('-')}
+                    {selectedRoom.name.split('-').filter(x => x != currentLoggedInUser.username).join('-')}
                   </div>
                   <div className={'info'}>
                     <div className={'member'}>
-                      {selectedRoom.split('-').length} members,
+                      {selectedRoom.name.split('-').length} members,
                     </div>
                     <div className={'status'}>
                       Online

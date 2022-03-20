@@ -6,3 +6,16 @@ export type User = {
   photoURL?: string,
   id: string,
 }
+
+
+export type Contact = {
+  username: string,
+  connectionId?: string,
+  photoURL?: string
+}
+
+export type Room = {
+  type: 'direct' | 'group',
+  name: string,
+  photoURL?: string
+}

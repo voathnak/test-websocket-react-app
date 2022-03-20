@@ -34,7 +34,20 @@
 .chat-container .profile-photo {
   margin: 1vh;
   border-radius: 50%;
-  border: 1px solid blue;
+  width: 4vw;
+  height: 4vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+.chat-container .profile-photo img {
+  width: 100%;
+  height: 100%;
+}
+.chat-container .profile-photo {
+  margin: 1vw;
+  border-radius: 50%;
   width: 4vw;
   height: 4vw;
   display: flex;
@@ -68,7 +81,7 @@
   flex-direction: row;
   color: white;
   border-bottom: 1px solid #f4f4f9;
-  height: 8vh;
+  height: 6vw;
 }
 .chat-container .chat-window .chat-users button {
   background-color: white;
@@ -97,11 +110,11 @@
 .chat-container .chat-window .chat-users button .room-info .last-chat-message {
   display: flex;
   flex-direction: row;
-  font-size: 1.2vh;
-  margin-top: 0.6vh;
+  font-size: 1vw;
+  margin-top: 0.4vw;
 }
 .chat-container .chat-window .chat-users button .room-info .last-chat-message div {
-  margin-right: 0.4vh;
+  margin-right: 0.2vw;
 }
 .chat-container .chat-window .chat-users button.selected {
   background-color: #c9a7eb;
@@ -111,7 +124,7 @@
   border-right: 1px solid #e5efee;
   padding: 0;
   color: black;
-  font-size: 18px;
+  font-size: 1.8vw;
   display: flex;
   flex-direction: column;
 }
@@ -130,17 +143,17 @@
   flex-direction: row;
   margin-bottom: 2vh;
   border-bottom: 0.1vw solid #d8d1d1;
-  height: 8vh;
+  height: 6vw;
 }
 .chat-container .chat-window .chat-box .messages-window .messages-container .messages-container-header .profile-photo {
   width: 4vw;
   height: 4vw;
 }
 .chat-container .chat-window .chat-box .messages-window .messages-container .messages-container-header .header-info {
-  margin: 1vh;
+  margin: 1vw 0.4vw;
 }
 .chat-container .chat-window .chat-box .messages-window .messages-container .messages-container-header .header-info .room-name {
-  font-size: 2vh;
+  font-size: 1.6vw;
   font-weight: bold;
   text-transform: capitalize;
   text-align: left;
@@ -148,7 +161,7 @@
 .chat-container .chat-window .chat-box .messages-window .messages-container .messages-container-header .header-info .info {
   display: flex;
   flex-direction: row;
-  font-size: 1.2vh;
+  font-size: 1vw;
   margin-top: 0.4vh;
 }
 .chat-container .chat-window .chat-box .messages-window .messages-container .messages-container-header .header-info .info div {
@@ -181,41 +194,41 @@
 }
 .chat-container .chat-window .chat-box .messages-window .messages-container .messages-inner-container .message-row .message-balloon .message-box .debug-info {
   border: 0.1vh solid cyan;
-  font-size: small;
+  font-size: 1.2vw;
   text-align: left;
   padding: 1vh;
 }
 .chat-container .chat-window .chat-box .messages-window .messages-container .messages-inner-container .message-row .message-balloon .message-box .debug-info .header {
   background-color: #68bedb;
-  padding: 0.2vh 1vh;
+  padding: 0.2vw 1vw;
 }
 .chat-container .chat-window .chat-box .messages-window .messages-container .messages-inner-container .message-row .message-balloon .message-box .debug-info .key {
   background-color: #63707b;
   color: white;
-  padding: 0.2vh 1vh;
+  padding: 0.2vw 1vw;
   border: 0.1vh solid;
 }
 .chat-container .chat-window .chat-box .messages-window .messages-container .messages-inner-container .message-row .message-balloon .message-box .debug-info .value {
   background-color: white;
   color: #63707b;
-  padding: 0.2vh 1vh;
+  padding: 0.2vw 1vw;
   border: 0.1vh solid;
 }
 .chat-container .chat-window .chat-box .messages-window .messages-container .messages-inner-container .message-row .message-balloon .message-box .message-text-box {
-  border-radius: 8px;
-  padding: 0.6vh 1vh;
+  border-radius: 0.8vw;
+  padding: 0.6vw 1vw;
   display: flex;
   flex-direction: column;
   background-color: #c8facd;
-  font-size: 0.875rem;
+  font-size: 1.2vw;
   line-height: 1.57143;
   font-weight: 400;
   color: #212b36;
 }
 .chat-container .chat-window .chat-box .messages-window .messages-container .messages-inner-container .message-row .message-balloon .message-box .time {
   padding: 0;
-  margin: 5px;
-  font-size: 10px;
+  margin: 0.4vw;
+  font-size: 0.8vw;
 }
 .chat-container .chat-window .chat-box .messages-window .messages-container .messages-inner-container .message-row .message-balloon .profile-photo {
   width: 3vw;
@@ -237,7 +250,7 @@
 }
 .chat-container .chat-window .chat-box > .input {
   width: 100%;
-  height: 4vh;
+  height: 3vw;
   margin: 0;
   padding: 0;
   border-top: 0.1px solid #dedee8;

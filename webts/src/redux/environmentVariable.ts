@@ -1,7 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
+import {Room} from "../type";
 
 const initialState = {
-  selectedRoom: "",
+  selectedRoom: {} as Room,
 };
 
 export const environmentVariableSlice = createSlice({
