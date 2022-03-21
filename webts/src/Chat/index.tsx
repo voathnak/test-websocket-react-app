@@ -5,28 +5,13 @@ import useWebSocket, {ReadyState} from 'react-use-websocket';
 import "./Chat.css"
 import {RootState} from "../redux";
 import {getConnection, getMessages, setConnection} from "./ServerMethod";
-import {Contact, Room, User} from "../type";
+import {Contact, DisplayMessage, MessageContent, Room, User} from "../type";
 import {setSelectedRoom} from "../redux/environmentVariable";
 import {userContact} from "../redux/usersSlice";
+import {setMessageHistory} from "../redux/messageHistory";
 
 const {REACT_APP_WEB_SOCKET_URL: socketUrl} = process.env;
 
-type Message = {
-  messageType: 'online-user' | 'health-check' | 'text-message',
-  content: MessageContent,
-  time: string,
-  username?: string,
-  profilePhoto?: string,
-  direction: 'received' | 'sent',
-  status: 'sent' | 'read',
-}
-
-type MessageContent = {
-  text: string,
-  timestamp: string,
-  sender: string,
-  room: string,
-}
 
 
 interface Properties {
@@ -42,10 +27,10 @@ const Chat = ({webSocketUrl}: Properties) => {
   const debug = true;
   const dispatch = useDispatch();
   const {user: currentLoggedInUser, status, test, contacts} = useSelector((state: RootState) => state.user);
+  const {messageHistory} = useSelector((state: RootState) => state.messageHistory);
   const {selectedRoom} = useSelector((state: RootState) => state.environmentVariable);
   // Public API that will echo messages sent to it back to the client
   // const [socketUrl, setSocketUrl] = useState(webSocketUrl);
-  const [messageHistory, setMessageHistory] = useState([] as Message[]);
   const [onlineUsers, setOnlineUsers] = useState([] as User[]);
   const [textMessage, setTextMessage] = useState('');
   const [customerTab, setCustomerTabs] = useState([]);
@@ -71,7 +56,7 @@ const Chat = ({webSocketUrl}: Properties) => {
     shouldReconnect: (closeEvent) => true,
   });
 
-  const send = (message: Message) => {
+  const send = (message: DisplayMessage) => {
     sendMessage(JSON.stringify(message));
   }
 
@@ -83,7 +68,7 @@ const Chat = ({webSocketUrl}: Properties) => {
     const {content, messageType} = lastJsonMessage;
     const {text, timestamp, sender, room} = content;
     const messageContent: MessageContent = {text, timestamp, sender, room};
-    const message: Message = {
+    const message: DisplayMessage = {
       messageType: messageType,
       content: messageContent,
       direction: sender !== currentLoggedInUser.username ? 'received' : 'sent',
@@ -91,39 +76,52 @@ const Chat = ({webSocketUrl}: Properties) => {
       status: "sent"
     }
     // message list that exclude that just got sent
-    const filteredMessageHistory = messageHistory.filter((x) =>
-      x.content.timestamp !== timestamp.toString());
-    setMessageHistory([
-      ...filteredMessageHistory,
-      message,
-    ]);
+    const filteredMessageHistory = messageHistory[room] ? messageHistory[room].filter((x) =>
+      x.content.timestamp !== timestamp.toString()) : [];
+    dispatch(setMessageHistory({
+      room,
+      messages: [
+        ...filteredMessageHistory,
+        message,
+      ]
+    }));
     // @ts-ignore
     window.messageHistory = messageHistory
   };
 
   const onMessageHistoryUpdate = () => {
+    console.group("onMessageHistoryUpdate");
     const messageContents: MessageContent[] = lastJsonMessage.content.messageList;
-    const messages: Message[] = messageContents.map(msc => ({
+    const messages: DisplayMessage[] = messageContents.map(msc => ({
       messageType: "text-message",
       content: msc,
       direction: msc.sender !== currentLoggedInUser.username ? 'received' : 'sent',
       time: msc.timestamp,
       status: "sent"
-    } as Message));
+    } as DisplayMessage));
 
     console.log({messages});
+    console.log({messageContents});
     const messageIds = messages.map(ms => ms.content.timestamp);
     console.log({messageIds});
-    const filteredMessageHistory = messageHistory.filter((x) =>
-      !messageIds.includes(x.content.timestamp));
-    setMessageHistory([
-      ...filteredMessageHistory,
-      ...messages,
-    ]);
+    if (messageContents.length) {
+      const room =  messageContents[0].room;
+      console.log({room});
+      const filteredMessageHistory = room in messageHistory && messageHistory[room] ? messageHistory[room].filter((x) =>
+        !messageIds.includes(x.content.timestamp)) : [];
+      dispatch(setMessageHistory({
+        room,
+        messages: [
+          ...filteredMessageHistory,
+          ...messages,
+        ]
+      }));
+    }
+    console.groupEnd();
   };
 
   const onHealthCheck = () => {
-    console.info('INFO: server health checking');
+    console.info('onHealthCheck', 'INFO: server health checking');
   };
 
   const receiveUpdate: { [key: string]: () => void } = {
@@ -137,6 +135,7 @@ const Chat = ({webSocketUrl}: Properties) => {
     if (lastMessage !== null) {
       // setMessageHistory((prev) => prev.concat(lastMessage));
       // const data = JSON.parse(lastMessage.data);
+      console.group('useEffect/lastMessage');
       console.info({lastJsonMessage});
       console.info({lastMessage});
       const {content, messageType} = lastJsonMessage;
@@ -156,7 +155,8 @@ const Chat = ({webSocketUrl}: Properties) => {
         }
       }
     }
-  }, [lastMessage, setMessageHistory]);
+    console.groupEnd();
+  }, [lastMessage]);
 
   // const handleClickChangeSocketUrl = useCallback(
   //   () => setSocketUrl(webSocketUrl),
@@ -197,6 +197,7 @@ const Chat = ({webSocketUrl}: Properties) => {
   }, []);
 
   const onSubmit = useCallback(() => {
+    console.group('onSubmit/useCallback/textMessage');
     console.info('sending text:', textMessage);
     const time = new Date().getTime();
     const messageContent = {
@@ -212,47 +213,54 @@ const Chat = ({webSocketUrl}: Properties) => {
     console.info('sending --->', messageData,
       JSON.parse(JSON.parse(messageData).data));
     sendMessage(messageData);
-    setMessageHistory([
-      ...messageHistory,
-      {
-        content: messageContent,
-        direction: 'sent',
-      },
-    ] as Message[]);
+    dispatch(setMessageHistory({
+      room: selectedRoom.name,
+      messages: [
+      ...messageHistory[selectedRoom.name],
+        {
+          content: messageContent,
+          direction: 'sent',
+        },
+      ] as DisplayMessage[]
+    }));
     setTextMessage("");
+    console.groupEnd();
   }, [textMessage]);
 
   const listMessageHistory = () => {
     console.info('messageHistory:', messageHistory);
-    const messages = messageHistory.map((x) => {
-      return (
-        <div key={x.content.timestamp} className={[x.direction, "message-row"].join(" ")}>
-          <div className={"message-balloon"}>
-            <div className="message-box">
-              <div className="time">{x.content.sender && `${x.content.sender}, `}{x.content.timestamp}</div>
-              <div className="message-text-box">
-                <span>{`${x.content.text}`}</span>
+    let messages: any[] = [];
+    if (selectedRoom.name in messageHistory && messageHistory[selectedRoom.name]) {
+      messages = messageHistory[selectedRoom.name].map((x) => {
+        return (
+          <div key={x.content.timestamp} className={[x.direction, "message-row"].join(" ")}>
+            <div className={"message-balloon"}>
+              <div className="message-box">
+                <div className="time">{x.content.sender && `${x.content.sender}, `}{x.content.timestamp}</div>
+                <div className="message-text-box">
+                  <span>{`${x.content.text}`}</span>
+                </div>
+                {debug && (<div className={"debug-info"}>
+                  <div className={"header"}>Debug Info:</div>
+                  <div>
+                    <span className={"key"}>direction</span>
+                    <span className={"value"}>{`${x.direction}`}</span>
+                  </div>
+                  <div>
+                    <span className={"key"}>status</span>
+                    <span className={"value"}>{`${x.status}`}</span>
+                  </div>
+                </div>)}
               </div>
-              {debug && (<div className={"debug-info"}>
-                <div className={"header"}>Debug Info:</div>
-                <div>
-                  <span className={"key"}>direction</span>
-                  <span className={"value"}>{`${x.direction}`}</span>
-                </div>
-                <div>
-                  <span className={"key"}>status</span>
-                  <span className={"value"}>{`${x.status}`}</span>
-                </div>
-              </div>)}
-            </div>
-            <div className={"profile-photo"}>
-              <img src={getProfilePhoto(contacts, x.content.sender) || "https://minimal-assets-api.vercel.app/assets/images/avatars/avatar_2.jpg"}
-                   alt={`profile-photo`}/>
+              <div className={"profile-photo"}>
+                <img src={getProfilePhoto(contacts, x.content.sender) || "https://minimal-assets-api.vercel.app/assets/images/avatars/avatar_2.jpg"}
+                     alt={`profile-photo`}/>
+              </div>
             </div>
           </div>
-        </div>
-      );
-    });
+        );
+      });
+    }
     return <div className={"messages-inner-container"}>{messages}</div>;
   };
 
@@ -262,7 +270,7 @@ const Chat = ({webSocketUrl}: Properties) => {
     const exclude_self_contact = contacts.filter(x => x.username != currentLoggedInUser.username);
     const users = exclude_self_contact.map((contact: Contact) => {
       return (
-        <div key={contact.connectionId}>
+        <div key={contact.username}>
           <button type="button" onClick={() => onSelectRoom(contact)}
                   className={selectedRoom.name === [contact.username, currentLoggedInUser.username].sort().join("-")
                     ? "selected" : "other"}>
@@ -302,12 +310,14 @@ const Chat = ({webSocketUrl}: Properties) => {
   }, [currentLoggedInUser.isLoggedIn]);
 
   useEffect(() => {
+    console.group('useEffect/textMessage-messageHistory-onlineUsers');
     const d = new Date();
     console.group(`${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}:${d.getMilliseconds()}`);
     console.info({textMessage});
     console.info({messageHistory});
     console.info({onlineUsers});
     console.info({onlineUsers: JSON.stringify(onlineUsers)});
+    console.groupEnd();
     console.groupEnd();
     return () => {
       // setTextMessage("");

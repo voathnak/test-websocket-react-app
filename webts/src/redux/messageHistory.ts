@@ -1,7 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
+import {DisplayMessageHistory} from "../type";
 
 const initialState = {
-  msgHistory: [],
+  messageHistory: {} as DisplayMessageHistory,
 };
 
 export const messageHistorySlice = createSlice({
@@ -14,12 +15,21 @@ export const messageHistorySlice = createSlice({
     // decrement: (state) => {
     //   state.msgHistory -= 1;
     // },
-    addMsgHistory: (state, action) => {
+    addMessageHistory: (state, action) => {
       console.warn('Unresolved Point');
       // state.msgHistory.push(action.payload);
+    },
+    setMessageHistory: (state, action) => {
+      console.group('reducer/setMessageHistory');
+      console.log({action});
+      const {payload: {room, messages}} = action;
+      console.log({room});
+      console.log({messages});
+      state.messageHistory[room] = messages;
+      console.groupEnd();
     },
   },
 });
 
-export const { addMsgHistory } = messageHistorySlice.actions;
+export const { addMessageHistory, setMessageHistory } = messageHistorySlice.actions;
 export default messageHistorySlice.reducer;
