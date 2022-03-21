@@ -114,6 +114,8 @@
   border-bottom: 1px solid #dedee8;
 }
 .chat-container .chat-window .chat-users button .profile-photo {
+  min-width: 3.5vw;
+  min-height: 3.5vw;
   width: 3.5vw;
   height: 3.5vw;
   margin: 0.6vw;
@@ -123,6 +125,10 @@
 }
 .chat-container .chat-window .chat-users button .room-info {
   margin: 0.6vw 1vw 1vw 0.2vw;
+  flex-grow: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-align: left;
 }
 .chat-container .chat-window .chat-users button .room-info .room-name {
   font-size: 1.2vw;

@@ -154,6 +154,8 @@ $lagest_font_size: 2.2vw;
         border-bottom: 1px solid $thin_border_color;
 
         .profile-photo {
+          min-width: 3.5vw;
+          min-height: 3.5vw;
           width: 3.5vw;
           height: 3.5vw;
           margin: 0.6vw;
@@ -165,6 +167,10 @@ $lagest_font_size: 2.2vw;
 
         .room-info {
           margin: 0.6vw 1vw 1vw 0.2vw;
+          flex-grow: 1;
+          white-space: nowrap;
+          overflow: hidden;
+          text-align: left;
 
           .room-name {
             font-size: $small_medium_font_size;
