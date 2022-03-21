@@ -24,13 +24,13 @@ const getProfilePhoto = (contacts: Contact[], username: string) => {
 }
 
 const Chat = ({webSocketUrl}: Properties) => {
-  const debug = true;
   const dispatch = useDispatch();
   const {user: currentLoggedInUser, status, test, contacts} = useSelector((state: RootState) => state.user);
   const {messageHistory} = useSelector((state: RootState) => state.messageHistory);
   const {selectedRoom} = useSelector((state: RootState) => state.environmentVariable);
   // Public API that will echo messages sent to it back to the client
   // const [socketUrl, setSocketUrl] = useState(webSocketUrl);
+  const [debug, setDebug] = useState(false);
   const [onlineUsers, setOnlineUsers] = useState([] as User[]);
   const [textMessage, setTextMessage] = useState('');
   const [customerTab, setCustomerTabs] = useState([]);
@@ -231,30 +231,45 @@ const Chat = ({webSocketUrl}: Properties) => {
     console.info('messageHistory:', messageHistory);
     let messages: any[] = [];
     if (selectedRoom.name in messageHistory && messageHistory[selectedRoom.name]) {
-      messages = messageHistory[selectedRoom.name].map((x) => {
+      const roomMessages = messageHistory[selectedRoom.name];
+      messages = roomMessages.map((x, index) => {
+        const selfMessage = currentLoggedInUser.username == x.content.sender;
+        const date = new Date(parseInt(x.content.timestamp));
+        const isRepeat = index > 0 && x.content.sender == roomMessages[index - 1].content.sender;
+
         return (
-          <div key={x.content.timestamp} className={[x.direction, "message-row"].join(" ")}>
-            <div className={"message-balloon"}>
+          <div key={x.content.timestamp} className={[
+            x.direction,
+            "message-row",
+            isRepeat ? 'repeat' : 'non-repeat'
+          ].join(" ")}>
+            <div className={"message-container"}>
               <div className="message-box">
-                <div className="time">{x.content.sender && `${x.content.sender}, `}{x.content.timestamp}</div>
-                <div className="message-text-box">
-                  <span>{`${x.content.text}`}</span>
+                <div className="message-balloon">
+                  <div className={'info'}>
+                    {!isRepeat && !selfMessage && (<div className={"sender"}>{`${x.content.sender}`}</div>)}
+                  </div>
+                  <div className={"message-text-box"}>
+                    <div className={'message-text'}>{`${x.content.text}`}</div>
+                    <div className={"time"}>{`${date.getHours()}:${date.getMinutes()}`}</div>
+                  </div>
                 </div>
-                {debug && (<div className={"debug-info"}>
-                  <div className={"header"}>Debug Info:</div>
-                  <div>
-                    <span className={"key"}>direction</span>
-                    <span className={"value"}>{`${x.direction}`}</span>
+                {debug &&(
+                  <div className="debug-info">
+                    <div>{x.content.sender && `${x.content.sender}, `}{x.content.timestamp}</div>
+                    <div>direction: {x.direction}</div>
+                    <div>status: {x.status}</div>
+                    <div>isRepeat: {isRepeat.toString()}</div>
                   </div>
-                  <div>
-                    <span className={"key"}>status</span>
-                    <span className={"value"}>{`${x.status}`}</span>
-                  </div>
-                </div>)}
+                )}
+
               </div>
-              <div className={"profile-photo"}>
-                <img src={getProfilePhoto(contacts, x.content.sender) || "https://minimal-assets-api.vercel.app/assets/images/avatars/avatar_2.jpg"}
-                     alt={`profile-photo`}/>
+              <div className={'profile-photo-container'}>
+                {!isRepeat && (<div className={"profile-photo"}>
+                  <img
+                    src={getProfilePhoto(contacts, x.content.sender) || "https://minimal-assets-api.vercel.app/assets/images/avatars/avatar_2.jpg"}
+                    alt={`profile-photo`}/>
+                </div>)}
               </div>
             </div>
           </div>
@@ -327,6 +342,7 @@ const Chat = ({webSocketUrl}: Properties) => {
 
   return (
     <div className="chat-container">
+      <button className={'debug-button'} onClick={() => setDebug(!debug)}>😈</button>
       {
         debug && (
           <div className="control-panel">

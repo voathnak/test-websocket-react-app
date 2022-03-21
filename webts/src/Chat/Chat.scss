@@ -20,6 +20,17 @@ $lager_font_size: 2vw;
 $lagest_font_size: 2.2vw;
 
 .chat-container {
+  .debug-button {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1vw;
+    height: 1vw;
+    border: none;
+    margin: 0;
+    padding: 0;
+  }
+
   .control-panel {
     display: flex;
     flex-direction: column;
@@ -75,7 +86,7 @@ $lagest_font_size: 2.2vw;
   }
 
   .profile-photo {
-    margin: 1vw;
+    margin: 1vw 1vw 0 1vw;
     border-radius: 50%;
     //border: 1px solid blue;
     width: 4vw;
@@ -246,51 +257,26 @@ $lagest_font_size: 2.2vw;
               //height: 8vh;
               list-style: none;
               //border: 1px solid blue;
-              margin: 0;
+              //margin: 0;
+              margin-bottom: .4vw;
               display: flex;
               //flex-direction: column;
 
-              .message-balloon {
+              .message-container {
                 //border: 1px solid red;
                 max-width: 80%;
                 display: flex;
                 flex-direction: row;
-                align-items: center; // align center vertically
+                align-items: end; // align center vertically
 
                 .message-box {
                   display: flex;
-                  flex-direction: column;
+                  flex-direction: row-reverse;
 
-                  .debug-info {
-                    border: .1vh solid cyan;
-                    font-size: $small_medium_font_size;
-                    text-align: left;
-                    padding: 1vh;
-
-                    .header {
-                      background-color: #68bedb;
-                      padding: 0.2vw 1vw;
-                    }
-
-                    .key {
-                      background-color: #63707b;
-                      color: white;
-                      padding: 0.2vw 1vw;
-                      border: 0.1vh solid;
-                    }
-
-                    .value {
-                      background-color: white;
-                      color: #63707b;
-                      padding: 0.2vw 1vw;
-                      border: 0.1vh solid;
-                    }
-                  }
-
-                  .message-text-box {
+                  .message-balloon {
                     //border: 1px solid green;
                     border-radius: .8vw;
-                    padding: .6vw 1vw;
+                    padding: .4vw .6vw;
                     display: flex;
                     flex-direction: column;
                     //width: 100%;
@@ -299,24 +285,62 @@ $lagest_font_size: 2.2vw;
                     line-height: 1.57143;
                     font-weight: 400;
                     color: rgb(33, 43, 54);
+                    min-width: 6vw;
+
+                    .message-text-box {
+                      display: flex;
+                      flex-direction: row;
+                      justify-content: space-between;
+                      text-align: left;
+
+                      .time {
+                        font-size: $smaller_font_size;
+                        text-align: right;
+                        margin-left: 1vw;
+                        align-self: end;
+                      }
+                    }
+
+                    .info {
+                      display: flex;
+                      flex-direction: row;
+                      justify-content: space-between;
+
+                      .sender {
+                        text-transform: capitalize;
+                        font-weight: bold;
+                        color: purple;
+                        font-size: $small_medium_font_size;
+                      }
+
+
+                    }
                   }
 
-                  .time {
-                    padding: 0;
+                  .debug-info {
+                    padding: .2vw;
                     margin: .4vw;
-                    font-size: $smaller_font_size;
+                    font-size: $smallest_font_size;
+                    //border: 1px solid #e7e7ea;
                   }
 
                 }
 
-                .profile-photo {
-                  width: 3vw;
-                  height: 3vw;
+                .profile-photo-container {
+                  width: 5vw;
+
+                  .profile-photo {
+                    width: 3vw;
+                    height: 3vw;
+                  }
                 }
               }
 
             }
 
+            .message-row.non-repeat {
+              margin-top: 1.6vw;
+            }
 
             > .message-row.sent {
               text-align: right;
@@ -327,12 +351,14 @@ $lagest_font_size: 2.2vw;
               text-align: left;
               justify-content: flex-start;
 
-              .message-balloon {
+              .message-container {
                 flex-direction: row-reverse;
 
                 .message-box {
-                  .message-text-box {
-                    background-color: rgb(244, 246, 248);
+                  flex-direction: row;
+
+                  .message-balloon {
+                    background-color: #f7e2ed;
                   }
                 }
               }
