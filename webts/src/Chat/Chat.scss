@@ -19,6 +19,14 @@ $lage_font_size: 1.8vw;
 $lager_font_size: 2vw;
 $lagest_font_size: 2.2vw;
 
+.online-dot {
+  width: .5vw;
+  height: .5vw;
+  border-radius: 50%;
+  align-self: center;
+  background-color: #07f107;
+}
+
 .chat-container {
   .debug-button {
     position: absolute;
@@ -151,6 +159,10 @@ $lagest_font_size: 2.2vw;
           margin: 0.6vw;
         }
 
+        .profile-photo.online {
+          border: 1px solid #cbef8e;
+        }
+
         .room-info {
           margin: 0.6vw 1vw 1vw 0.2vw;
 
@@ -221,6 +233,7 @@ $lagest_font_size: 2.2vw;
             }
             .header-info {
               margin: 1vw .4vw;
+              flex-grow: 1;
 
               .room-name {
                 font-size: $large_medium_font_size;
@@ -232,8 +245,20 @@ $lagest_font_size: 2.2vw;
               .info {
                 display: flex;
                 flex-direction: row;
+                flex-grow: 1;
                 font-size: $small_font_size;
                 margin-top: 0.4vh;
+
+                .member {
+                  text-align: left;
+                }
+
+                .status > div {
+                  display: flex;
+                  flex-direction: row;
+                  flex-grow: 1;
+                  margin-right: 1vw;
+                }
 
                 div {
                   margin-right: 0.4vh;

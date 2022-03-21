@@ -4,6 +4,14 @@
 /*.chat-box > ul > li:nth-of-type(even) {*/
 /*    text-align: right;*/
 /*}*/
+.online-dot {
+  width: 0.5vw;
+  height: 0.5vw;
+  border-radius: 50%;
+  align-self: center;
+  background-color: #07f107;
+}
+
 .chat-container .debug-button {
   position: absolute;
   top: 0;
@@ -110,6 +118,9 @@
   height: 3.5vw;
   margin: 0.6vw;
 }
+.chat-container .chat-window .chat-users button .profile-photo.online {
+  border: 1px solid #cbef8e;
+}
 .chat-container .chat-window .chat-users button .room-info {
   margin: 0.6vw 1vw 1vw 0.2vw;
 }
@@ -167,6 +178,7 @@
 }
 .chat-container .chat-window .chat-box .messages-window .messages-container .messages-container-header .header-info {
   margin: 1vw 0.4vw;
+  flex-grow: 1;
 }
 .chat-container .chat-window .chat-box .messages-window .messages-container .messages-container-header .header-info .room-name {
   font-size: 1.6vw;
@@ -177,8 +189,18 @@
 .chat-container .chat-window .chat-box .messages-window .messages-container .messages-container-header .header-info .info {
   display: flex;
   flex-direction: row;
+  flex-grow: 1;
   font-size: 1vw;
   margin-top: 0.4vh;
+}
+.chat-container .chat-window .chat-box .messages-window .messages-container .messages-container-header .header-info .info .member {
+  text-align: left;
+}
+.chat-container .chat-window .chat-box .messages-window .messages-container .messages-container-header .header-info .info .status > div {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  margin-right: 1vw;
 }
 .chat-container .chat-window .chat-box .messages-window .messages-container .messages-container-header .header-info .info div {
   margin-right: 0.4vh;

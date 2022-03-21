@@ -7,7 +7,7 @@ import {RootState} from "../redux";
 import {getConnection, getMessages, setConnection} from "./ServerMethod";
 import {Contact, DisplayMessage, MessageContent, Room, User} from "../type";
 import {setSelectedRoom} from "../redux/environmentVariable";
-import {userContact} from "../redux/usersSlice";
+import {updateContactStatus, userContact} from "../redux/usersSlice";
 import {setMessageHistory} from "../redux/messageHistory";
 
 // const {REACT_APP_WEB_SOCKET_URL: socketUrl} = process.env;
@@ -63,6 +63,7 @@ const Chat = ({webSocketUrl}: Properties) => {
   const onOnlineUserUpdate = () => {
     const {content} = lastJsonMessage;
     setOnlineUsers(content.connectionIds);
+    dispatch(updateContactStatus(content));
   };
   const onMessageUpdate = () => {
     const {content, messageType} = lastJsonMessage;
@@ -168,7 +169,8 @@ const Chat = ({webSocketUrl}: Properties) => {
     const room: Room = {
       type: 'direct',
       name: [selectedRoom.username, currentLoggedInUser.username].sort().join("-"),
-      photoURL: selectedRoom.photoURL
+      photoURL: selectedRoom.photoURL,
+      onlineStatus: selectedRoom.onlineStatus
     };
     getMessages(sendMessage, currentLoggedInUser, room.name);
     dispatch(setSelectedRoom(room));
@@ -289,13 +291,16 @@ const Chat = ({webSocketUrl}: Properties) => {
     // const users = onlineUsers.map((u: User) => {
     const exclude_self_contact = contacts.filter(x => x.username != currentLoggedInUser.username);
     const users = exclude_self_contact.map((contact: Contact) => {
+      const roomName = [contact.username, currentLoggedInUser.username].sort().join("-");
+      const lastMessageInRoom = roomName in messageHistory && messageHistory[roomName] ?
+        messageHistory[roomName].slice(-1)[0] : null;
       return (
         <div key={contact.username}>
           <button type="button" onClick={() => onSelectRoom(contact)}
                   className={selectedRoom.name === [contact.username, currentLoggedInUser.username].sort().join("-")
                     ? "selected" : "other"}>
 
-            <div className={"profile-photo"}>
+            <div className={["profile-photo", contact.onlineStatus ? "online" : " "].join(" ")}>
               <img src={contact.photoURL || "https://minimal-assets-api.vercel.app/assets/images/avatars/avatar_2.jpg"}
                    alt={`profile-photo`}/>
             </div>
@@ -304,7 +309,12 @@ const Chat = ({webSocketUrl}: Properties) => {
                 {`${contact.username}`}
               </div>
               <div className={'last-chat-message'}>
-                members,
+                {lastMessageInRoom && (
+                  <span>
+                    {lastMessageInRoom.content.sender == currentLoggedInUser.username ? "You" :
+                    lastMessageInRoom.content.sender}
+                    <span>: {lastMessageInRoom.content.text}</span>
+                </span>)}
               </div>
             </div>
           </button>
@@ -400,10 +410,10 @@ const Chat = ({webSocketUrl}: Properties) => {
                   </div>
                   <div className={'info'}>
                     <div className={'member'}>
-                      {selectedRoom.name.split('-').length} members,
+                      {selectedRoom.name.split('-').length} members
                     </div>
                     <div className={'status'}>
-                      Online
+                      { selectedRoom.onlineStatus && (<div><div className={'online-dot'}/><div>Online</div></div>)}
                     </div>
                   </div>
                 </div>

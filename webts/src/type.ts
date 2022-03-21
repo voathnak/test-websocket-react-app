@@ -11,13 +11,15 @@ export type User = {
 export type Contact = {
   username: string,
   connectionId?: string,
-  photoURL?: string
+  photoURL?: string,
+  onlineStatus: boolean
 }
 
 export type Room = {
   type: 'direct' | 'group',
   name: string,
-  photoURL?: string
+  photoURL?: string,
+  onlineStatus: boolean
 }
 
 export type MessageContent = {

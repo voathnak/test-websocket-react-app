@@ -79,7 +79,27 @@ export const userContact = createAsyncThunk(
 export const userSlice = createSlice({
   name: "user",
   initialState,
-  reducers: {},
+  reducers: {
+    updateContactStatus: (state, action) => {
+      console.group('reducers/updateContactStatus');
+      const {
+        payload: {connectionIds},
+      } = action;
+      console.info({action});
+      const statusUsernames = Object.fromEntries(connectionIds.map((c: { username: string; connectionId: string; }) =>
+        [c.username, c.connectionId]));
+      console.log({statusUsernames});
+      console.log("keys", Object.keys(statusUsernames));
+      state.contacts = state.contacts.map((contact: Contact) => ({
+        ...contact,
+        connectionId: Object.keys(statusUsernames).includes(contact.username) ?
+          statusUsernames[contact.username].connectionId : '',
+        onlineStatus: Object.keys(statusUsernames).includes(contact.username)
+      }));
+
+      console.groupEnd();
+    }
+  },
 
   extraReducers: (builder) => {
     builder.addCase(loginUser.pending, (state, action) => {
@@ -94,9 +114,7 @@ export const userSlice = createSlice({
       console.log({payload});
 
       state.user = payload as unknown as User;
-      console.info({payload});
-      console.info({state});
-      console.info({status});
+
       if (status === 200) {
         state.user.isLoggedIn = true;
       }
@@ -128,5 +146,5 @@ export const userSlice = createSlice({
   }
 });
 
-// export const { setUser } = userSlice.actions;
+export const { updateContactStatus } = userSlice.actions;
 export default userSlice.reducer;
