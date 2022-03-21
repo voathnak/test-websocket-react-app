@@ -10,7 +10,7 @@ import {setSelectedRoom} from "../redux/environmentVariable";
 import {userContact} from "../redux/usersSlice";
 import {setMessageHistory} from "../redux/messageHistory";
 
-const {REACT_APP_WEB_SOCKET_URL: socketUrl} = process.env;
+// const {REACT_APP_WEB_SOCKET_URL: socketUrl} = process.env;
 
 
 
@@ -33,7 +33,7 @@ const Chat = ({webSocketUrl}: Properties) => {
   const [debug, setDebug] = useState(false);
   const [onlineUsers, setOnlineUsers] = useState([] as User[]);
   const [textMessage, setTextMessage] = useState('');
-  const [customerTab, setCustomerTabs] = useState([]);
+  // const [customerTab, setCustomerTabs] = useState([]);
 
   const getSocketUrl = useCallback(() => {
     return new Promise<string>(resolve => {
@@ -56,9 +56,9 @@ const Chat = ({webSocketUrl}: Properties) => {
     shouldReconnect: (closeEvent) => true,
   });
 
-  const send = (message: DisplayMessage) => {
-    sendMessage(JSON.stringify(message));
-  }
+  // const send = (message: DisplayMessage) => {
+  //   sendMessage(JSON.stringify(message));
+  // }
 
   const onOnlineUserUpdate = () => {
     const {content} = lastJsonMessage;
@@ -199,9 +199,13 @@ const Chat = ({webSocketUrl}: Properties) => {
   const onSubmit = useCallback(() => {
     console.group('onSubmit/useCallback/textMessage');
     console.info('sending text:', textMessage);
+    if (!textMessage) {
+      console.groupEnd();
+      return;
+    }
     const time = new Date().getTime();
     const messageContent = {
-      text: `${currentLoggedInUser.username}: ${textMessage}`,
+      text: textMessage,
       timestamp: time.toString(),
       sender: currentLoggedInUser.username,
       room: selectedRoom.name
@@ -213,10 +217,12 @@ const Chat = ({webSocketUrl}: Properties) => {
     console.info('sending --->', messageData,
       JSON.parse(JSON.parse(messageData).data));
     sendMessage(messageData);
+    const messages = selectedRoom.name in messageHistory ? messageHistory[selectedRoom.name] : [];
+    console.groupEnd();
     dispatch(setMessageHistory({
       room: selectedRoom.name,
       messages: [
-      ...messageHistory[selectedRoom.name],
+      ...messages,
         {
           content: messageContent,
           direction: 'sent',
@@ -224,7 +230,6 @@ const Chat = ({webSocketUrl}: Properties) => {
       ] as DisplayMessage[]
     }));
     setTextMessage("");
-    console.groupEnd();
   }, [textMessage]);
 
   const listMessageHistory = () => {
