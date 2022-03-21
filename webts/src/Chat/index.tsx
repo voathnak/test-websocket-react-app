@@ -327,31 +327,35 @@ const Chat = ({webSocketUrl}: Properties) => {
 
   return (
     <div className="chat-container">
-      <div className="chat-window-header">
-        <div>
-          <span>
-            currently logged in username <b>{currentLoggedInUser.username}</b>
-          </span>
-        </div>
-        <div>
-          <span>
-            connectionStatus: <b>{connectionStatus}</b>
-          </span>
-        </div>
-        <div className="manual-control-box">
-          <span>Manual Control: </span>
+      {
+        debug && (
+          <div className="control-panel">
+            <div>
+              <span>
+                currently loggedIn: <b>{currentLoggedInUser.username}</b>
+              </span>
+            </div>
+            <div>
+              <span>
+                connectionStatus: <b>{connectionStatus}</b>
+              </span>
+            </div>
+            <div className="manual-control-box">
+              <span>Manual Control: </span>
 
-          <button type="submit" onClick={() => getConnection(sendMessage, currentLoggedInUser)}>
-            getConnection
-          </button>
-          <button type="submit" onClick={() => setConnection(sendMessage, currentLoggedInUser)}>
-            setConnection
-          </button>
-          <button type="submit" onClick={() => getMessages(sendMessage, currentLoggedInUser, selectedRoom.name)}>
-            getMessages
-          </button>
-        </div>
-      </div>
+              <button type="submit" onClick={() => getConnection(sendMessage, currentLoggedInUser)}>
+                getConnection
+              </button>
+              <button type="submit" onClick={() => setConnection(sendMessage, currentLoggedInUser)}>
+                setConnection
+              </button>
+              <button type="submit" onClick={() => getMessages(sendMessage, currentLoggedInUser, selectedRoom.name)}>
+                getMessages
+              </button>
+            </div>
+          </div>
+        )
+      }
 
       <div className="chat-window">
         <div className="chat-users">

@@ -20,13 +20,13 @@ $lager_font_size: 2vw;
 $lagest_font_size: 2.2vw;
 
 .chat-container {
-  .chat-window-header {
+  .control-panel {
     display: flex;
     flex-direction: column;
-    width: 30%;
+    width: 20vw;
     position: absolute;
-    bottom: 0;
-    right: 0;
+    top: 4vw;
+    right: 2vw;
     margin: 0 auto;
     border: 1px solid #bcb5c9;
 
@@ -47,6 +47,8 @@ $lagest_font_size: 2.2vw;
     }
 
     .manual-control-box {
+      display: flex;
+      flex-direction: column;
       background-color: #c6e3de;
       margin: 0 auto;
       border: 1px solid #b5c9b8;
@@ -180,14 +182,18 @@ $lagest_font_size: 2.2vw;
 
 
       .messages-window {
-        height: 86vh;
+        height: 100%;
+        flex-grow: 1;
+        overflow: hidden;
 
         .messages-container {
           width: 100%;
-          height: 90vh;
+          height: 100%;
           list-style: none;
           margin: 0;
           padding: 0;
+          display: flex;
+          flex-direction: column;
 
           .messages-container-header {
             display: flex;
@@ -227,11 +233,12 @@ $lagest_font_size: 2.2vw;
 
           .messages-inner-container {
             overflow-y: scroll;
-            height: 76vh;
+            //height: 76vh;
             width: 100%;
             list-style: none;
             margin: 0;
             padding: 0;
+            flex-grow: 1;
 
             .message-row {
               width: 92%;
