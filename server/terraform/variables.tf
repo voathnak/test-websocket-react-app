@@ -19,6 +19,11 @@ variable "project_name" {
   default = "vlim-ws-chat"
 }
 
+variable "domain_name" {
+  type    = string
+  default = "vlim.co"
+}
+
 variable "SECRET_KEY" {
   description = "SECRET_KEY"
 

@@ -49,4 +49,10 @@ output "image_bucket_domain_name" {
   value = module.image_processing.image_bucket_domain_name
 }
 
+output "web_bucket_name" {
+  description = "static web bucket name"
+
+  value = aws_s3_bucket.webpage_bucket.bucket
+}
+
 #"https://${RestApi}.execute-api.${AWS::Region}.amazonaws.com/${StageName}/todos"
