@@ -43,4 +43,10 @@ output "rootAPI" {
   value = "https://${aws_api_gateway_rest_api.root_api.id}.execute-api.${var.aws_region}.amazonaws.com/${terraform.workspace}"
 }
 
+output "image_bucket_domain_name" {
+  description = "rootAPI"
+
+  value = module.image_processing.image_bucket_domain_name
+}
+
 #"https://${RestApi}.execute-api.${AWS::Region}.amazonaws.com/${StageName}/todos"
