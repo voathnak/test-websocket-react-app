@@ -40,7 +40,7 @@ output "user-lambda-function-arn" {
 output "rootAPI" {
   description = "rootAPI"
 
-  value = "https://${aws_api_gateway_rest_api.root_api.id}.execute-api.${var.aws_region}.amazonaws.com"
+  value = "https://${aws_api_gateway_rest_api.root_api.id}.execute-api.${var.aws_region}.amazonaws.com/${terraform.workspace}"
 }
 
 #"https://${RestApi}.execute-api.${AWS::Region}.amazonaws.com/${StageName}/todos"

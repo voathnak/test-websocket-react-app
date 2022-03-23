@@ -50,8 +50,8 @@ class Model(Schema):
 
     active = fields.Boolean(default=True)
 
-    createdAt = fields.DateTime(required=True)
-    updatedAt = fields.DateTime(required=True)
+    createdAt = fields.DateTime(load_default=datetime.utcnow().isoformat())
+    updatedAt = fields.DateTime(load_default=datetime.utcnow().isoformat())
 
     def __init__(self):
         super().__init__()
