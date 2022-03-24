@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="da43ebd7-3c5f-435e-843a-7506b10bdbea" name="Changes" comment="fixed chat duplicate on sender">
-      <change beforePath="$PROJECT_DIR$/../.idea/chatApp.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/chatApp.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/misc.xml" afterDir="false" />
+    <list default="true" id="da43ebd7-3c5f-435e-843a-7506b10bdbea" name="Changes" comment="fixed last message style">
+      <change beforePath="$PROJECT_DIR$/../server/.scripts/config.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../server/.scripts/config.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/terraform/outputs/api-gateway-authorizer-lambda.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../server/terraform/outputs/api-gateway-authorizer-lambda.zip" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/terraform/outputs/core_lib_layer.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../server/terraform/outputs/core_lib_layer.zip" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/terraform/outputs/message-response-lambda.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../server/terraform/outputs/message-response-lambda.zip" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/terraform/outputs/python_libs_layer.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../server/terraform/outputs/python_libs_layer.zip" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/terraform/outputs/user-lambda.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../server/terraform/outputs/user-lambda.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/terraform/terraform.tfstate.d/dev/terraform.tfstate" beforeDir="false" afterPath="$PROJECT_DIR$/../server/terraform/terraform.tfstate.d/dev/terraform.tfstate" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/terraform/terraform.tfstate.d/dev/terraform.tfstate.backup" beforeDir="false" afterPath="$PROJECT_DIR$/../server/terraform/terraform.tfstate.d/dev/terraform.tfstate.backup" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/terraform/variables.tf" beforeDir="false" afterPath="$PROJECT_DIR$/../server/terraform/variables.tf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/redux/usersSlice.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/redux/usersSlice.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,8 +26,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="TypeScript File" />
         <option value="JavaScript File" />
+        <option value="TypeScript File" />
       </list>
     </option>
   </component>
@@ -100,6 +101,11 @@
       <workItem from="1646678622873" duration="6997000" />
       <workItem from="1646766027268" duration="1137000" />
       <workItem from="1646917113198" duration="23580000" />
+      <workItem from="1647228844435" duration="10622000" />
+      <workItem from="1647323756381" duration="18232000" />
+      <workItem from="1647543375466" duration="431000" />
+      <workItem from="1647702560975" duration="10373000" />
+      <workItem from="1647789473671" duration="30644000" />
     </task>
     <task id="LOCAL-00001" summary="IMP/FE empty chat text box after sent">
       <created>1640511282996</created>
@@ -122,7 +128,91 @@
       <option name="project" value="LOCAL" />
       <updated>1647103556916</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="refactor get online user service">
+      <created>1647275771178</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1647275771178</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Implement get_messages">
+      <created>1647312567472</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1647312567472</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Implement get_messages">
+      <created>1647312585845</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1647312585845</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Improve style">
+      <created>1647350804553</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1647350804553</updated>
+    </task>
+    <task id="LOCAL-00008" summary="fill message when click on room">
+      <created>1647397278399</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1647397278399</updated>
+    </task>
+    <task id="LOCAL-00009" summary="improve profile photo showing in FE">
+      <created>1647795949447</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1647795949447</updated>
+    </task>
+    <task id="LOCAL-00010" summary="reimplement messageHistory redux store">
+      <created>1647836296250</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1647836296250</updated>
+    </task>
+    <task id="LOCAL-00011" summary="fixed scroll ui">
+      <created>1647840574630</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1647840574631</updated>
+    </task>
+    <task id="LOCAL-00012" summary="css improvement: group repeat message">
+      <created>1647848601164</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1647848601164</updated>
+    </task>
+    <task id="LOCAL-00013" summary="fixed send message from empty room">
+      <created>1647858414551</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1647858414552</updated>
+    </task>
+    <task id="LOCAL-00014" summary="implement contact and room status">
+      <created>1647870122816</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1647870122816</updated>
+    </task>
+    <task id="LOCAL-00015" summary="fixed last message style">
+      <created>1647870999250</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1647870999250</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -143,15 +233,27 @@
     <MESSAGE value="IMP/FE empty chat text box after sent" />
     <MESSAGE value="add debug info and correct the direction field" />
     <MESSAGE value="fixed chat duplicate on sender" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed chat duplicate on sender" />
+    <MESSAGE value="refactor get online user service" />
+    <MESSAGE value="Implement get_messages" />
+    <MESSAGE value="Improve style" />
+    <MESSAGE value="fill message when click on room" />
+    <MESSAGE value="improve profile photo showing in FE" />
+    <MESSAGE value="reimplement messageHistory redux store" />
+    <MESSAGE value="change ui of control panel" />
+    <MESSAGE value="fixed scroll ui" />
+    <MESSAGE value="improve chat css" />
+    <MESSAGE value="css improvement: group repeat message" />
+    <MESSAGE value="fixed send message from empty room" />
+    <MESSAGE value="implement contact and room status" />
+    <MESSAGE value="fixed last message style" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed last message style" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/Chat/index.tsx</url>
-          <line>77</line>
-          <properties lambdaOrdinal="-1" />
+          <line>68</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
       </breakpoints>
