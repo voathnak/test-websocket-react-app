@@ -1,7 +1,7 @@
 locals {
   message_response_lambda = {
     lambda_zip_path = "outputs/message-response-lambda.zip"
-    function_name = format("%s-v%s-%s-%s", var.project_name, var.changes_version, "message_response", terraform.workspace)
+    function_name = format("%s-%s-ver-%s-%s", var.project_name, terraform.workspace, var.changes_version, "message_response")
     handler = "message_response.handler"
     runtime = "python3.9"
   }

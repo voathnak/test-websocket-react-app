@@ -12,7 +12,7 @@ data "archive_file" "core-lib-layer-archive" {
 
 resource "aws_lambda_layer_version" "core_lib_layer" {
   filename   = local.core_lib_layer_zip_path
-  layer_name = format("%s-%s-v%s-%s", var.project_name, terraform.workspace, var.changes_version, "CoreLibs")
+  layer_name = format("%s-%s-ver-%s-%s", var.project_name, terraform.workspace, var.changes_version, "CoreLibs")
   source_code_hash = filebase64sha256(local.core_lib_layer_zip_path)
 
   compatible_runtimes = ["python3.8"]
@@ -26,7 +26,7 @@ data "archive_file" "python-libs-layer-archive" {
 
 resource "aws_lambda_layer_version" "python_libs_layer" {
   filename   = local.python_libs_layer_zip_path
-  layer_name = format("%s-%s-v%s-%s", var.project_name, terraform.workspace, var.changes_version, "PythonLibs")
+  layer_name = format("%s-%s-ver-%s-%s", var.project_name, terraform.workspace, var.changes_version, "PythonLibs")
 #  source_code_hash = filebase64sha256(local.python_libs_layer_zip_path)
 
   compatible_runtimes = ["python3.8"]
@@ -40,7 +40,7 @@ data "archive_file" "image_processing-libs-layer-archive" {
 
 resource "aws_lambda_layer_version" "image_processing_libs_layer" {
   filename   = local.image_processing_libs_layer_zip_path
-  layer_name = format("%s-%s-v%s-%s", var.project_name, terraform.workspace, var.changes_version, "ImageProcessingLibs")
+  layer_name = format("%s-%s-ver-%s-%s", var.project_name, terraform.workspace, var.changes_version, "ImageProcessingLibs")
   source_code_hash = filebase64sha256(local.image_processing_libs_layer_zip_path)
 
   compatible_runtimes = ["python3.8"]

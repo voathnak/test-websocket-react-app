@@ -3,11 +3,11 @@ import os
 
 from utils.custom_types.message import OnlineUserUpdate
 from utils.socket_utilities import send_message
-from utils.utils import log_event, httpResponse
+from utils.utils import log_event, httpResponse, log_env
 import boto3
 
 dynamodb = boto3.resource('dynamodb')
-table = dynamodb.Table(os.environ['TABLE_NAME'])
+table = dynamodb.Table(os.environ['CONNECTION_TABLE_NAME'])
 
 
 def get_all_connection_ids():
@@ -43,6 +43,8 @@ def broadcast_new_joiner(reqctx):
 
 def handler(event, context):
     log_event(event)
+    log_env(['CONNECTION_TABLE_NAME'])
+
     reqctx = event.get('requestContext')
     self_id = reqctx.get("connectionId")
     table.put_item(Item={

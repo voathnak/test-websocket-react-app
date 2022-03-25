@@ -1,5 +1,5 @@
 resource "aws_iam_policy" "s3_lambda_policy" {
-  name        = "${var.project_name}-s3-lambda-policy"
+  name        = "${var.project_name}_${var.service_name}_${terraform.workspace}-s3-lambda-policy"
   description = "Allow lambda to access s3 policy"
   policy      = data.aws_iam_policy_document.allow_access_from_lambda.json
 }

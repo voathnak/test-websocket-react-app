@@ -1,5 +1,5 @@
 resource "aws_api_gateway_rest_api" "root_api" {
-  name = "${var.project_name}-${terraform.workspace}-v${var.changes_version}-root-api"
+  name = "${var.project_name}-${terraform.workspace}-ver-${var.changes_version}-root-api"
 }
 
 

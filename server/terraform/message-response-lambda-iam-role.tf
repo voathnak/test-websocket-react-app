@@ -1,5 +1,5 @@
 resource "aws_iam_role_policy" "dynamodb_read_log_policy" {
-  name   = "lambda-dynamodb-log-policy"
+  name   = "${var.project_name}-${terraform.workspace}-lambda-dynamodb-log-policy"
   role   = aws_iam_role.lambda_assume_role.id
   policy = <<EOF
 {

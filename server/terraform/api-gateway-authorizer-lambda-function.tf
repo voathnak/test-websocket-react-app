@@ -2,7 +2,7 @@
 locals {
   authorizer_lambda = {
     lambda_zip_path = "outputs/api-gateway-authorizer-lambda.zip"
-    function_name = format("%s-v%s-%s-%s", var.project_name, var.changes_version, "api_gateway_authorizer", terraform.workspace)
+    function_name = format("%s-ver-%s-%s-%s", var.project_name, terraform.workspace, var.changes_version, "api_gateway_authorizer")
     handler = "authenticate.user_login"
     runtime = "python3.8"
   }

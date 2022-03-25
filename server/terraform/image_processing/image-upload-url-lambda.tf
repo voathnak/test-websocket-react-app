@@ -1,6 +1,6 @@
 locals {
   lambda_zip_path = "outputs/image-upload-url-lambda.zip"
-  function_name = format("%s-%s-%s-%s", var.project_name, var.service_name, "lambda_upload_url", terraform.workspace)
+  function_name = format("%s-%s-%s-%s", var.project_name, var.service_name, terraform.workspace, "lambda_upload_url")
   handler = "handler.get_upload_url"
   runtime = var.runtime
 }

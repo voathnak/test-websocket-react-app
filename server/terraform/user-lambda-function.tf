@@ -2,7 +2,7 @@
 locals {
   user_lambda = {
     lambda_zip_path = "outputs/user-lambda.zip"
-    function_name = format("%s-v%s-%s-%s", var.project_name, terraform.workspace, var.changes_version, "user")
+    function_name = format("%s-%s-ver-%s-%s", var.project_name, terraform.workspace, var.changes_version, "user")
     handler = "handler.lambda_handler"
     runtime = "python3.8"
   }

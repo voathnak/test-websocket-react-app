@@ -9,7 +9,7 @@ variable "changes_version" {
   description = "version"
 
   type    = string
-  default = "a"
+  default = "i"
 }
 
 variable "project_name" {
@@ -35,5 +35,5 @@ variable "accountId" {
   description = "accountId"
 
   type    = string
-  default = "661275851074"
+  default = "097947100355"
 }

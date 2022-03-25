@@ -231,10 +231,11 @@ class Model(Schema):
         return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
 
     def projection_field(self):
-        return [x for x in list(self.declared_fields.keys()) + self._systems_fields if
-                x not in ["id"]]
+        return [x for x in list(self.declared_fields.keys()) if x not in ["id"]]
 
     def search(self, field_name, value, operator='eq', projections=None):
+        if projections is None:
+            projections = []
         try:
             query_set = {
                 "eq": Key(field_name).eq(value),

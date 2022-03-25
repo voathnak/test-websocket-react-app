@@ -40,7 +40,7 @@ output "user-lambda-function-arn" {
 output "rootAPI" {
   description = "rootAPI"
 
-  value = "https://${aws_api_gateway_rest_api.root_api.id}.execute-api.${var.aws_region}.amazonaws.com/${terraform.workspace}"
+  value = "https://${aws_api_gateway_rest_api.root_api.id}.execute-api.${var.aws_region}.amazonaws.com/${aws_api_gateway_stage.stage.stage_name}"
 }
 
 output "image_bucket_domain_name" {
@@ -55,4 +55,19 @@ output "web_bucket_name" {
   value = aws_s3_bucket.webpage_bucket.bucket
 }
 
-#"https://${RestApi}.execute-api.${AWS::Region}.amazonaws.com/${StageName}/todos"
+output "web_bucket_domain_name" {
+  description = "static web bucket domain name"
+
+  value = aws_s3_bucket.webpage_bucket.bucket_domain_name
+}
+output "webSocketUrl" {
+  description = "webSocketApi"
+
+  value = module.chat_engine.webSocketUrl
+}
+
+output "webSocketApi" {
+  description = "webSocketApi"
+
+  value = module.chat_engine.webSocketApi
+}

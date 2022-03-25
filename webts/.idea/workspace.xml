@@ -2,15 +2,37 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="da43ebd7-3c5f-435e-843a-7506b10bdbea" name="Changes" comment="fixed last message style">
-      <change beforePath="$PROJECT_DIR$/../server/.scripts/config.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../server/.scripts/config.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server/terraform/outputs/api-gateway-authorizer-lambda.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../server/terraform/outputs/api-gateway-authorizer-lambda.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server/terraform/outputs/core_lib_layer.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../server/terraform/outputs/core_lib_layer.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server/terraform/outputs/message-response-lambda.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../server/terraform/outputs/message-response-lambda.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server/terraform/outputs/python_libs_layer.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../server/terraform/outputs/python_libs_layer.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server/terraform/outputs/user-lambda.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../server/terraform/outputs/user-lambda.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server/terraform/terraform.tfstate.d/dev/terraform.tfstate" beforeDir="false" afterPath="$PROJECT_DIR$/../server/terraform/terraform.tfstate.d/dev/terraform.tfstate" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server/terraform/terraform.tfstate.d/dev/terraform.tfstate.backup" beforeDir="false" afterPath="$PROJECT_DIR$/../server/terraform/terraform.tfstate.d/dev/terraform.tfstate.backup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../server/terraform/chat_engine/lambda-iam.tf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../server/terraform/chat_engine/main.tf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../server/terraform/chat_engine/outputs.tf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../server/terraform/chat_engine/socket_route_set/main.tf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../server/terraform/chat_engine/socket_route_set/outputs.tf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../server/terraform/chat_engine/socket_route_set/socket_route_lambda.tf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../server/terraform/chat_engine/socket_route_set/variables.tf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../server/terraform/chat_engine/variables.tf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../server/terraform/plan/implement-chat-engine.plan" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/.scripts/deploy-fe.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../server/.scripts/deploy-fe.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/terraform/.terraform/modules/modules.json" beforeDir="false" afterPath="$PROJECT_DIR$/../server/terraform/.terraform/modules/modules.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/terraform/api-gateway-authorizer-lambda-function.tf" beforeDir="false" afterPath="$PROJECT_DIR$/../server/terraform/api-gateway-authorizer-lambda-function.tf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/terraform/api-gateway.tf" beforeDir="false" afterPath="$PROJECT_DIR$/../server/terraform/api-gateway.tf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/terraform/iam_role_policy.tf" beforeDir="false" afterPath="$PROJECT_DIR$/../server/terraform/iam_role_policy.tf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/terraform/image_processing/image-resize-lambda.tf" beforeDir="false" afterPath="$PROJECT_DIR$/../server/terraform/image_processing/image-resize-lambda.tf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/terraform/image_processing/image-upload-url-lambda.tf" beforeDir="false" afterPath="$PROJECT_DIR$/../server/terraform/image_processing/image-upload-url-lambda.tf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/terraform/image_processing/s3-lambda-policy.tf" beforeDir="false" afterPath="$PROJECT_DIR$/../server/terraform/image_processing/s3-lambda-policy.tf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/terraform/lambda-role.tf" beforeDir="false" afterPath="$PROJECT_DIR$/../server/terraform/lambda-role.tf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/terraform/layers.tf" beforeDir="false" afterPath="$PROJECT_DIR$/../server/terraform/layers.tf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/terraform/message-response-lambda-function.tf" beforeDir="false" afterPath="$PROJECT_DIR$/../server/terraform/message-response-lambda-function.tf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/terraform/message-response-lambda-iam-role.tf" beforeDir="false" afterPath="$PROJECT_DIR$/../server/terraform/message-response-lambda-iam-role.tf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/terraform/outputs.tf" beforeDir="false" afterPath="$PROJECT_DIR$/../server/terraform/outputs.tf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/terraform/outputs/socket-route-lambda.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/terraform/services.tf" beforeDir="false" afterPath="$PROJECT_DIR$/../server/terraform/services.tf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/terraform/terraform.tfstate.d/dev/terraform.tfstate" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/terraform/terraform.tfstate.d/dev/terraform.tfstate.backup" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/terraform/terraform.tfstate.d/test/terraform.tfstate" beforeDir="false" afterPath="$PROJECT_DIR$/../server/terraform/terraform.tfstate.d/test/terraform.tfstate" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/terraform/terraform.tfstate.d/test/terraform.tfstate.backup" beforeDir="false" afterPath="$PROJECT_DIR$/../server/terraform/terraform.tfstate.d/test/terraform.tfstate.backup" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/terraform/user-lambda-function.tf" beforeDir="false" afterPath="$PROJECT_DIR$/../server/terraform/user-lambda-function.tf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/terraform/variables.tf" beforeDir="false" afterPath="$PROJECT_DIR$/../server/terraform/variables.tf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -106,6 +128,9 @@
       <workItem from="1647543375466" duration="431000" />
       <workItem from="1647702560975" duration="10373000" />
       <workItem from="1647789473671" duration="30644000" />
+      <workItem from="1648054342299" duration="804000" />
+      <workItem from="1648128843212" duration="1480000" />
+      <workItem from="1648170141725" duration="1005000" />
     </task>
     <task id="LOCAL-00001" summary="IMP/FE empty chat text box after sent">
       <created>1640511282996</created>

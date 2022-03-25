@@ -1,7 +1,7 @@
 locals {
   image_resize_lambda = {
     lambda_zip_path = "outputs/image-resize-lambda.zip"
-    function_name = format("%s-%s-%s-%s", var.project_name, var.service_name, "image_resize", terraform.workspace)
+    function_name = format("%s-%s-%s-%s", var.project_name, var.service_name, terraform.workspace, "image_resize")
     handler = "handler.handler"
     runtime = var.runtime
   }
