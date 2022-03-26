@@ -9,7 +9,14 @@ terraform {
 
 # Configure the AWS Provider
 provider "aws" {
-  region                  = "ap-southeast-1"
+  region                   = "ap-southeast-1"
   shared_credentials_files = ["/Users/vlim/.aws/credentials"]
-  profile                 = "aws1-vlim"
+  profile                  = "aws1-vlim"
+
+  default_tags {
+    tags = {
+      Environment = terraform.workspace
+      Project     = var.project_name
+    }
+  }
 }
