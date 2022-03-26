@@ -85,8 +85,9 @@ variable "route_set" {
 variable "message_dynamodb_table" {
   description = "message_dynamodb_table"
   type        = object({
-    name = string
-    arn  = string
+    name       = string
+    arn        = string
+    stream_arn = string
   })
 }
 

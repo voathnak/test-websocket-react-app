@@ -35,8 +35,8 @@ resource "aws_lambda_function" "user" {
       SECRET_KEY              = var.SECRET_KEY
       USER_MESSAGE_TABLE_NAME = aws_dynamodb_table.message-dynamodb-table.name
       USER_TABLE_NAME         = aws_dynamodb_table.users-dynamodb-table.name
-      CONNECTION_TABLE_NAME   = "vlim-ws-chat-dev-i--conns-table"
-      SOCKET_URL              = "https://m4f2567sdd.execute-api.ap-southeast-1.amazonaws.com/dev-i-vi"
+      CONNECTION_TABLE_NAME   = aws_dynamodb_table.socket-connection-dynamodb-table.name
+      SOCKET_URL              = module.chat_engine.webSocketUrl
       IS_USING_LOCAL_DYNAMODB = 0
       STAGE_NAME              = terraform.workspace
     }
