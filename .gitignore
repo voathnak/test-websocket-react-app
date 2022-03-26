@@ -5,3 +5,4 @@ web2/
 /server/.scripts/api-gen/test/
 **/.aws-sam/*
 .aws-sam/*
+**/.idea/workspace.xml
