@@ -60,6 +60,13 @@ output "web_bucket_domain_name" {
 
   value = aws_s3_bucket.webpage_bucket.bucket_domain_name
 }
+
+output "webpage_domain_name" {
+  description = "static web bucket domain name"
+
+  value = aws_s3_bucket.webpage_bucket.website_endpoint
+}
+
 output "webSocketUrl" {
   description = "webSocketApi"
 
