@@ -1,9 +1,9 @@
 locals {
   message_response_lambda = {
     lambda_zip_path = "outputs/message-response-lambda.zip"
-    function_name = format("%s-%s-ver-%s-%s", var.project_name, terraform.workspace, var.changes_version, "message_response")
-    handler = "message_response.handler"
-    runtime = "python3.9"
+    function_name   = format("%s-%s-ver-%s-%s", var.project_name, terraform.workspace, var.changes_version, "message_response")
+    handler         = "message_response.handler"
+    runtime         = "python3.9"
   }
 }
 
@@ -18,23 +18,28 @@ resource "aws_lambda_function" "message_response_lambda" {
   function_name = local.message_response_lambda.function_name
   role          = aws_iam_role.full_access_dynamodb_lambda_role.arn
   handler       = local.message_response_lambda.handler
-  timeout = 90
+  timeout       = 90
+
+  tags = {
+    service       = var.project_name
+    function_name = local.message_response_lambda.function_name
+  }
 
   # The filebase64sha256() function is available in Terraform 0.11.12 and later
   # For Terraform 0.11.11 and earlier, use the base64sha256() function and the file() function:
   source_code_hash = filebase64sha256(local.message_response_lambda.lambda_zip_path)
 
   runtime = local.message_response_lambda.runtime
-  layers = [aws_lambda_layer_version.core_lib_layer.arn, aws_lambda_layer_version.python_libs_layer.arn]
+  layers  = [aws_lambda_layer_version.core_lib_layer.arn, aws_lambda_layer_version.python_libs_layer.arn]
 
   environment {
     variables = {
-      SECRET_KEY = var.SECRET_KEY
+      SECRET_KEY              = var.SECRET_KEY
       USER_MESSAGE_TABLE_NAME = aws_dynamodb_table.message-dynamodb-table.name
-      CONNECTION_TABLE_NAME = "vlim_ws_chatii_dev_i_conns_table"
-      SOCKET_URL = "https://m4f2567sdd.execute-api.ap-southeast-1.amazonaws.com/dev-i-vi"
+      CONNECTION_TABLE_NAME   = "vlim_ws_chatii_dev_i_conns_table"
+      SOCKET_URL              = "https://m4f2567sdd.execute-api.ap-southeast-1.amazonaws.com/dev-i-vi"
       IS_USING_LOCAL_DYNAMODB = 0
-      STAGE_NAME = terraform.workspace
+      STAGE_NAME              = terraform.workspace
     }
   }
 
@@ -44,14 +49,14 @@ resource "aws_lambda_function" "message_response_lambda" {
 }
 
 resource "aws_cloudwatch_log_group" "message_response" {
-#  name = "/aws/lambda/${aws_lambda_function.message_response_lambda.function_name}"
+  #  name = "/aws/lambda/${aws_lambda_function.message_response_lambda.function_name}"
 
   retention_in_days = 30
 }
 
 resource "aws_lambda_event_source_mapping" "message_db_source_mapping" {
-  event_source_arn  = aws_dynamodb_table.message-dynamodb-table.stream_arn
-  function_name     = aws_lambda_function.message_response_lambda.arn
-  starting_position = "LATEST"
+  event_source_arn       = aws_dynamodb_table.message-dynamodb-table.stream_arn
+  function_name          = aws_lambda_function.message_response_lambda.arn
+  starting_position      = "LATEST"
   maximum_retry_attempts = 2
 }

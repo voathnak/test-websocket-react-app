@@ -1,9 +1,9 @@
 locals {
   image_resize_lambda = {
     lambda_zip_path = "outputs/image-resize-lambda.zip"
-    function_name = format("%s-%s-%s-%s", var.project_name, var.service_name, terraform.workspace, "image_resize")
-    handler = "handler.handler"
-    runtime = var.runtime
+    function_name   = format("%s-%s-%s-%s", var.project_name, var.service_name, terraform.workspace, "image_resize")
+    handler         = "handler.handler"
+    runtime         = var.runtime
   }
 }
 
@@ -18,20 +18,24 @@ resource "aws_lambda_function" "image_resize_lambda" {
   function_name = local.image_resize_lambda.function_name
   role          = aws_iam_role.lambda_role.arn
   handler       = local.image_resize_lambda.handler
-  timeout = 90
+  timeout       = 90
 
+  tags = {
+    service       = var.service_name
+    function_name = local.image_resize_lambda.function_name
+  }
   # The filebase64sha256() function is available in Terraform 0.11.12 and later
   # For Terraform 0.11.11 and earlier, use the base64sha256() function and the file() function:
-#  source_code_hash = filebase64sha256(local.image_resize_lambda.lambda_zip_path)
+  #  source_code_hash = filebase64sha256(local.image_resize_lambda.lambda_zip_path)
 
   runtime = local.image_resize_lambda.runtime
-  layers = [var.core_lib_layer_arn, var.python_libs_layer_arn, var.image_processing_layer_arn]
+  layers  = [var.core_lib_layer_arn, var.python_libs_layer_arn, var.image_processing_layer_arn]
 
   environment {
     variables = {
       IMAGE_BUCKET_DOMAIN = aws_s3_bucket.image_bucket.bucket_domain_name
-      IMAGE_BUCKET_NAME = aws_s3_bucket.image_bucket.bucket
-      IMAGE_SIZES = var.image_sizes
+      IMAGE_BUCKET_NAME   = aws_s3_bucket.image_bucket.bucket
+      IMAGE_SIZES         = var.image_sizes
     }
   }
 }

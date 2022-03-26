@@ -10,6 +10,11 @@ resource "aws_s3_bucket" "image_bucket" {
   #    #
   #    prevent_destroy = true
   #  }
+
+  tags = {
+    service     = var.service_name
+    bucket_name = "image-bucket"
+  }
 }
 
 resource "aws_s3_bucket_cors_configuration" "bucket_cors_configuration" {

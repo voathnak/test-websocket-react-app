@@ -1,10 +1,9 @@
-
 locals {
   authorizer_lambda = {
     lambda_zip_path = "outputs/api-gateway-authorizer-lambda.zip"
-    function_name = format("%s-ver-%s-%s-%s", var.project_name, terraform.workspace, var.changes_version, "api_gateway_authorizer")
-    handler = "authenticate.user_login"
-    runtime = "python3.8"
+    function_name   = format("%s-ver-%s-%s-%s", var.project_name, terraform.workspace, var.changes_version, "api_gateway_authorizer")
+    handler         = "authenticate.user_login"
+    runtime         = "python3.8"
   }
 }
 
@@ -21,5 +20,10 @@ resource "aws_lambda_function" "authorizer" {
   handler       = local.authorizer_lambda.handler
   runtime       = local.authorizer_lambda.runtime
 
-#  source_code_hash = filebase64sha256(local.authorizer_lambda.lambda_zip_path)
+  tags = {
+    service       = var.project_name
+    function_name = local.authorizer_lambda.function_name
+  }
+
+  #  source_code_hash = filebase64sha256(local.authorizer_lambda.lambda_zip_path)
 }

@@ -1,8 +1,8 @@
 locals {
   lambda_zip_path = "outputs/image-upload-url-lambda.zip"
-  function_name = format("%s-%s-%s-%s", var.project_name, var.service_name, terraform.workspace, "lambda_upload_url")
-  handler = "handler.get_upload_url"
-  runtime = var.runtime
+  function_name   = format("%s-%s-%s-%s", var.project_name, var.service_name, terraform.workspace, "lambda_upload_url")
+  handler         = "handler.get_upload_url"
+  runtime         = var.runtime
 }
 
 data "archive_file" "image-upload-url-lambda-archive" {
@@ -17,18 +17,23 @@ resource "aws_lambda_function" "image_upload_url_lambda" {
   role          = aws_iam_role.lambda_role.arn
   handler       = local.handler
 
+  tags = {
+    service       = var.service_name
+    function_name = local.function_name
+  }
+
   # The filebase64sha256() function is available in Terraform 0.11.12 and later
   # For Terraform 0.11.11 and earlier, use the base64sha256() function and the file() function:
-#  source_code_hash = filebase64sha256(local.lambda_zip_path)
+  #  source_code_hash = filebase64sha256(local.lambda_zip_path)
 
   runtime = local.runtime
-  layers = [var.core_lib_layer_arn, var.python_libs_layer_arn]
+  layers  = [var.core_lib_layer_arn, var.python_libs_layer_arn]
 
   environment {
     variables = {
       IMAGE_BUCKET_DOMAIN = aws_s3_bucket.image_bucket.bucket_domain_name
-      IMAGE_BUCKET_NAME = aws_s3_bucket.image_bucket.bucket
-      IMAGE_SIZES = var.image_sizes
+      IMAGE_BUCKET_NAME   = aws_s3_bucket.image_bucket.bucket
+      IMAGE_SIZES         = var.image_sizes
     }
   }
 }
