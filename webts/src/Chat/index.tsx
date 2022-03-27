@@ -52,6 +52,7 @@ const Chat = ({webSocketUrl}: Properties) => {
       console.log('opened');
       setConnection(sendMessage, currentLoggedInUser);
     },
+    queryParams: {'token': 'test-token'},
     //Will attempt to reconnect on all close events, such as server shutting down
     shouldReconnect: (closeEvent) => true,
   });

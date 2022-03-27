@@ -49,6 +49,6 @@ def handler(event, context):
                          for username in room.split("-")]
             print("#!@#"*6, 'connections:', connections)
             socket = create_socket_client(SOCKET_URL)
-            for conn in connections:
-                send_message(socket, message, conn[0].get("connectionId"))
+            for conn in [c for conns_per_user in connections for c in conns_per_user]:
+                send_message(socket, message, conn.get("connectionId"))
     return event
