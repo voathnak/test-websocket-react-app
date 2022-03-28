@@ -2,29 +2,44 @@
 '!theme spacelab
 actor       User
 Entity     Browser
-control     AuthLambda #yellow
-control     SocketLambda #green
+control     RestAPILambda #yellow
+control     SocketAPILambda #green
 control     MesssageRespondLambda #lightblue
 database    UserDynamo
 database    ConnectionDynamo
 database    messageDynamo
+database    roomDynamo
 
-User -> Browser : A. To login
-Browser -> AuthLambda : 1. send username and password
-AuthLambda -> UserDynamo: 2. check login credential
-'UserDynamo --> AuthLambda: respond failed
-UserDynamo -> AuthLambda: 3. respond success
-'AuthLambda --> Browser: respond 401
-AuthLambda -> Browser: 4. respond token
-Browser -> SocketLambda: 5. send token
-SocketLambda -> ConnectionDynamo : 6. add username to connection from decoded token
-SocketLambda -> Browser: 7. allow messaging
-User -> Browser: B. user typing message
-Browser -> SocketLambda: 1. user sending message
-SocketLambda -> messageDynamo: 2. storing message
-SocketLambda -> Browser: 3. reply message
-User -> Browser: C. user read message
-Browser -> SocketLambda: 1. send message have been read
-SocketLambda -> messageDynamo: 2. update message read status
-SocketLambda -> Browser: 3. send read status to other user
+User -> Browser : A. try to login
+Browser -> RestAPILambda : 1. send username and password
+RestAPILambda <-> UserDynamo: 2. check login credential
+'RestAPILambda --> Browser: respond 401
+RestAPILambda -> Browser: 3. respond token
+Browser -> SocketAPILambda: 4. send token \n\t (set-connection)
+SocketAPILambda <-> ConnectionDynamo : 5. add username to connection from decoded token
+SocketAPILambda -> Browser: 6. respond allow messaging signal
+
+Browser -> Browser: 7. switch display to chat screen
+Browser -> SocketAPILambda: 8. send request to get all room from \n\t [configuration service] \n\t (get-connection)
+SocketAPILambda -> roomDynamo: 9. query all room
+Browser <- SocketAPILambda: 10. respond room list (online-user)
+
+
+User -> Browser: B. selecting on Room
+Browser -> Browser: 1. browser set <selected room>
+Browser -> SocketAPILambda: 2. browser request (get-message)
+SocketAPILambda <-> messageDynamo: 3. query message for specific room
+Browser <- SocketAPILambda: 4. response message history (message-history)
+
+User -> Browser: C. typing message
+Browser -> SocketAPILambda: 1. user sending message to \n\t [message service]
+SocketAPILambda -> messageDynamo: 2. storing message
+messageDynamo -> MesssageRespondLambda : 3. notify updates
+MesssageRespondLambda -> Browser: 4. reply message
+Browser -> Browser: Update to message history in specific room
+
+User -> Browser: G. user read message
+Browser -> SocketAPILambda: 1. send message have been read
+SocketAPILambda <-> messageDynamo: 2. update message read status
+Browser <- SocketAPILambda: 3. send read status to other user
 @enduml
