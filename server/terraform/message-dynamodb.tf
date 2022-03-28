@@ -21,7 +21,6 @@ resource "aws_dynamodb_table" "message-dynamodb-table" {
 
   tags = {
     Name        = "${var.project_name}-${terraform.workspace}-user-messages-dynamodb"
-    Environment = terraform.workspace
   }
 
 #  force_destroy = true

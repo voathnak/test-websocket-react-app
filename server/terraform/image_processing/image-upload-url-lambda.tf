@@ -14,7 +14,7 @@ data "archive_file" "image-upload-url-lambda-archive" {
 resource "aws_lambda_function" "image_upload_url_lambda" {
   filename      = local.lambda_zip_path
   function_name = local.function_name
-  role          = aws_iam_role.lambda_role.arn
+  role          = aws_iam_role.presign_url_lambda_role.arn
   handler       = local.handler
 
   tags = {
@@ -41,6 +41,6 @@ resource "aws_lambda_function" "image_upload_url_lambda" {
 resource "aws_cloudwatch_log_group" "image_upload_url" {
   name = "/aws/lambda/${aws_lambda_function.image_upload_url_lambda.function_name}"
 
-  retention_in_days = 30
+  retention_in_days = 7
 }
 

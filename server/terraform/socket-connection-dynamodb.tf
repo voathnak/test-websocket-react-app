@@ -13,7 +13,6 @@ resource "aws_dynamodb_table" "socket-connection-dynamodb-table" {
 
   tags = {
     Name        = "${var.project_name}-${terraform.workspace}-users-dynamodb"
-    Environment = terraform.workspace
   }
 
 #  force_destroy = true
