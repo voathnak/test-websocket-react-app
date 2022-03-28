@@ -16,7 +16,7 @@ data "archive_file" "image-resize-lambda-archive" {
 resource "aws_lambda_function" "image_resize_lambda" {
   filename      = local.image_resize_lambda.lambda_zip_path
   function_name = local.image_resize_lambda.function_name
-  role          = aws_iam_role.lambda_role.arn
+  role          = aws_iam_role.presign_url_lambda_role.arn
   handler       = local.image_resize_lambda.handler
   timeout       = 90
 
