@@ -61,7 +61,7 @@ const Chat = ({webSocketUrl}: Properties) => {
   //   sendMessage(JSON.stringify(message));
   // }
 
-  const onOnlineUserUpdate = () => {
+  const onOnlineUserResponse = () => {
     const {content} = lastJsonMessage;
     setOnlineUsers(content.connectionIds);
     dispatch(updateContactStatus(content));
@@ -127,7 +127,7 @@ const Chat = ({webSocketUrl}: Properties) => {
   };
 
   const receiveUpdate: { [key: string]: () => void } = {
-    'online-user': onOnlineUserUpdate,
+    'online-user': onOnlineUserResponse,
     'text-message': onMessageUpdate,
     'health-check': onHealthCheck,
     'message-history': onMessageHistoryUpdate,
