@@ -1,0 +1,23 @@
+{
+  "requestContext": {
+    "routeKey": "configuration",
+    "messageId": "PwYySdlzyQ0CEvw=",
+    "eventType": "MESSAGE",
+    "extendedRequestId": "PwYySHGoSQ0FZug=",
+    "requestTime": "29/Mar/2022:17:00:49 +0000",
+    "messageDirection": "IN",
+    "stage": "dev",
+    "connectedAt": 1648572946446,
+    "requestTimeEpoch": 1648573249638,
+    "identity": {
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.83 Safari/537.36",
+      "sourceIp": "110.235.247.218"
+    },
+    "requestId": "PwYySHGoSQ0FZug=",
+    "domainName": "7wkf4olvsa.execute-api.ap-southeast-1.amazonaws.com",
+    "connectionId": "PwYC6c55yQ0CEvw=",
+    "apiId": "7wkf4olvsa"
+  },
+  "body": "{\"action\":\"configuration\",\"data\":\"{\\\"type\\\":\\\"rpc\\\",\\\"name\\\":\\\"get-rooms\\\",\\\"data\\\":{\\\"token\\\":\\\"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6Im5hayIsImlkIjoibmFrIiwiZW1haWwiOm51bGwsImFjY2VzcyI6bnVsbCwiaWF0IjoxNjQ4NTY5NDY1LjA1NDE0M30.rG33NAAHOTkJLr324G8Vv7NA2KndztBXz-dilSGOS9w\\\"}}\"}",
+  "isBase64Encoded": false
+}

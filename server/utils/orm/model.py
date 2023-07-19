@@ -10,19 +10,16 @@ import os
 from datetime import datetime
 import boto3
 
+from urllib.parse import unquote
+from utils.boto_utils import create_dynamodb_resource
 from utils.constant import JAVASCRIPT_ISO_DATETIME_FORMAT
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-table_prefix, is_using_local_dynamodb = os.environ.get("TABLE_PREFIX"), \
-                                        bool(int(os.environ.get('IS_USING_LOCAL_DYNAMODB', 0)))
-dynamodb = boto3.resource('dynamodb', endpoint_url='http://localhost:7878') if is_using_local_dynamodb else \
-    boto3.resource('dynamodb', region_name='ap-southeast-1')
+table_prefix = os.environ.get("TABLE_PREFIX")
 
-if is_using_local_dynamodb:
-    print("👽👽👽👽 is_using_local_dynamodb: {} 👽👽👽👽".format(is_using_local_dynamodb))
-    print("🤠🤠🤠🤠 Testing with local DynamoDB 🤠🤠🤠🤠")
+dynamodb = create_dynamodb_resource()
 
 
 # connection_url = os.environ['MONGODB_URI']
@@ -212,7 +209,9 @@ class Model(Schema):
         return self.get(pkey)
 
     def delete(self, _id):
+        _id = unquote(_id)
         try:
+            logger.info(f"Deleting records with id: {_id} from table: {self._table.name}")
             if isinstance(_id, str):
                 self._table.delete_item(Key={self._primary_key: _id})
             elif isinstance(_id, list):

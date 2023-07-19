@@ -38,6 +38,7 @@ resource "aws_lambda_function" "socket_route_lambda" {
       USER_MESSAGE_TABLE_NAME = var.message_dynamodb_table.name
       USER_TABLE_NAME         = var.users_dynamodb_table.name
       CONNECTION_TABLE_NAME   = var.socket_connection_dynamodb_table.name
+      ROOM_TABLE_NAME         = var.room_dynamodb_table.name
       SOCKET_URL              = "https://7wkf4olvsa.execute-api.ap-southeast-1.amazonaws.com/dev"
       IS_USING_LOCAL_DYNAMODB = 0
       STAGE_NAME              = terraform.workspace

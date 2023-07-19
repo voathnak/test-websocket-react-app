@@ -50,5 +50,5 @@ def handler(event, context):
             print("#!@#"*6, 'connections:', connections)
             socket = create_socket_client(SOCKET_URL)
             for conn in [c for conns_per_user in connections for c in conns_per_user]:
-                send_message(socket, message, conn.get("connectionId"))
+                send_message(socket, message, [conn.get("connectionId")])
     return event

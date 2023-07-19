@@ -20,6 +20,7 @@ resource "aws_apigatewayv2_api" "socket_api_gateway" {
 #  route_lambda_lsf = each.value.source_file
 #  socket_api = aws_apigatewayv2_api.socket_api_gateway
 #  socket_connection_dynamodb_table = var.socket_connection_dynamodb_table
+#  room_dynamodb_table = var.room_dynamodb_table
 #  message_dynamodb_table = var.message_dynamodb_table
 #  users_dynamodb_table = var.users_dynamodb_table
 #  lambda_role_arn = aws_iam_role.lambda_role.arn
@@ -36,6 +37,7 @@ resource "aws_apigatewayv2_api" "socket_api_gateway" {
 #  route_lambda_lsf = ""
 #  socket_api =aws_apigatewayv2_api.socket_api_gateway
 #  socket_connection_dynamodb_table = var.socket_connection_dynamodb_table
+#  room_dynamodb_table = var.room_dynamodb_table
 #  message_dynamodb_table = var.message_dynamodb_table
 #  users_dynamodb_table = var.users_dynamodb_table
 #  lambda_role_arn = aws_iam_role.lambda_role.arn
@@ -50,6 +52,7 @@ module "connect_route" {
   route_lambda_lsf                 = "../onconnect/app.py"
   socket_api                       = aws_apigatewayv2_api.socket_api_gateway
   socket_connection_dynamodb_table = var.socket_connection_dynamodb_table
+  room_dynamodb_table              = var.room_dynamodb_table
   message_dynamodb_table           = var.message_dynamodb_table
   users_dynamodb_table             = var.users_dynamodb_table
   lambda_role_arn                  = aws_iam_role.socket_lambda_role.arn
@@ -64,6 +67,7 @@ module "disconnect_route" {
   route_lambda_lsf                 = "../ondisconnect/app.py"
   socket_api                       = aws_apigatewayv2_api.socket_api_gateway
   socket_connection_dynamodb_table = var.socket_connection_dynamodb_table
+  room_dynamodb_table              = var.room_dynamodb_table
   message_dynamodb_table           = var.message_dynamodb_table
   users_dynamodb_table             = var.users_dynamodb_table
   lambda_role_arn                  = aws_iam_role.socket_lambda_role.arn
@@ -78,6 +82,7 @@ module "configuration_route" {
   route_lambda_lsf                 = "../configuration/app.py"
   socket_api                       = aws_apigatewayv2_api.socket_api_gateway
   socket_connection_dynamodb_table = var.socket_connection_dynamodb_table
+  room_dynamodb_table              = var.room_dynamodb_table
   message_dynamodb_table           = var.message_dynamodb_table
   users_dynamodb_table             = var.users_dynamodb_table
   lambda_role_arn                  = aws_iam_role.socket_lambda_role.arn
@@ -92,6 +97,7 @@ module "sendmessage_route" {
   route_lambda_lsf                 = "../pysendmessage/app.py"
   socket_api                       = aws_apigatewayv2_api.socket_api_gateway
   socket_connection_dynamodb_table = var.socket_connection_dynamodb_table
+  room_dynamodb_table              = var.room_dynamodb_table
   message_dynamodb_table           = var.message_dynamodb_table
   users_dynamodb_table             = var.users_dynamodb_table
   lambda_role_arn                  = aws_iam_role.socket_lambda_role.arn
@@ -127,9 +133,9 @@ resource "aws_apigatewayv2_deployment" "socket_deployment" {
 }
 
 resource "aws_apigatewayv2_stage" "stage" {
-  deployment_id          = aws_apigatewayv2_deployment.socket_deployment.id
-  api_id                 = aws_apigatewayv2_api.socket_api_gateway.id
-  name                   = terraform.workspace
+  deployment_id = aws_apigatewayv2_deployment.socket_deployment.id
+  api_id        = aws_apigatewayv2_api.socket_api_gateway.id
+  name          = terraform.workspace
 
   default_route_settings {
     throttling_rate_limit  = 10000

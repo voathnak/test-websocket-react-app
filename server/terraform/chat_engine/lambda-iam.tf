@@ -41,6 +41,8 @@ resource "aws_iam_role_policy" "lambda_dynamodb_policy" {
           "arn:aws:dynamodb:${var.aws_region}:${var.accountId}:table/${var.message_dynamodb_table.name}/index/*",
           "arn:aws:dynamodb:${var.aws_region}:${var.accountId}:table/${var.users_dynamodb_table.name}",
           "arn:aws:dynamodb:${var.aws_region}:${var.accountId}:table/${var.users_dynamodb_table.name}/index/*",
+          "arn:aws:dynamodb:${var.aws_region}:${var.accountId}:table/${var.room_dynamodb_table.name}",
+          "arn:aws:dynamodb:${var.aws_region}:${var.accountId}:table/${var.room_dynamodb_table.name}/index/*",
         ],
         "Effect" : "Allow"
       }

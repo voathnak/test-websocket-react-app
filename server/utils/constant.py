@@ -14,6 +14,9 @@ class Error:
 
     class IntegrationError:
         rpcFunctionNotFound = ErrorTemplate(3404, "Invalid RPC function name", "Invalid RPC function name")
+        invalidRequestType = ErrorTemplate(3405, "Invalid requestType/function name",
+                                           "Invalid requestType/function name")
+
 
 
 JAVASCRIPT_ISO_DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"

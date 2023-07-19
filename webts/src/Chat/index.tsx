@@ -4,7 +4,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import useWebSocket, {ReadyState} from 'react-use-websocket';
 import "./Chat.css"
 import {RootState} from "../redux";
-import {getConnection, getMessages, setConnection} from "./ServerMethod";
+import {getConnection, getMessages, getRoom, setConnection} from "./ServerMethod";
 import {Contact, DisplayMessage, MessageContent, Room, User} from "../type";
 import {setSelectedRoom} from "../redux/environmentVariable";
 import {updateContactStatus, userContact} from "../redux/usersSlice";
@@ -383,6 +383,9 @@ const Chat = ({webSocketUrl}: Properties) => {
               </button>
               <button type="submit" onClick={() => getMessages(sendMessage, currentLoggedInUser, selectedRoom.name)}>
                 getMessages
+              </button>
+              <button type="submit" onClick={() => getRoom(sendMessage, currentLoggedInUser)}>
+                getRoom
               </button>
             </div>
           </div>

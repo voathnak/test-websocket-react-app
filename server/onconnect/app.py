@@ -1,7 +1,7 @@
 import json
 import os
 
-from utils.custom_types.message import OnlineUserUpdate
+from utils.custom_types.message import OnlineUserResponse
 from utils.socket_utilities import send_message
 from utils.utils import log_event, httpResponse, log_env
 import boto3
@@ -38,7 +38,7 @@ def broadcast_new_joiner(reqctx):
     conn_ids = get_all_connection_ids()
     self_id = reqctx.get("connectionId")
     for connection_id in [c for c in conn_ids if c != self_id]:
-        send_message(socket_api, OnlineUserUpdate([c for c in conn_ids if c != connection_id]), connection_id)
+        send_message(socket_api, OnlineUserResponse([c for c in conn_ids if c != connection_id]), [connection_id])
 
 
 def handler(event, context):

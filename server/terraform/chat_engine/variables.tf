@@ -107,6 +107,14 @@ variable "socket_connection_dynamodb_table" {
   })
 }
 
+variable "room_dynamodb_table" {
+  description = "room_dynamodb_table"
+  type        = object({
+    name = string
+    arn  = string
+  })
+}
+
 variable "lambda_role_arn" {
   description = "lambda_role_arn"
   type        = string

@@ -21,6 +21,7 @@ class UserModel(RestModel):
     username = fields.Str(required=True)
     password = fields.Str(required=True, load_only=True)
     access = fields.Str(default="user")
+    roles = fields.List(fields.String)
     photo_link = fields.Str()
 
     def __init__(self):

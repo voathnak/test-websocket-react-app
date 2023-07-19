@@ -14,6 +14,19 @@ export const getConnection = (sendMessage: SendMessage, user: User) => {
   sendMessage(messageData);
 };
 
+export const getRoom = (sendMessage: SendMessage, user: User) => {
+  const messageData = JSON.stringify({
+    action: 'configuration',
+    data: JSON.stringify({
+      type: 'rpc',
+      name: 'get-rooms',
+      data: {token: user.token},
+    }),
+  });
+  console.info("getConnection --->", {messageData});
+  sendMessage(messageData);
+};
+
 export const setConnection = (sendMessage: SendMessage, user: User) => {
   const m = JSON.stringify({
     action: 'configuration',

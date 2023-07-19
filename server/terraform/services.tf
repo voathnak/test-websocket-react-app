@@ -30,5 +30,6 @@ module "chat_engine" {
   message_dynamodb_table           = aws_dynamodb_table.message-dynamodb-table
   users_dynamodb_table             = aws_dynamodb_table.users-dynamodb-table
   socket_connection_dynamodb_table = aws_dynamodb_table.socket-connection-dynamodb-table
+  room_dynamodb_table              = aws_dynamodb_table.room-dynamodb-table
   lambda_role_arn                  = aws_iam_role.lambda_assume_role.arn
 }

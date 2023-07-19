@@ -7,7 +7,7 @@ class MessageContent(BaseType):
     pass
 
 
-class OnlineUserResponse(MessageContent):
+class OnlineUserResponseSchema(MessageContent):
     connectionIds: List[str] = []
 
     def __init__(self, connection_ids):
@@ -54,10 +54,10 @@ class TextMessageUpdate(SocketMessage):
         super().__init__(message_type, content)
 
 
-class OnlineUserUpdate(SocketMessage):
+class OnlineUserResponse(SocketMessage):
     def __init__(self, connection_ids: List[str]):
         message_type = 'online-user'
-        online_user_response = OnlineUserResponse(connection_ids)
+        online_user_response = OnlineUserResponseSchema(connection_ids)
         super().__init__(message_type, online_user_response)
 
 

@@ -45,6 +45,15 @@ variable "socket_connection_dynamodb_table" {
     arn  = string
   })
 }
+
+variable "room_dynamodb_table" {
+  description = "room_dynamodb_table"
+  type        = object({
+    name = string
+    arn  = string
+  })
+}
+
 variable "runtime" {
   description = "python runtime"
 
